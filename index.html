@@ -14,21 +14,6 @@
 <link rel="manifest" href="manifest.webmanifest" />
 <link rel="apple-touch-icon" href="assets/apple-touch-icon.png" />
 <link rel="icon" type="image/png" sizes="192x192" href="assets/icon-192.png" />
-<script>
-  // Detect installed/standalone display mode early so CSS can switch to native full-bleed layout.
-  (function () {
-    function isStandalone() {
-      return window.matchMedia('(display-mode: standalone)').matches
-        || window.matchMedia('(display-mode: fullscreen)').matches
-        || window.navigator.standalone === true
-        || document.referrer.indexOf('android-app://') === 0;
-    }
-    function apply() { document.documentElement.classList.toggle('standalone', isStandalone()); }
-    apply();
-    try { window.matchMedia('(display-mode: standalone)').addEventListener('change', apply); } catch (e) {}
-    window.__phIsStandalone = isStandalone;
-  })();
-</script>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Mulish:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,600&display=swap" rel="stylesheet" />
@@ -53,30 +38,26 @@
     height:100%;
   }
   body{
-    background:#0d0d0f;
+    background:#161616;
     font-family:var(--sans);
     color:var(--ph-ink);
     min-height:100vh;
     min-height:100dvh;
-    display:flex;
-    align-items:center;
-    justify-content:center;
     overflow:hidden;
     position:fixed;inset:0;             /* lock the page; no document bounce */
   }
   /* allow selection only where it would be expected (none here, but keep hook) */
   .selectable{-webkit-user-select:text;user-select:text;}
   #stage{
-    width:100vw;height:100vh;
-    display:flex;align-items:center;justify-content:center;
+    width:100vw;height:100vh;height:100dvh;
+    display:flex;align-items:stretch;justify-content:center;
   }
-  /* ---------- Phone frame ---------- */
+  /* ---------- App viewport: full-bleed; centered phone-width column on desktop ---------- */
   .phone{
     position:relative;
-    width:390px;height:844px;
+    width:100%;max-width:480px;
+    height:100vh;height:100dvh;
     background:#fff;
-    border-radius:54px;
-    box-shadow:0 0 0 13px #1c1c1e, 0 0 0 15px #2c2c2e, 0 40px 80px -20px rgba(0,0,0,.7);
     overflow:hidden;
     flex:none;
   }
@@ -112,48 +93,14 @@
   .vis-hidden{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);}
   #root{width:100%;height:100%;}
 
-  /* ====== STANDALONE (installed PWA / fullscreen) — behave like a real native app ====== */
-  html.standalone, html.standalone body{background:#161616;}
-  html.standalone #stage{width:100vw;height:100vh;height:100dvh;}
-  html.standalone .phone{
-    width:100vw;height:100vh;height:100dvh;
-    border-radius:0;
-    box-shadow:none;
-    transform:none !important;
-  }
-  /* drop the simulated status bar — the real iOS one renders over us (black-translucent) */
-  html.standalone .statusbar{display:none;}
+  /* ====== Native-app chrome: drop the simulated phone status bar + home bar ====== */
+  .statusbar{display:none;}
+  .ph-home-indicator{display:none;}
   /* extend the black header under the notch via the top safe-area inset */
-  html.standalone .ph-header{
-    padding-top:env(safe-area-inset-top);
-    background:var(--ph-black);
-  }
-  /* pad the tab bar above the home indicator; hide the simulated handle */
-  html.standalone .ph-bottomnav{padding-bottom:env(safe-area-inset-bottom);}
-  html.standalone .ph-home-indicator{display:none;}
-  /* push full-page sub-views clear of the notch + home indicator */
-  html.standalone .ph-safe-top{padding-top:env(safe-area-inset-top);background:var(--ph-black);}
-
-  /* ====== Add-to-Home-Screen prompt ====== */
-  .ph-a2hs{
-    position:fixed;left:50%;bottom:calc(16px + env(safe-area-inset-bottom));transform:translateX(-50%);
-    width:min(380px, calc(100vw - 28px));
-    background:rgba(28,28,30,.97);-webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px);
-    border:1px solid rgba(255,255,255,.08);border-radius:20px;
-    padding:14px 16px;display:flex;align-items:center;gap:13px;opacity:1;
-    box-shadow:0 20px 54px -14px rgba(0,0,0,.75);
-    z-index:9999;color:#fff;font-family:var(--sans);
-    will-change:transform;
-  }
-  .ph-a2hs.enter{animation:a2hsUp .42s cubic-bezier(.2,.85,.25,1);}
-  @keyframes a2hsUp{from{transform:translate(-50%,150%);opacity:0}to{transform:translate(-50%,0);opacity:1}}
-  @keyframes a2hsDown{from{transform:translate(-50%,0);opacity:1}to{transform:translate(-50%,150%);opacity:0}}
-  .ph-a2hs .a2hs-title{font-weight:800;font-size:16px;color:#fff;letter-spacing:.2px;}
-  .ph-a2hs .a2hs-sub{font-size:13px;color:#b9b9c0;margin-top:3px;line-height:1.35;}
-  .ph-a2hs .a2hs-sub b{color:#fff;font-weight:700;}
-  .ph-a2hs .a2hs-share{display:inline-flex;vertical-align:-5px;margin:0 1px;}
-  .ph-a2hs-install{flex:none;border:none;background:var(--ph-red);color:#fff;font-family:var(--sans);font-weight:800;font-size:15px;padding:11px 20px;border-radius:30px;cursor:pointer;}
-  .ph-a2hs-x{flex:none;width:26px;height:26px;border:none;background:rgba(255,255,255,.12);color:#cfcfd4;border-radius:50%;font-size:12px;cursor:pointer;padding:0;display:flex;align-items:center;justify-content:center;}
+  .ph-header{padding-top:env(safe-area-inset-top);background:var(--ph-black);}
+  /* pad the tab bar above the device home-area (real safe-area inset) */
+  .ph-bottomnav{padding-bottom:env(safe-area-inset-bottom);}
+  .ph-safe-top{padding-top:env(safe-area-inset-top);background:var(--ph-black);}
 </style>
 </head>
 <body>
@@ -971,102 +918,10 @@ styleEl.textContent = `
 `;
 document.head.appendChild(styleEl);
 
-/* ---- responsive scale to viewport (framed mockup only; full-bleed when installed) ---- */
-function scalePhone() {
-  const phone = document.querySelector(".phone");
-  if (!phone) return;
-  if (window.__phIsStandalone && window.__phIsStandalone()) { phone.style.transform = "none"; return; }
-  const pad = 24;
-  const s = Math.min((window.innerWidth - pad) / 390, (window.innerHeight - pad) / 844, 1.15);
-  phone.style.transform = `scale(${s})`;
-  phone.style.transformOrigin = "center center";
-}
-
 ReactDOM.createRoot(document.getElementById("root")).render(<App />);
-setTimeout(scalePhone, 60);
-window.addEventListener("resize", scalePhone);
 
 
   </script>
 
-  <script>
-    // ===== Add to Home Screen prompt (iOS Safari instructions + Chromium beforeinstallprompt) =====
-    (function () {
-      var KEY = 'ph_a2hs_dismissed';
-      var standalone = window.__phIsStandalone && window.__phIsStandalone();
-      if (standalone) return;                                  // already installed — never prompt
-      if (localStorage.getItem(KEY) === '1') return;           // user dismissed previously
-
-      var ua = navigator.userAgent || '';
-      var isIOS = /iphone|ipad|ipod/i.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
-      var deferred = null;     // captured beforeinstallprompt event (Chromium)
-      var shown = false;
-
-      window.addEventListener('beforeinstallprompt', function (e) {
-        e.preventDefault();
-        deferred = e;
-        if (!shown) show('chromium');
-      });
-      window.addEventListener('appinstalled', function () { dismiss(true); });
-
-      function dismiss(remember) {
-        var b = document.querySelector('.ph-a2hs');
-        if (b) { b.style.animation = 'a2hsDown .26s ease forwards'; setTimeout(function () { b.remove(); }, 260); }
-        if (remember !== false) localStorage.setItem(KEY, '1');
-      }
-
-      var SHARE = '<span class="a2hs-share"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#0a84ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15V4"/><path d="M8.5 7.5 12 4l3.5 3.5"/><path d="M6 11v7a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2v-7"/></svg></span>';
-
-      function show(mode) {
-        if (shown) return;
-        shown = true;
-        var b = document.createElement('div');
-        b.className = 'ph-a2hs';
-
-        var body;
-        if (mode === 'chromium') {
-          body = '<div style="flex:1;min-width:0">'
-               +   '<div class="a2hs-title">Install Palm Hills</div>'
-               +   '<div class="a2hs-sub">Add the app to your home screen</div>'
-               + '</div>'
-               + '<button class="ph-a2hs-install">Install</button>';
-        } else {
-          body = '<div style="flex:1;min-width:0">'
-               +   '<div class="a2hs-title">Add to Home Screen</div>'
-               +   '<div class="a2hs-sub">Tap ' + SHARE + ' then <b>Add to Home&nbsp;Screen</b> to install Palm Hills.</div>'
-               + '</div>';
-        }
-
-        b.innerHTML =
-          '<img src="assets/icon-192.png" alt="" style="width:50px;height:50px;border-radius:12px;flex:none;box-shadow:0 2px 8px rgba(0,0,0,.45)"/>'
-          + body
-          + '<button class="ph-a2hs-x" aria-label="Dismiss">\u2715</button>';
-
-        document.body.appendChild(b);
-        // play the slide-up once, then drop the class so the resting state is static
-        b.classList.add('enter');
-        var clear = function () { b.classList.remove('enter'); };
-        b.addEventListener('animationend', clear, { once: true });
-        setTimeout(clear, 600);
-
-        var x = b.querySelector('.ph-a2hs-x');
-        if (x) x.addEventListener('click', function () { dismiss(true); });
-
-        var install = b.querySelector('.ph-a2hs-install');
-        if (install) install.addEventListener('click', function () {
-          if (!deferred) { dismiss(true); return; }
-          deferred.prompt();
-          deferred.userChoice.finally(function () { deferred = null; dismiss(true); });
-        });
-      }
-
-      // Give beforeinstallprompt a moment to fire; otherwise fall back to manual instructions.
-      setTimeout(function () {
-        if (window.__phIsStandalone && window.__phIsStandalone()) return;
-        if (localStorage.getItem(KEY) === '1') return;
-        if (!shown) show(deferred ? 'chromium' : (isIOS ? 'ios' : 'generic'));
-      }, 1400);
-    })();
-  </script>
 </body>
 </html>

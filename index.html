@@ -4,7 +4,9 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
 <title>Palm Hills — Community App</title>
+<script>window.__phStart = Date.now();</script>
 <meta name="theme-color" content="#161616" />
+<link rel="preload" as="image" href="assets/IMG_3592.png" />
 <!-- iOS standalone web-app -->
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="mobile-web-app-capable" content="yes" />
@@ -80,9 +82,25 @@
   /* Lift the tab bar above the device home-swipe area */
   .ph-bottomnav{padding-bottom:env(safe-area-inset-bottom);}
   .ph-safe-top{padding-top:env(safe-area-inset-top);background:var(--ph-black);}
+
+  /* ====== Launch / splash screen (shown on every open, then fades out) ====== */
+  #ph-splash{
+    position:fixed;inset:0;z-index:9999;background:#161616;
+    display:flex;align-items:stretch;justify-content:center;
+    transition:opacity .55s ease;
+  }
+  #ph-splash.ph-splash-hide{opacity:0;pointer-events:none;}
+  #ph-splash .ph-splash-img{
+    width:100%;max-width:480px;
+    background:#161616 center/cover no-repeat;
+    background-image:url('assets/IMG_3592.png');
+  }
 </style>
 </head>
 <body>
+  <!-- Launch screen — paints instantly (before React/Babel finish), then fades out -->
+  <div id="ph-splash" aria-hidden="true"><div class="ph-splash-img"></div></div>
+
   <div id="stage"><div id="root"></div></div>
 
   <template id="__bundler_thumbnail">
@@ -868,6 +886,41 @@ styleEl.textContent = `
 document.head.appendChild(styleEl);
 
 ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+
+/* Dismiss the launch screen once (a) the app has mounted, (b) the launch
+   image has actually loaded so it's been seen, and (c) a brief minimum time
+   has passed — whichever resolves, but never longer than a hard cap. */
+(function () {
+  var splash = document.getElementById("ph-splash");
+  if (!splash) return;
+  var MIN_MS = 1700;   // minimum on-screen time so it reads as a launch picture
+  var CAP_MS = 6000;   // never block the app longer than this
+  var start = window.__phStart || Date.now();
+  var done = false;
+
+  function fadeOut() {
+    if (done) return;
+    done = true;
+    splash.classList.add("ph-splash-hide");
+    window.setTimeout(function () { if (splash.parentNode) splash.parentNode.removeChild(splash); }, 650);
+  }
+
+  // Resolve image load (uses the same cached file as the CSS background / preload).
+  var imgLoaded = false;
+  var pre = new Image();
+  pre.onload = pre.onerror = function () { imgLoaded = true; };
+  pre.src = "assets/IMG_3592.png";
+  if (pre.complete) imgLoaded = true;
+
+  function maybeDismiss() {
+    if (done) return;
+    var elapsed = Date.now() - start;
+    if (imgLoaded && elapsed >= MIN_MS) fadeOut();
+    else window.setTimeout(maybeDismiss, 120);
+  }
+  requestAnimationFrame(function () { requestAnimationFrame(maybeDismiss); });
+  window.setTimeout(fadeOut, CAP_MS);   // safety net
+})();
 
 
   </script>

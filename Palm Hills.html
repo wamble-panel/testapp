@@ -1,0 +1,1072 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+<title>Palm Hills — Community App</title>
+<meta name="theme-color" content="#161616" />
+<!-- iOS standalone web-app -->
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="apple-mobile-web-app-title" content="Palm Hills" />
+<meta name="format-detection" content="telephone=no" />
+<link rel="manifest" href="manifest.webmanifest" />
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png" />
+<link rel="icon" type="image/png" sizes="192x192" href="assets/icon-192.png" />
+<script>
+  // Detect installed/standalone display mode early so CSS can switch to native full-bleed layout.
+  (function () {
+    function isStandalone() {
+      return window.matchMedia('(display-mode: standalone)').matches
+        || window.matchMedia('(display-mode: fullscreen)').matches
+        || window.navigator.standalone === true
+        || document.referrer.indexOf('android-app://') === 0;
+    }
+    function apply() { document.documentElement.classList.toggle('standalone', isStandalone()); }
+    apply();
+    try { window.matchMedia('(display-mode: standalone)').addEventListener('change', apply); } catch (e) {}
+    window.__phIsStandalone = isStandalone;
+  })();
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Mulish:ital,wght@0,400;0,500;0,600;0,700;0,800;0,900;1,600&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --ph-red:#C4203C;
+    --ph-red-deep:#9c1a30;
+    --ph-red-soft:#f7dfe3;
+    --ph-ink:#1b1b1b;
+    --ph-black:#161616;
+    --ph-gray:#9a9a9a;
+    --ph-gray-line:#dcdcdc;
+    --slab:'Mulish', system-ui, sans-serif;
+    --sans:'Mulish', system-ui, sans-serif;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;-webkit-touch-callout:none;}
+  html,body{
+    margin:0;padding:0;
+    overscroll-behavior:none;            /* kill rubber-band chaining */
+    -webkit-user-select:none;user-select:none;  /* native: no text selection */
+    touch-action:manipulation;           /* remove 300ms tap delay */
+    height:100%;
+  }
+  body{
+    background:#0d0d0f;
+    font-family:var(--sans);
+    color:var(--ph-ink);
+    min-height:100vh;
+    min-height:100dvh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    overflow:hidden;
+    position:fixed;inset:0;             /* lock the page; no document bounce */
+  }
+  /* allow selection only where it would be expected (none here, but keep hook) */
+  .selectable{-webkit-user-select:text;user-select:text;}
+  #stage{
+    width:100vw;height:100vh;
+    display:flex;align-items:center;justify-content:center;
+  }
+  /* ---------- Phone frame ---------- */
+  .phone{
+    position:relative;
+    width:390px;height:844px;
+    background:#fff;
+    border-radius:54px;
+    box-shadow:0 0 0 13px #1c1c1e, 0 0 0 15px #2c2c2e, 0 40px 80px -20px rgba(0,0,0,.7);
+    overflow:hidden;
+    flex:none;
+  }
+  .screen{
+    position:absolute;inset:0;
+    display:flex;flex-direction:column;
+    background:#fff;
+    overflow:hidden;
+  }
+  /* status bar */
+  .statusbar{
+    height:54px;flex:none;
+    background:var(--ph-black);
+    display:flex;align-items:center;justify-content:space-between;
+    padding:0 26px 0 28px;
+    position:relative;z-index:5;
+    color:#fff;
+  }
+  .sb-time{font-weight:600;font-size:17px;letter-spacing:.3px;font-family:var(--sans);}
+  .sb-island{
+    position:absolute;left:50%;top:11px;transform:translateX(-50%);
+    background:#000;border-radius:20px;height:34px;
+    display:flex;align-items:center;gap:7px;padding:0 16px;min-width:118px;justify-content:center;
+  }
+  .sb-island .call{color:#34c759;display:flex;align-items:center;gap:6px;font-weight:600;font-size:14px;}
+  .sb-island .dots{display:flex;gap:2px;}
+  .sb-island .dots i{width:3px;height:3px;border-radius:50%;background:#e9c33b;display:block;}
+  .sb-right{display:flex;align-items:center;gap:7px;}
+  /* generic scroll body */
+  .body{flex:1;overflow-y:auto;overflow-x:hidden;position:relative;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;}
+  .body::-webkit-scrollbar{width:0;}
+  /* hide things */
+  .vis-hidden{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);}
+  #root{width:100%;height:100%;}
+
+  /* ====== STANDALONE (installed PWA / fullscreen) — behave like a real native app ====== */
+  html.standalone, html.standalone body{background:#161616;}
+  html.standalone #stage{width:100vw;height:100vh;height:100dvh;}
+  html.standalone .phone{
+    width:100vw;height:100vh;height:100dvh;
+    border-radius:0;
+    box-shadow:none;
+    transform:none !important;
+  }
+  /* drop the simulated status bar — the real iOS one renders over us (black-translucent) */
+  html.standalone .statusbar{display:none;}
+  /* extend the black header under the notch via the top safe-area inset */
+  html.standalone .ph-header{
+    padding-top:env(safe-area-inset-top);
+    background:var(--ph-black);
+  }
+  /* pad the tab bar above the home indicator; hide the simulated handle */
+  html.standalone .ph-bottomnav{padding-bottom:env(safe-area-inset-bottom);}
+  html.standalone .ph-home-indicator{display:none;}
+  /* push full-page sub-views clear of the notch + home indicator */
+  html.standalone .ph-safe-top{padding-top:env(safe-area-inset-top);background:var(--ph-black);}
+
+  /* ====== Add-to-Home-Screen prompt ====== */
+  .ph-a2hs{
+    position:fixed;left:50%;bottom:calc(16px + env(safe-area-inset-bottom));transform:translateX(-50%);
+    width:min(380px, calc(100vw - 28px));
+    background:rgba(28,28,30,.97);-webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px);
+    border:1px solid rgba(255,255,255,.08);border-radius:20px;
+    padding:14px 16px;display:flex;align-items:center;gap:13px;opacity:1;
+    box-shadow:0 20px 54px -14px rgba(0,0,0,.75);
+    z-index:9999;color:#fff;font-family:var(--sans);
+    will-change:transform;
+  }
+  .ph-a2hs.enter{animation:a2hsUp .42s cubic-bezier(.2,.85,.25,1);}
+  @keyframes a2hsUp{from{transform:translate(-50%,150%);opacity:0}to{transform:translate(-50%,0);opacity:1}}
+  @keyframes a2hsDown{from{transform:translate(-50%,0);opacity:1}to{transform:translate(-50%,150%);opacity:0}}
+  .ph-a2hs .a2hs-title{font-weight:800;font-size:16px;color:#fff;letter-spacing:.2px;}
+  .ph-a2hs .a2hs-sub{font-size:13px;color:#b9b9c0;margin-top:3px;line-height:1.35;}
+  .ph-a2hs .a2hs-sub b{color:#fff;font-weight:700;}
+  .ph-a2hs .a2hs-share{display:inline-flex;vertical-align:-5px;margin:0 1px;}
+  .ph-a2hs-install{flex:none;border:none;background:var(--ph-red);color:#fff;font-family:var(--sans);font-weight:800;font-size:15px;padding:11px 20px;border-radius:30px;cursor:pointer;}
+  .ph-a2hs-x{flex:none;width:26px;height:26px;border:none;background:rgba(255,255,255,.12);color:#cfcfd4;border-radius:50%;font-size:12px;cursor:pointer;padding:0;display:flex;align-items:center;justify-content:center;}
+</style>
+</head>
+<body>
+  <div id="stage"><div id="root"></div></div>
+
+  <template id="__bundler_thumbnail">
+    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+      <rect width="100" height="100" fill="#161616"/>
+      <rect x="30" y="30" width="40" height="40" rx="4" transform="rotate(45 50 50)" fill="#C4203C"/>
+    </svg>
+  </template>
+
+  <script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+
+  <script type="text/babel">
+
+// ===== ICONS =====
+// ============ ICONS ============
+// All stroke icons match the Palm Hills app line style (2px, round)
+
+const S = ({ children, size = 24, stroke = "currentColor", sw = 2, fill = "none", style }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill={fill} stroke={stroke}
+    strokeWidth={sw} strokeLinecap="round" strokeLinejoin="round" style={style}>
+    {children}
+  </svg>
+);
+
+const IconHome = (p) => (
+  <S {...p}><path d="M3 11.5 12 4l9 7.5" /><path d="M5.5 10v9.5h13V10" /></S>
+);
+
+// "My Space" — open double-door / cabinet icon
+const IconSpace = (p) => (
+  <S {...p}>
+    <rect x="4" y="4" width="16" height="16" rx="1" />
+    <line x1="12" y1="4" x2="12" y2="20" />
+    <line x1="9.4" y1="11" x2="9.4" y2="13" />
+    <line x1="14.6" y1="11" x2="14.6" y2="13" />
+  </S>
+);
+
+const IconCommunity = (p) => (
+  <S {...p}>
+    <circle cx="8.5" cy="8" r="2.4" />
+    <circle cx="16" cy="9.2" r="2" />
+    <path d="M3.8 18.5c0-2.7 2.1-4.6 4.7-4.6s4.7 1.9 4.7 4.6" />
+    <path d="M14.4 14.2c2.2-.5 4.6 1 4.6 4.3" />
+  </S>
+);
+
+// "More" — four squares grid
+const IconMore = (p) => (
+  <S {...p}>
+    <rect x="3.5" y="3.5" width="7" height="7" rx="1.2" />
+    <rect x="13.5" y="3.5" width="7" height="7" rx="1.2" />
+    <rect x="3.5" y="13.5" width="7" height="7" rx="1.2" />
+    <rect x="13.5" y="13.5" width="7" height="7" rx="1.2" />
+  </S>
+);
+
+const IconBell = (p) => (
+  <S {...p}>
+    <path d="M18 8.5a6 6 0 1 0-12 0c0 6-2.2 7.5-2.2 7.5h16.4S18 14.5 18 8.5Z" />
+    <path d="M10.3 20a2 2 0 0 0 3.4 0" />
+  </S>
+);
+
+const IconChevL = (p) => (<S {...p} sw={2.6}><path d="M15 5 8 12l7 7" /></S>);
+const IconChevR = (p) => (<S {...p}><path d="M9 5l7 7-7 7" /></S>);
+const IconChevDown = (p) => (<S {...p} sw={2.4}><path d="M6 9l6 6 6-6" /></S>);
+
+const IconHouseSmall = (p) => (
+  <S {...p}><path d="M3.5 11 12 4.5l8.5 6.5" /><path d="M5.5 9.7V20h13V9.7" /></S>
+);
+
+const IconBulb = (p) => (
+  <S {...p}>
+    <path d="M9 18h6" /><path d="M10 21h4" />
+    <path d="M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2h5c0-.8.4-1.5 1-2A6 6 0 0 0 12 3Z" />
+  </S>
+);
+
+const IconGate = (p) => (
+  <S {...p} sw={1.8}>
+    <line x1="4" y1="5" x2="20" y2="5" />
+    <line x1="6.5" y1="5" x2="6.5" y2="20" />
+    <line x1="17.5" y1="5" x2="17.5" y2="20" />
+    <line x1="6.5" y1="9" x2="17.5" y2="9" />
+  </S>
+);
+
+const IconPlusCircle = (p) => (
+  <S {...p}><circle cx="12" cy="12" r="9" /><line x1="12" y1="8" x2="12" y2="16" /><line x1="8" y1="12" x2="16" y2="12" /></S>
+);
+
+const IconArrowR = (p) => (
+  <S {...p}><line x1="3" y1="12" x2="19" y2="12" /><path d="M13 6l6 6-6 6" /></S>
+);
+const IconArrowR2 = (p) => ( // double arrow
+  <S {...p}><path d="M3 12h13" /><path d="M11 7l5 5-5 5" /><path d="M16 7l5 5-5 5" /></S>
+);
+
+const IconPeoplePair = (p) => (
+  <S {...p}>
+    <circle cx="9" cy="8" r="2.6" /><circle cx="16.5" cy="8.5" r="2.1" />
+    <path d="M4 18c0-2.8 2.2-4.8 5-4.8s5 2 5 4.8" />
+    <path d="M14.5 13.4c2.2-.4 4.5 1.2 4.5 4.6" />
+  </S>
+);
+
+const IconCar = (p) => (
+  <S {...p} sw={1.9}>
+    <path d="M5 14l1.4-4.2A2 2 0 0 1 8.3 8.4h7.4a2 2 0 0 1 1.9 1.4L19 14" />
+    <path d="M4 14h16v3.5a.8.8 0 0 1-.8.8H17a.8.8 0 0 1-.8-.8V17H7.8v.5a.8.8 0 0 1-.8.8H4.8a.8.8 0 0 1-.8-.8V14Z" />
+    <circle cx="7.5" cy="14.5" r=".4" /><circle cx="16.5" cy="14.5" r=".4" />
+  </S>
+);
+
+const IconCheckSquare = (p) => (
+  <S {...p}><rect x="4" y="4" width="16" height="16" rx="2" /><path d="M8.5 12l2.3 2.3 4.7-4.8" /></S>
+);
+
+const IconGear = (p) => (
+  <S {...p} sw={1.8}>
+    <path d="M12 4l1.4 0 .7 2.2 2 .8 2-1 1 1-1 2 .8 2 2.2.7 0 1.4-2.2.7-.8 2 1 2-1 1-2-1-2 .8-.7 2.2-1.4 0-.7-2.2-2-.8-2 1-1-1 1-2-.8-2-2.2-.7 0-1.4 2.2-.7.8-2-1-2 1-1 2 1 2-.8.7-2.2Z" />
+    <circle cx="12" cy="12" r="2.4" />
+  </S>
+);
+
+const IconChat = (p) => (
+  <S {...p} sw={1.8}>
+    <path d="M4 5h16v11H9l-4 3.5V16H4Z" />
+    <path d="M10.2 9.2a1.8 1.8 0 1 1 2.4 1.7c-.5.3-.9.7-.9 1.4" />
+    <circle cx="11.8" cy="14" r=".3" />
+  </S>
+);
+
+const IconQR = ({ size = 24, color = "#fff" }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill={color}>
+    <path d="M3 3h7v7H3V3zm2 2v3h3V5H5z" />
+    <path d="M14 3h7v7h-7V3zm2 2v3h3V5h-3z" />
+    <path d="M3 14h7v7H3v-7zm2 2v3h3v-3H5z" />
+    <rect x="14" y="14" width="2.4" height="2.4" />
+    <rect x="18.6" y="14" width="2.4" height="2.4" />
+    <rect x="16.3" y="16.3" width="2.4" height="2.4" />
+    <rect x="14" y="18.6" width="2.4" height="2.4" />
+    <rect x="18.6" y="18.6" width="2.4" height="2.4" />
+  </svg>
+);
+
+Object.assign(window, {
+  IconHome, IconSpace, IconCommunity, IconMore, IconBell, IconChevL, IconChevR,
+  IconChevDown, IconHouseSmall, IconBulb, IconGate, IconPlusCircle, IconArrowR,
+  IconArrowR2, IconPeoplePair, IconCar, IconCheckSquare, IconGear, IconChat, IconQR,
+});
+
+// ===== CHROME =====
+// ============ CHROME: StatusBar, Logo, Headers, BottomNav, QR ============
+
+const LOGO = "assets/logo-diamond.png";
+
+function StatusBar({ time = "7:51" }) {
+  return (
+    <div className="statusbar">
+      <span className="sb-time">{time}</span>
+      <div className="sb-island">
+        <span className="call">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="#34c759"><path d="M6.6 10.8c1.4 2.8 3.8 5.1 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1C10.6 21 3 13.4 3 4c0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.2.2 2.4.6 3.6.1.4 0 .7-.2 1l-2.3 2.2z"/></svg>
+          <span style={{ fontFamily: "var(--sans)" }}>4h</span>
+        </span>
+        <span className="dots">{Array.from({ length: 11 }).map((_, i) => <i key={i} />)}</span>
+      </div>
+      <div className="sb-right">
+        {/* signal */}
+        <svg width="19" height="13" viewBox="0 0 19 13" fill="#fff"><rect x="0" y="8" width="3" height="5" rx="1"/><rect x="5" y="5.5" width="3" height="7.5" rx="1"/><rect x="10" y="3" width="3" height="10" rx="1"/><rect x="15" y="0.5" width="3" height="12.5" rx="1" opacity="0.4"/></svg>
+        {/* battery */}
+        <svg width="27" height="13" viewBox="0 0 27 13" fill="none"><rect x="1" y="1" width="22" height="11" rx="3" stroke="#fff" strokeOpacity="0.5" strokeWidth="1"/><rect x="2.6" y="2.6" width="13" height="7.8" rx="1.6" fill="#fff"/><rect x="24.5" y="4.5" width="1.6" height="4" rx="1" fill="#fff" fillOpacity="0.5"/></svg>
+        <span style={{ width: 9, height: 9, borderRadius: "50%", background: "#f5a623", display: "inline-block" }} />
+      </div>
+    </div>
+  );
+}
+
+function Diamond({ size = 84, src = LOGO, rotate = -8, style }) {
+  // red diamond logo, slightly rotated, hanging off the header
+  return (
+    <div style={{
+      width: size, height: size, transform: `rotate(${rotate}deg)`,
+      borderRadius: 8, overflow: "hidden",
+      boxShadow: "0 6px 16px -4px rgba(0,0,0,.45)",
+      background: "#C4203C", ...style,
+    }}>
+      <img src={src} alt="Palm Hills" style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
+    </div>
+  );
+}
+
+const DIAMOND = "polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%)";
+
+/* Transparent diamond logo that "cuts" a notch into the header bar.
+   White halo = page background carving the black bar; logo sits in it. */
+function LogoCut({ size = 80, left = 16 }) {
+  return (
+    <div style={{ position: "absolute", left, top: -(size * 0.52), width: size, height: size, zIndex: 3 }}>
+      <div style={{ position: "absolute", inset: -7, background: "#fff", clipPath: DIAMOND }} />
+      <img src={LOGO} alt="Palm Hills" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", clipPath: DIAMOND, display: "block" }} />
+    </div>
+  );
+}
+
+/* ---- Header: compound ("Currently Viewing / Hacienda Bay") ---- */
+function HeaderCompound({ time, sub = "Currently Viewing", title = "Hacienda Bay", onSwitch }) {
+  return (
+    <div className="ph-header" style={{ flex: "none", position: "relative", zIndex: 4 }}>
+      <StatusBar time={time} />
+      <div style={{ background: "var(--ph-black)", color: "#fff", padding: "2px 22px 20px", textAlign: "center", position: "relative" }}>
+        <div style={{ fontFamily: "var(--slab)", fontWeight: 500, fontSize: 21, opacity: .96 }}>{sub}</div>
+        <button onClick={onSwitch} style={{ background: "none", border: "none", padding: 0, margin: 0, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: 10, marginTop: 2, width: "100%", color: "#fff" }}>
+          <span style={{ fontFamily: "var(--slab)", fontWeight: 800, fontSize: 33, letterSpacing: ".1px", whiteSpace: "nowrap" }}>{title}</span>
+          <IconChevDown size={18} stroke="var(--ph-red)" />
+        </button>
+        <div style={{ position: "absolute", right: 22, top: -2 }}><IconBell size={27} /></div>
+      </div>
+      <div style={{ height: 0, position: "relative" }}>
+        <LogoCut size={80} left={16} />
+      </div>
+    </div>
+  );
+}
+
+/* ---- Header: home ("Welcome back / MAHMOUD KHALED") ---- */
+function HeaderHome({ time, name = "Kareem Ali" }) {
+  return (
+    <div className="ph-header" style={{ flex: "none", position: "relative", zIndex: 4 }}>
+      <StatusBar time={time} />
+      <div style={{ background: "var(--ph-black)", color: "#fff", padding: "2px 60px 18px", textAlign: "center", position: "relative" }}>
+        <div style={{ fontFamily: "var(--slab)", fontWeight: 500, fontSize: 20, opacity: .96 }}>Welcome back</div>
+        <div style={{ fontFamily: "var(--slab)", fontWeight: 800, fontSize: 31, marginTop: 1, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{name}</div>
+        <div style={{ position: "absolute", right: 22, top: 14 }}><IconBell size={27} /></div>
+      </div>
+      <div style={{ height: 0, position: "relative" }}>
+        <LogoCut size={80} left={16} />
+      </div>
+    </div>
+  );
+}
+
+/* ---- Header: title bar with back ("MY UNITS") ---- */
+function HeaderTitle({ time, title, onBack }) {
+  return (
+    <div className="ph-header" style={{ flex: "none", position: "relative", zIndex: 4 }}>
+      <StatusBar time={time} />
+      <div style={{ background: "var(--ph-black)", color: "#fff", padding: "10px 24px 26px", display: "flex", alignItems: "center", position: "relative" }}>
+        <button onClick={onBack} style={{ background: "none", border: "none", color: "#fff", padding: 0, cursor: "pointer", display: "flex" }}>
+          <IconChevL size={28} />
+        </button>
+        <div style={{ position: "absolute", left: 0, right: 0, textAlign: "center", fontFamily: "var(--slab)", fontWeight: 800, fontSize: 30, letterSpacing: ".5px", pointerEvents: "none" }}>{title}</div>
+      </div>
+    </div>
+  );
+}
+
+/* ---- Header: plain ("MAHMOU...") for More ---- */
+function HeaderName({ time, name }) {
+  return (
+    <div className="ph-header" style={{ flex: "none", position: "relative", zIndex: 4 }}>
+      <StatusBar time={time} />
+      <div style={{ background: "var(--ph-black)", color: "#fff", padding: "8px 24px 20px", position: "relative", textAlign: "center" }}>
+        <div style={{ fontFamily: "var(--slab)", fontWeight: 800, fontSize: 32, letterSpacing: ".5px" }}>{name}</div>
+        <div style={{ position: "absolute", right: 22, top: 16 }}><IconBell size={27} /></div>
+      </div>
+      <div style={{ height: 0, position: "relative" }}>
+        <LogoCut size={80} left={16} />
+      </div>
+    </div>
+  );
+}
+
+/* ---- Bottom Navigation + floating My Pass diamond ---- */
+const NAV = [
+  { key: "hills", label: "Hills Today", Icon: IconHome },
+  { key: "space", label: "My Space", Icon: IconSpace },
+  { key: "community", label: "Community", Icon: IconCommunity },
+  { key: "more", label: "More", Icon: IconMore },
+];
+
+function BottomNav({ active, onNav, onPass }) {
+  return (
+    <div className="ph-bottomnav" style={{ flex: "none", position: "relative", background: "#fff", borderTop: "1px solid #eee", zIndex: 6 }}>
+      {/* white "cut" halo carving the nav + content around the diamond */}
+      <div style={{ position: "absolute", right: 13, top: -25, width: 66, height: 66, transform: "rotate(45deg)", background: "#fff", borderRadius: 12, zIndex: 6 }} />
+      {/* floating My Pass diamond */}
+      <button onClick={onPass} aria-label="My Pass" style={{
+        position: "absolute", right: 17, top: -21, width: 58, height: 58,
+        transform: "rotate(45deg)", background: active === "pass" ? "var(--ph-red-deep)" : "var(--ph-red)", border: "none",
+        borderRadius: 9, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center",
+        boxShadow: "0 6px 16px -5px rgba(196,32,60,.6)", zIndex: 7,
+      }}>
+        <span style={{ transform: "rotate(-45deg)", display: "flex", flexDirection: "column", alignItems: "center", gap: 1 }}>
+          <IconQR size={16} color="#fff" />
+          <span style={{ color: "#fff", fontSize: 7.5, fontWeight: 700, fontFamily: "var(--slab)", lineHeight: 1 }}>My Pass</span>
+        </span>
+      </button>
+
+      <div style={{ display: "flex", padding: "12px 8px 8px" }}>
+        {NAV.map(({ key, label, Icon }) => {
+          const on = active === key;
+          const isLast = key === "more";
+          return (
+            <button key={key} onClick={() => onNav(key)} style={{
+              flex: 1, background: "none", border: "none", cursor: "pointer",
+              display: "flex", flexDirection: "column", alignItems: "center", gap: 6,
+              color: on ? "var(--ph-red)" : "#1b1b1b", paddingRight: isLast ? 34 : 0,
+              position: "relative",
+            }}>
+              {on && <span style={{ position: "absolute", top: -12, left: "50%", transform: "translateX(-50%)", width: 34, height: 3, background: "var(--ph-red)", borderRadius: 2 }} />}
+              <Icon size={27} stroke={on ? "var(--ph-red)" : "#1b1b1b"} sw={on ? 2.4 : 2} />
+              <span style={{ fontSize: 14, fontWeight: on ? 700 : 500, fontFamily: "var(--sans)", color: on ? "var(--ph-red)" : "#1b1b1b" }}>{label}</span>
+            </button>
+          );
+        })}
+      </div>
+      {/* iOS home indicator */}
+      <div className="ph-home-indicator" style={{ display: "flex", justifyContent: "center", paddingBottom: 8 }}>
+        <span style={{ width: 134, height: 5, borderRadius: 3, background: "#111" }} />
+      </div>
+    </div>
+  );
+}
+
+/* ---- QR code (deterministic pseudo-QR, looks real) ---- */
+function QRCode({ size = 220, value = "PALM-HILLS" }) {
+  const N = 29;
+  // deterministic PRNG seeded from value
+  let seed = 0; for (let i = 0; i < value.length; i++) seed = (seed * 31 + value.charCodeAt(i)) >>> 0;
+  const rnd = () => { seed = (seed * 1103515245 + 12345) & 0x7fffffff; return seed / 0x7fffffff; };
+  const finder = (r, c) =>
+    (r >= 0 && r < 7 && c >= 0 && c < 7) &&
+    (r === 0 || r === 6 || c === 0 || c === 6 || (r >= 2 && r <= 4 && c >= 2 && c <= 4));
+  const inFinderZone = (r, c) => (r < 8 && c < 8) || (r < 8 && c >= N - 8) || (r >= N - 8 && c < 8);
+  const cell = size / N;
+  const rects = [];
+  for (let r = 0; r < N; r++) {
+    for (let c = 0; c < N; c++) {
+      let on = false;
+      if (r < 7 && c < 7) on = finder(r, c);
+      else if (r < 7 && c >= N - 7) on = finder(r, c - (N - 7));
+      else if (r >= N - 7 && c < 7) on = finder(r - (N - 7), c);
+      else if (inFinderZone(r, c)) on = false;
+      else on = rnd() > 0.5;
+      if (on) rects.push(<rect key={r + "-" + c} x={(c * cell).toFixed(2)} y={(r * cell).toFixed(2)} width={Math.ceil(cell) } height={Math.ceil(cell)} fill="#161616" />);
+    }
+  }
+  return (
+    <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} shapeRendering="crispEdges" style={{ display: "block" }}>
+      <rect width={size} height={size} fill="#fff" />
+      {rects}
+    </svg>
+  );
+}
+
+const HB_LOGO = "https://assets-us-01.kc-usercontent.com/4ebdfa77-20fc-0050-ef4c-ef193bceaeb5/9250fac6-3fb5-4d99-b8a4-1f45a5b573a9/220x70%20HB.png";
+
+/* Image with graceful fallback: white blank + black bottom gradient when it fails to load */
+function Img({ src, alt = "", style, fallbackStyle, ...rest }) {
+  const [bad, setBad] = React.useState(false);
+  React.useEffect(() => { setBad(false); }, [src]);
+  if (!src || bad) {
+    return (
+      <div style={{ position: "relative", background: "#fff", overflow: "hidden", ...style }}>
+        <div style={{ position: "absolute", inset: 0, background: "linear-gradient(to bottom, rgba(0,0,0,0) 30%, rgba(0,0,0,0.58) 100%)", ...fallbackStyle }} />
+      </div>
+    );
+  }
+  return <img src={src} alt={alt} style={style} onError={() => setBad(true)} {...rest} />;
+}
+
+/* Spinning diamond logo used as the page-transition loader */
+function DiamondLoader() {
+  return (
+    <div className="ph-loader">
+      <div className="ph-loader-diamond">
+        <img src={LOGO} alt="" style={{ width: "100%", height: "100%", objectFit: "contain", display: "block" }} />
+      </div>
+    </div>
+  );
+}
+
+function IconXClose(p) { return (<S {...p} sw={2.4}><line x1="5" y1="5" x2="19" y2="19" /><line x1="19" y1="5" x2="5" y2="19" /></S>); }
+
+/* Switch Compound bottom sheet */
+function SwitchSheet({ onClose, onSelect }) {
+  return (
+    <div className="ph-sheet-wrap" onClick={onClose}>
+      <div className="ph-sheet" onClick={(e) => e.stopPropagation()}>
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "4px 2px 0" }}>
+          <span style={{ fontFamily: "var(--slab)", fontWeight: 800, fontSize: 28, color: "#161616", whiteSpace: "nowrap" }}>Switch Compound</span>
+          <button onClick={onClose} style={{ background: "none", border: "none", cursor: "pointer", padding: 6, color: "#161616", display: "flex" }}><IconXClose size={30} /></button>
+        </div>
+
+        <div style={{ border: "1px solid var(--ph-gray-line)", borderRadius: 4, marginTop: 26, padding: "20px", display: "flex", alignItems: "center", gap: 14 }}>
+          <Img src={HB_LOGO} alt="Hacienda Bay" style={{ width: 84, height: 34, objectFit: "contain", flex: "none", background: "transparent" }} />
+          <div style={{ flex: 1, textAlign: "center" }}>
+            <div style={{ fontFamily: "var(--slab)", fontWeight: 800, fontSize: 23, color: "#161616", whiteSpace: "nowrap" }}>Hacienda Bay</div>
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 8, marginTop: 6, color: "#161616" }}>
+              <IconHouseSmall size={22} stroke="#161616" />
+              <span style={{ fontFamily: "var(--slab)", fontWeight: 500, fontSize: 22 }}>1 UNIT</span>
+            </div>
+          </div>
+          <span style={{ flex: "none", width: 26, height: 26, transform: "rotate(45deg)", border: "2.5px solid var(--ph-red)", borderRadius: 5, display: "flex", alignItems: "center", justifyContent: "center" }}>
+            <span style={{ width: 11, height: 11, background: "var(--ph-red)", borderRadius: 2 }} />
+          </span>
+        </div>
+
+        <button onClick={onSelect} style={{ width: "100%", marginTop: 30, border: "1.5px solid var(--ph-red)", background: "#fff", color: "var(--ph-red)", borderRadius: 40, padding: "17px", fontFamily: "var(--slab)", fontWeight: 800, fontSize: 22, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: 12, whiteSpace: "nowrap" }}>
+          Select Compound <IconArrowR2 size={24} stroke="var(--ph-red)" />
+        </button>
+
+        <div style={{ display: "flex", gap: 10, alignItems: "center", marginTop: 26 }}>
+          <IconBulb size={22} stroke="var(--ph-red)" style={{ flex: "none" }} />
+          <span style={{ color: "var(--ph-gray)", fontFamily: "var(--slab)", fontWeight: 500, fontSize: 21 }}>Can't find a community you're a part of?</span>
+        </div>
+        <div style={{ textAlign: "center", marginTop: 14 }}>
+          <span style={{ color: "var(--ph-red)", fontFamily: "var(--slab)", fontWeight: 800, fontSize: 23 }}>Request addition to another community</span>
+        </div>
+        <div style={{ display: "flex", justifyContent: "center", paddingTop: 18, paddingBottom: 2 }}>
+          <span style={{ width: 134, height: 5, borderRadius: 3, background: "#111" }} />
+        </div>
+      </div>
+    </div>
+  );
+}
+
+Object.assign(window, {
+  StatusBar, Diamond, HeaderCompound, HeaderHome, HeaderTitle, HeaderName, BottomNav, QRCode, LOGO,
+  Img, DiamondLoader, SwitchSheet, HB_LOGO,
+});
+
+// ===== SCREENS =====
+// ============ SCREENS ============
+const { useState } = React;
+
+/* ---------- HILLS TODAY (home) ---------- */
+function ScreenHills({ time }) {
+  const [tab, setTab] = useState("news");
+  const [launch, setLaunch] = useState("P/X");
+  return (
+    <div className="screen">
+      <HeaderHome time={time} />
+      <div className="body" style={{ padding: "58px 22px 130px" }}>
+        {/* News & Events */}
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8 }}>
+          <h2 style={sectionTitle}>NEWS <span style={{ color: "var(--ph-red)" }}>&amp; EVENTS</span></h2>
+          <div style={pill}>
+            <button onClick={() => setTab("news")} style={pillBtn(tab === "news")}>News</button>
+            <button onClick={() => setTab("events")} style={pillBtn(tab === "events")}>Events</button>
+          </div>
+        </div>
+
+        <div style={{ display: "flex", gap: 16, overflowX: "auto", marginTop: 18, paddingBottom: 4 }} className="hscroll">
+          <NewsCard date="13 Dec 2025" title="Palm Hills X Marriott International" />
+          <NewsCard date="02 Nov 2025" title="A New Chapter at Palm Hills New Cairo" />
+        </div>
+        <div style={{ marginTop: 14 }}><ReadMore /></div>
+
+        {/* Sales Launches */}
+        <h2 style={{ ...sectionTitle, marginTop: 40 }}>SALES <span style={{ color: "var(--ph-red)" }}>LAUNCHES</span></h2>
+        <div style={tabRow} className="hscroll">
+          {["P/X", "Palm Hills New Cairo", "Badya", "Ha"].map((t) => (
+            <button key={t} onClick={() => setLaunch(t)} style={tabItem(launch === t)}>{t}</button>
+          ))}
+        </div>
+        <div style={{ position: "relative", marginTop: 18, borderRadius: 4, overflow: "hidden", height: 188, background: "#fff" }}>
+          <Img src={undefined} style={{ position: "absolute", inset: 0, width: "100%", height: "100%" }} />
+          <div style={{ position: "absolute", right: 0, bottom: 0, top: 0, width: 150, background: "rgba(40,40,40,.55)", display: "flex", alignItems: "center", justifyContent: "center", textAlign: "center" }}>
+            <span style={{ color: "#fff", fontFamily: "var(--slab)", fontWeight: 700, fontSize: 22, lineHeight: 1.1 }}>Reserve Now</span>
+          </div>
+        </div>
+        <div style={{ display: "flex", gap: 6, justifyContent: "center", marginTop: 14 }}>
+          {[0, 1, 2].map((i) => <span key={i} style={{ width: i === 0 ? 18 : 7, height: 7, borderRadius: 4, background: i === 0 ? "var(--ph-red)" : "#d6d6d6" }} />)}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function NewsCard({ date, title, src }) {
+  return (
+    <div style={{ flex: "none", width: 270, borderRadius: 4, overflow: "hidden", position: "relative", height: 230, background: "#fff", boxShadow: "0 2px 10px rgba(0,0,0,.08)" }}>
+      <Img src={src} style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }} />
+      <div style={{ position: "absolute", top: 0, right: 22, background: "#7c7c84", color: "#fff", padding: "8px 14px 10px", textAlign: "center", borderTop: "4px solid var(--ph-red)" }}>
+        <div style={{ fontFamily: "var(--slab)", fontWeight: 700, fontSize: 21, lineHeight: 1 }}>{date.split(" ").slice(0, 2).join(" ")}</div>
+        <div style={{ fontFamily: "var(--slab)", fontWeight: 700, fontSize: 21, lineHeight: 1.1 }}>{date.split(" ")[2]}</div>
+      </div>
+      <div style={{ position: "absolute", left: 0, right: 0, bottom: 0, padding: "30px 18px 16px", background: "linear-gradient(transparent,rgba(20,20,20,.78))" }}>
+        <span style={{ color: "#fff", fontFamily: "var(--sans)", fontWeight: 600, fontSize: 21, lineHeight: 1.15 }}>{title}</span>
+      </div>
+    </div>
+  );
+}
+
+function ReadMore({ text = "Read more" }) {
+  return (
+    <button style={{ background: "none", border: "1.5px solid var(--ph-red)", color: "var(--ph-red)", borderRadius: 30, padding: "10px 22px", fontFamily: "var(--slab)", fontWeight: 700, fontSize: 18, display: "inline-flex", alignItems: "center", gap: 10, cursor: "pointer" }}>
+      {text} <IconArrowR2 size={20} stroke="var(--ph-red)" sw={2} />
+    </button>
+  );
+}
+
+/* ---------- MY SPACE / GATE PASSES ---------- */
+function ScreenSpace({ time, onMyUnits, onGenerate, onSwitch }) {
+  const [tab, setTab] = useState("gate");
+  return (
+    <div className="screen">
+      <HeaderCompound time={time} onSwitch={onSwitch} />
+      <div className="body" style={{ padding: "66px 24px 130px" }}>
+        <h2 style={{ ...sectionTitle, fontSize: 32 }}>GATE <span style={{ color: "var(--ph-red)" }}>PASSES</span>
+          <button onClick={onGenerate} style={{ float: "right", background: "none", border: "none", cursor: "pointer", color: "var(--ph-red)", marginTop: 2 }}><IconPlusCircle size={32} stroke="var(--ph-red)" /></button>
+        </h2>
+        <div style={{ ...tabRow, marginTop: 22 }} className="hscroll">
+          <button onClick={() => setTab("gate")} style={tabItem(tab === "gate")}>Gate</button>
+          <button onClick={() => setTab("beach")} style={tabItem(tab === "beach")}>Beach/Pool</button>
+        </div>
+
+        <div style={{ textAlign: "center", padding: "44px 0 30px" }}>
+          <IconGate size={66} stroke="#1b1b1b" sw={1.6} />
+          <div style={{ fontFamily: "var(--slab)", fontWeight: 800, fontSize: 30, marginTop: 18 }}>No passes generated yet.</div>
+        </div>
+
+        <button onClick={onGenerate} style={{ width: "100%", border: "1.5px solid var(--ph-red)", background: "#fff", color: "var(--ph-red)", borderRadius: 40, padding: "18px", fontFamily: "var(--slab)", fontWeight: 700, fontSize: 22, letterSpacing: ".5px", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: 14 }}>
+          GENERATE NEW PASS <IconArrowR2 size={24} stroke="var(--ph-red)" />
+        </button>
+
+        <h2 style={{ ...sectionTitle, fontSize: 30, marginTop: 44 }}>MANAGE YOUR <span style={{ color: "var(--ph-red)" }}>UNITS</span></h2>
+        <button onClick={onMyUnits} style={unitCard}>
+          <IconHouseSmall size={28} stroke="#1b1b1b" />
+          <div style={{ textAlign: "left", flex: 1, marginLeft: 14 }}>
+            <div style={{ fontFamily: "var(--slab)", fontWeight: 700, fontSize: 23 }}>MY UNITS</div>
+            <div style={{ color: "var(--ph-gray)", fontFamily: "var(--slab)", fontWeight: 500, fontSize: 21, letterSpacing: .5 }}>HAC-JCH-242BF</div>
+          </div>
+          <IconChevR size={22} stroke="var(--ph-red)" />
+        </button>
+      </div>
+    </div>
+  );
+}
+
+/* ---------- MY UNITS (subpage) ---------- */
+function ScreenMyUnits({ time, onBack }) {
+  return (
+    <div className="screen">
+      <HeaderTitle time={time} title="MY UNITS" onBack={onBack} />
+      <div className="body" style={{ padding: "26px 24px 130px" }}>
+        <div style={{ border: "1px solid var(--ph-gray-line)", borderRadius: 4, padding: "26px 22px", display: "flex", alignItems: "center", gap: 18 }}>
+          <IconHouseSmall size={34} stroke="#1b1b1b" />
+          <div>
+            <div style={{ fontFamily: "var(--slab)", fontWeight: 700, fontSize: 30 }}>HAC-JCH-242BF</div>
+            <div style={{ color: "var(--ph-gray)", fontFamily: "var(--slab)", fontWeight: 500, fontSize: 24 }}>Family Member</div>
+          </div>
+        </div>
+        <div style={{ display: "flex", gap: 12, marginTop: 40, color: "var(--ph-gray)" }}>
+          <IconBulb size={24} stroke="var(--ph-red)" />
+          <p style={{ margin: 0, fontFamily: "var(--slab)", fontWeight: 500, fontSize: 23, lineHeight: 1.4, color: "var(--ph-gray)" }}>
+            You are currently viewing units in Hacienda Bay,to view <br />
+            units in other compounds <span style={{ color: "var(--ph-red)", fontWeight: 700 }}>Switch Compound</span>
+          </p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ---------- COMMUNITY ---------- */
+function ScreenCommunity({ time, onSwitch }) {
+  return (
+    <div className="screen">
+      <HeaderCompound time={time} onSwitch={onSwitch} />
+      <div className="body" style={{ padding: "66px 24px 130px" }}>
+        <h2 style={{ ...sectionTitle, fontSize: 33 }}>ANNOUNCEMENT</h2>
+        <div style={{ marginTop: 26, display: "flex", flexDirection: "column", gap: 22 }}>
+          <AnnounceCard date="12 Sep 2025  10:0 PM" title={<>Tonight at <b>SASS</b>: Oriental Night</>} body="Hacienda Bay owners enjoy free entrance all night" />
+          <AnnounceCard date="08 Sep 2025  06:30 PM" title={<>Beach Cleanup Morning</>} body="Join your neighbours for a community beach cleanup" />
+        </div>
+      </div>
+    </div>
+  );
+}
+function AnnounceCard({ date, title, body }) {
+  return (
+    <div style={{ border: "1px solid var(--ph-gray-line)" }}>
+      <div style={{ height: 130, background: "#fff", position: "relative", overflow: "hidden" }}>
+        <Img src={undefined} style={{ position: "absolute", inset: 0, width: "100%", height: "100%" }} />
+      </div>
+      <div style={{ padding: "18px 22px 22px" }}>
+        <div style={{ color: "var(--ph-gray)", fontFamily: "var(--slab)", fontWeight: 500, fontSize: 21 }}>{date}</div>
+        <div style={{ fontFamily: "var(--slab)", fontWeight: 600, fontSize: 25, textAlign: "center", margin: "14px 0", lineHeight: 1.15 }}>{title}</div>
+        <div style={{ fontFamily: "var(--sans)", fontSize: 21, lineHeight: 1.3, marginBottom: 14 }}>{body}</div>
+        <button style={{ background: "none", border: "none", padding: 0, color: "var(--ph-red)", fontFamily: "var(--slab)", fontWeight: 700, fontSize: 21, cursor: "pointer" }}>Read more</button>
+      </div>
+    </div>
+  );
+}
+
+/* ---------- MORE ---------- */
+function ScreenMore({ time, onMyUsers }) {
+  const tiles = [
+    { Icon: IconPeoplePair, label: "My Invitations" },
+    { Icon: IconPeoplePair, label: "My Users", action: onMyUsers },
+    { Icon: IconCar, label: "My Vehicles" },
+    { Icon: IconCheckSquare, label: "My Reservations" },
+  ];
+  return (
+    <div className="screen">
+      <HeaderName time={time} name="Kareem Ali" />
+      <div className="body" style={{ padding: "58px 22px 130px" }}>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 18 }}>
+          {tiles.map((t) => (
+            <button key={t.label} onClick={t.action} style={moreTile}>
+              <div style={{ width: 58, height: 58, borderRadius: "50%", background: "var(--ph-red-soft)", display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 16 }}>
+                <t.Icon size={30} stroke="var(--ph-red)" sw={1.9} />
+              </div>
+              <span style={{ fontFamily: "var(--sans)", fontSize: 23, fontWeight: 500 }}>{t.label}</span>
+            </button>
+          ))}
+        </div>
+
+        <ListRow Icon={IconGear} title={<>Account &amp; Settings</>} sub="Profile & Account and App Settings to manage and customize your information" />
+        <ListRow Icon={IconChat} title="Sales Inquiry" sub="Register here if you are interested to buy a property in Palm Hills" />
+        <ListRow Icon={IconCommunity} title="Choose Your Neighbour" sub="Invite who you want to live next to" />
+      </div>
+    </div>
+  );
+}
+function ListRow({ Icon, title, sub }) {
+  return (
+    <div style={{ border: "1px solid var(--ph-gray-line)", padding: "22px 20px", display: "flex", gap: 16, marginTop: 20, alignItems: "flex-start" }}>
+      <Icon size={26} stroke="#1b1b1b" style={{ flex: "none", marginTop: 4 }} />
+      <div style={{ flex: 1 }}>
+        <div style={{ fontFamily: "var(--slab)", fontWeight: 700, fontSize: 26, lineHeight: 1.2, marginBottom: 8 }}>{title}</div>
+        <div style={{ color: "var(--ph-gray)", fontFamily: "var(--sans)", fontSize: 20, lineHeight: 1.4 }}>{sub}</div>
+      </div>
+      <IconChevR size={22} stroke="var(--ph-red)" style={{ flex: "none", marginTop: 4 }} />
+    </div>
+  );
+}
+
+/* ---------- shared bits ---------- */
+function Stripe({ label, light }) {
+  return (
+    <div style={{ position: "absolute", inset: 0, backgroundImage: "repeating-linear-gradient(45deg,rgba(0,0,0,.04) 0 10px,transparent 10px 20px)", display: "flex", alignItems: "center", justifyContent: "center" }}>
+      <span style={{ fontFamily: "ui-monospace,monospace", fontSize: 12, color: light ? "#b3b3bb" : "#7f8794", letterSpacing: 1 }}>{label}</span>
+    </div>
+  );
+}
+
+const sectionTitle = { fontFamily: "var(--slab)", fontWeight: 800, fontSize: 33, margin: 0, color: "#161616", letterSpacing: ".2px" };
+const pill = { display: "flex", background: "#ececec", borderRadius: 30, padding: 4, flex: "none" };
+const pillBtn = (on) => ({ border: "none", cursor: "pointer", borderRadius: 30, padding: "7px 18px", fontFamily: "var(--slab)", fontWeight: 600, fontSize: 18, background: on ? "#161616" : "transparent", color: on ? "#fff" : "#8a8a8a" });
+const tabRow = { display: "flex", gap: 26, marginTop: 16, borderBottom: "1px solid #e3e3e3", paddingBottom: 0, overflowX: "auto" };
+const tabItem = (on) => ({ border: "none", background: "none", cursor: "pointer", fontFamily: "var(--slab)", fontWeight: on ? 700 : 500, fontSize: 23, color: on ? "#161616" : "#9a9a9a", paddingBottom: 12, borderBottom: on ? "3px solid #161616" : "3px solid transparent", whiteSpace: "nowrap", flex: "none" });
+const unitCard = { width: "100%", marginTop: 22, border: "1px solid var(--ph-gray-line)", borderRadius: 4, padding: "22px 20px", display: "flex", alignItems: "center", background: "#fff", cursor: "pointer" };
+const moreTile = { border: "1px solid var(--ph-gray-line)", background: "#fff", cursor: "pointer", padding: "26px 14px", display: "flex", flexDirection: "column", alignItems: "center" };
+
+Object.assign(window, { ScreenHills, ScreenSpace, ScreenMyUnits, ScreenCommunity, ScreenMore });
+
+// ===== APP =====
+// ============ MY PASS + APP ============
+const { useState: useS } = React;
+
+const PHOTO_URL = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQO2RZqXTweE4Ju_K7EU5rDvXu0it5xvi75ww&s";
+
+function ScreenMyPass({ time, onSwitch }) {
+  const [tab, setTab] = useS("gate");
+  const [flipped, setFlipped] = useS(false);
+  return (
+    <div className="screen">
+      <HeaderCompound time={time} onSwitch={onSwitch} />
+      <div className="body" style={{ padding: "66px 24px 130px", display: "flex", flexDirection: "column", alignItems: "center" }}>
+        {/* segmented pass-type selector */}
+        <div style={{ display: "flex", background: "#ececec", borderRadius: 30, padding: 5, gap: 4 }}>
+          <button onClick={() => setTab("gate")} style={passSeg(tab === "gate")}>Gate</button>
+          <button onClick={() => setTab("beach")} style={passSeg(tab === "beach")}>Beach/Pool</button>
+        </div>
+
+        {/* flip card */}
+        <div style={{ perspective: 1400, marginTop: 40, width: 286, height: 286 }}>
+          <div onClick={() => setFlipped((f) => !f)} aria-label="Flip pass" style={{
+            position: "relative", width: 286, height: 286,
+            cursor: "pointer", transformStyle: "preserve-3d", WebkitTransformStyle: "preserve-3d", willChange: "transform",
+            transition: "transform .7s cubic-bezier(.4,.2,.2,1)",
+            transform: flipped ? "rotateY(180deg)" : "rotateY(0deg)",
+          }}>
+            {/* front: QR (clean — no logo, no labels) */}
+            <div style={passFace(false, flipped)}>
+              <QRCode size={244} value="PALM-HILLS-KAREEM-ALI-242BF" />
+            </div>
+            {/* back: photo */}
+            <div style={passFace(true, flipped)}>
+              <Img src={PHOTO_URL} alt="Kareem Ali" referrerPolicy="no-referrer"
+                style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
+            </div>
+          </div>
+        </div>
+
+        {/* name + relationship */}
+        <div style={{ marginTop: 34, fontFamily: "var(--slab)", fontWeight: 700, fontSize: 32, color: "#161616", whiteSpace: "nowrap" }}>Kareem Ali</div>
+        <div style={{ marginTop: 4, fontFamily: "var(--slab)", fontWeight: 500, fontSize: 23, color: "var(--ph-gray)" }}>Child</div>
+      </div>
+    </div>
+  );
+}
+const passSeg = (on) => ({ border: "none", cursor: "pointer", borderRadius: 24, padding: "11px 30px", fontFamily: "var(--slab)", fontWeight: 600, fontSize: 19, background: on ? "#161616" : "transparent", color: on ? "#fff" : "#8a8a8a" });
+const passFace = (back, flipped) => ({
+  position: "absolute", inset: 0, backfaceVisibility: "hidden", WebkitBackfaceVisibility: "hidden",
+  borderRadius: back ? 18 : 0, overflow: "hidden",
+  background: back ? "#fff" : "transparent",
+  boxShadow: back ? "0 18px 44px -14px rgba(0,0,0,.32)" : "none",
+  display: "flex", alignItems: "center", justifyContent: "center",
+  transform: back ? "rotateY(180deg)" : "rotateY(0deg)",
+  opacity: back ? (flipped ? 1 : 0) : (flipped ? 0 : 1),
+  transition: "opacity 0s linear .35s",
+});
+
+/* ---------------- APP ---------------- */
+function App() {
+  const [tab, setTab] = useS("space");        // active bottom tab
+  const [overlay, setOverlay] = useS(null);    // "myUnits" | "myPass" | null
+  const [closing, setClosing] = useS(false);   // sub-page pop (slide-out) in progress
+  const [sheet, setSheet] = useS(null);        // "switch" | null
+  const [loading, setLoading] = useS(false);   // diamond page-transition loader
+  const time = tab === "hills" || tab === "more" ? "7:47" : "7:51";
+
+  // run fn behind a brief diamond loading screen (used for bottom-tab switches)
+  const withLoad = (fn, ms = 620) => {
+    setLoading(true);
+    window.setTimeout(() => { fn && fn(); setLoading(false); }, ms);
+  };
+
+  // bottom-tab switch → diamond loader
+  const nav = (k) => withLoad(() => { setSheet(null); setOverlay(null); setClosing(false); setTab(k); });
+  // sub-page push (slide in from right) / pop (slide out to right) — native iOS nav
+  const pushPage = (k) => { setSheet(null); setClosing(false); setOverlay(k); };
+  const popPage = () => { setClosing(true); window.setTimeout(() => { setOverlay(null); setClosing(false); }, 300); };
+  const openPass = () => pushPage("myPass");
+  const openUnits = () => pushPage("myUnits");
+  const openSwitch = () => setSheet("switch");
+  const selectCompound = () => withLoad(() => setSheet(null));
+
+  let main;
+  if (tab === "hills") main = <ScreenHills time={time} />;
+  else if (tab === "space") main = <ScreenSpace time={time} onMyUnits={openUnits} onGenerate={openPass} onSwitch={openSwitch} />;
+  else if (tab === "community") main = <ScreenCommunity time={time} onSwitch={openSwitch} />;
+  else main = <ScreenMore time={time} onMyUsers={openUnits} />;
+
+  const baseShift = !!overlay && !closing;   // parallax the underlying screen during push
+
+  return (
+    <div className="phone">
+      {/* base tab screen — parallaxes left + dims behind a pushed sub-page */}
+      <div style={{ position: "absolute", inset: 0, display: "flex", flexDirection: "column", transition: "transform .3s cubic-bezier(.32,.72,0,1), filter .3s ease", transform: baseShift ? "translateX(-24%)" : "translateX(0)", filter: baseShift ? "brightness(.72)" : "none" }}>
+        <div style={{ flex: 1, minHeight: 0, display: "flex" }}>{main}</div>
+      </div>
+
+      {/* full-page views — slide like native iOS push/pop */}
+      {overlay === "myUnits" && (
+        <Overlay closing={closing}><ScreenMyUnits time={time} onBack={popPage} /></Overlay>
+      )}
+      {overlay === "myPass" && (
+        <Overlay closing={closing}><ScreenMyPass time={time} onSwitch={openSwitch} /></Overlay>
+      )}
+
+      {/* bottom nav is always present (My Pass is a standalone page, not an overlay with its own chrome) */}
+      <div style={{ position: "absolute", left: 0, right: 0, bottom: 0, zIndex: 30 }}>
+        <BottomNav
+          active={overlay === "myPass" ? "pass" : tab}
+          onNav={nav}
+          onPass={openPass}
+        />
+      </div>
+
+      {/* Switch Compound bottom sheet — select or click-away both load then dismiss */}
+      {sheet === "switch" && (
+        <SwitchSheet onClose={selectCompound} onSelect={selectCompound} />
+      )}
+
+      {/* diamond page-transition loader */}
+      {loading && <DiamondLoader />}
+    </div>
+  );
+}
+
+function Overlay({ children, closing }) {
+  return (
+    <div style={{ position: "absolute", inset: 0, zIndex: 20, background: "#fff", boxShadow: "-12px 0 28px -10px rgba(0,0,0,.35)", animation: (closing ? "slideOut" : "slideIn") + " .3s cubic-bezier(.32,.72,0,1) both" }}>
+      {children}
+    </div>
+  );
+}
+
+const styleEl = document.createElement("style");
+styleEl.textContent = `
+@keyframes slideIn{from{transform:translateX(100%)}to{transform:translateX(0)}}
+@keyframes slideOut{from{transform:translateX(0)}to{transform:translateX(100%)}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.hscroll::-webkit-scrollbar{height:0;width:0;}
+.hscroll{scrollbar-width:none;-ms-overflow-style:none;}
+.ph-loader{position:absolute;inset:0;z-index:80;background:rgba(255,255,255,.96);display:flex;align-items:center;justify-content:center;}
+.ph-loader-diamond{width:60px;height:60px;animation:phSpin 1.05s cubic-bezier(.45,.05,.35,1) infinite;}
+@keyframes phSpin{0%{transform:rotate(0) scale(.86);opacity:.55}50%{transform:rotate(180deg) scale(1.08);opacity:1}100%{transform:rotate(360deg) scale(.86);opacity:.55}}
+.ph-sheet-wrap{position:absolute;inset:0;z-index:50;background:rgba(0,0,0,.45);display:flex;flex-direction:column;justify-content:flex-end;animation:fadeIn .2s ease;}
+.ph-sheet{background:#fff;border-top-left-radius:0;border-top-right-radius:0;padding:24px 24px 10px;animation:sheetUp .32s cubic-bezier(.2,.7,.2,1);}
+@keyframes sheetUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+`;
+document.head.appendChild(styleEl);
+
+/* ---- responsive scale to viewport (framed mockup only; full-bleed when installed) ---- */
+function scalePhone() {
+  const phone = document.querySelector(".phone");
+  if (!phone) return;
+  if (window.__phIsStandalone && window.__phIsStandalone()) { phone.style.transform = "none"; return; }
+  const pad = 24;
+  const s = Math.min((window.innerWidth - pad) / 390, (window.innerHeight - pad) / 844, 1.15);
+  phone.style.transform = `scale(${s})`;
+  phone.style.transformOrigin = "center center";
+}
+
+ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+setTimeout(scalePhone, 60);
+window.addEventListener("resize", scalePhone);
+
+
+  </script>
+
+  <script>
+    // ===== Add to Home Screen prompt (iOS Safari instructions + Chromium beforeinstallprompt) =====
+    (function () {
+      var KEY = 'ph_a2hs_dismissed';
+      var standalone = window.__phIsStandalone && window.__phIsStandalone();
+      if (standalone) return;                                  // already installed — never prompt
+      if (localStorage.getItem(KEY) === '1') return;           // user dismissed previously
+
+      var ua = navigator.userAgent || '';
+      var isIOS = /iphone|ipad|ipod/i.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+      var deferred = null;     // captured beforeinstallprompt event (Chromium)
+      var shown = false;
+
+      window.addEventListener('beforeinstallprompt', function (e) {
+        e.preventDefault();
+        deferred = e;
+        if (!shown) show('chromium');
+      });
+      window.addEventListener('appinstalled', function () { dismiss(true); });
+
+      function dismiss(remember) {
+        var b = document.querySelector('.ph-a2hs');
+        if (b) { b.style.animation = 'a2hsDown .26s ease forwards'; setTimeout(function () { b.remove(); }, 260); }
+        if (remember !== false) localStorage.setItem(KEY, '1');
+      }
+
+      var SHARE = '<span class="a2hs-share"><svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#0a84ff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15V4"/><path d="M8.5 7.5 12 4l3.5 3.5"/><path d="M6 11v7a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2v-7"/></svg></span>';
+
+      function show(mode) {
+        if (shown) return;
+        shown = true;
+        var b = document.createElement('div');
+        b.className = 'ph-a2hs';
+
+        var body;
+        if (mode === 'chromium') {
+          body = '<div style="flex:1;min-width:0">'
+               +   '<div class="a2hs-title">Install Palm Hills</div>'
+               +   '<div class="a2hs-sub">Add the app to your home screen</div>'
+               + '</div>'
+               + '<button class="ph-a2hs-install">Install</button>';
+        } else {
+          body = '<div style="flex:1;min-width:0">'
+               +   '<div class="a2hs-title">Add to Home Screen</div>'
+               +   '<div class="a2hs-sub">Tap ' + SHARE + ' then <b>Add to Home&nbsp;Screen</b> to install Palm Hills.</div>'
+               + '</div>';
+        }
+
+        b.innerHTML =
+          '<img src="assets/icon-192.png" alt="" style="width:50px;height:50px;border-radius:12px;flex:none;box-shadow:0 2px 8px rgba(0,0,0,.45)"/>'
+          + body
+          + '<button class="ph-a2hs-x" aria-label="Dismiss">\u2715</button>';
+
+        document.body.appendChild(b);
+        // play the slide-up once, then drop the class so the resting state is static
+        b.classList.add('enter');
+        var clear = function () { b.classList.remove('enter'); };
+        b.addEventListener('animationend', clear, { once: true });
+        setTimeout(clear, 600);
+
+        var x = b.querySelector('.ph-a2hs-x');
+        if (x) x.addEventListener('click', function () { dismiss(true); });
+
+        var install = b.querySelector('.ph-a2hs-install');
+        if (install) install.addEventListener('click', function () {
+          if (!deferred) { dismiss(true); return; }
+          deferred.prompt();
+          deferred.userChoice.finally(function () { deferred = null; dismiss(true); });
+        });
+      }
+
+      // Give beforeinstallprompt a moment to fire; otherwise fall back to manual instructions.
+      setTimeout(function () {
+        if (window.__phIsStandalone && window.__phIsStandalone()) return;
+        if (localStorage.getItem(KEY) === '1') return;
+        if (!shown) show(deferred ? 'chromium' : (isIOS ? 'ios' : 'generic'));
+      }, 1400);
+    })();
+  </script>
+</body>
+</html>

@@ -40,7 +40,10 @@
     height:100%;
   }
   body{
-    background:#161616;
+    /* White (matching the app) so the bottom home-indicator safe-area strip
+       is seamless on a phone — never a black bar under the nav. Dark sides
+       are restored for the centered column on larger screens below. */
+    background:#fff;
     font-family:var(--sans);
     color:var(--ph-ink);
     min-height:100vh;
@@ -48,6 +51,8 @@
     overflow:hidden;
     position:fixed;inset:0;             /* lock the page; no document bounce */
   }
+  /* On wider screens the app is a centered phone-width column — frame it on dark */
+  @media (min-width:481px){ body{ background:#161616; } }
   /* allow selection only where it would be expected (none here, but keep hook) */
   .selectable{-webkit-user-select:text;user-select:text;}
   /* Fill the locked full-screen <body> (position:fixed;inset:0) via height:100%

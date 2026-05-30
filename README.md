@@ -11,9 +11,8 @@ backend required.
 | --- | --- |
 | `index.html` | The entire app (inline JSX + styles). Entry point. |
 | `manifest.webmanifest` | PWA manifest (installable / add-to-home-screen). |
-| `assets/` | Generated app icons (192/512/maskable/apple-touch). |
+| `assets/` | Brand images: logo + app icons (192/512/maskable/apple-touch). |
 | `vercel.json` | Static hosting config (clean URLs + cache headers). |
-| `scripts/gen-icons.mjs` | Regenerates `assets/` icons (zero dependencies). |
 | `ph-*.jsx` | Source copies of the inline app sections (reference only). |
 
 ## Deploy to Vercel
@@ -38,10 +37,4 @@ Any static file server works, e.g.:
 ```bash
 npx serve .
 # then open the printed URL
-```
-
-## Regenerating icons
-
-```bash
-node scripts/gen-icons.mjs
 ```

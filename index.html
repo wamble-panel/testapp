@@ -1217,7 +1217,7 @@ function ScreenMyPass({ time, onSwitch, onBell }) {
       <HeaderCompound time={time} onSwitch={onSwitch} onBell={onBell} />
       <div className="body" style={{ padding: "66px 24px 130px", display: "flex", flexDirection: "column", alignItems: "center" }}>
         {/* segmented pass-type selector */}
-        <div style={{ display: "flex", background: "#ececec", borderRadius: 30, padding: 5, gap: 4 }}>
+        <div style={{ display: "flex", width: 300, maxWidth: "100%", background: "#fff", border: "1px solid #e2e2e2", borderRadius: 30, padding: 5, gap: 4 }}>
           <button onClick={() => setTab("gate")} style={passSeg(tab === "gate")}>{t("Gate Pass")}</button>
           <button onClick={() => setTab("beach")} style={passSeg(tab === "beach")}>{t("Beach/Pool Pass")}</button>
         </div>
@@ -1235,10 +1235,10 @@ function ScreenMyPass({ time, onSwitch, onBell }) {
             <div style={passFace(false, flipped)}>
               <QRCode size={236} value="3226864" />
             </div>
-            {/* back: profile photo filling the portrait card */}
+            {/* back: profile photo shown in full (letterboxed), not cropped */}
             <div style={passFace(true, flipped)}>
               <Img src={PHOTO_URL} alt="Kareem Sabri" referrerPolicy="no-referrer"
-                style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
+                style={{ width: "100%", height: "100%", objectFit: "contain", display: "block", background: "#fff" }} />
             </div>
           </div>
         </div>
@@ -1257,7 +1257,7 @@ function ScreenMyPass({ time, onSwitch, onBell }) {
     </div>
   );
 }
-const passSeg = (on) => ({ border: "none", cursor: "pointer", borderRadius: 24, padding: "11px 20px", fontFamily: "var(--slab)", fontWeight: 600, fontSize: 18, whiteSpace: "nowrap", background: on ? "#161616" : "transparent", color: on ? "#fff" : "#8a8a8a" });
+const passSeg = (on) => ({ flex: 1, border: "none", cursor: "pointer", borderRadius: 24, padding: "11px 8px", fontFamily: "var(--slab)", fontWeight: 700, fontSize: 18, lineHeight: 1.15, textAlign: "center", whiteSpace: "normal", background: on ? "#161616" : "transparent", color: on ? "#fff" : "#8a8a8a", display: "flex", alignItems: "center", justifyContent: "center" });
 const passFace = (back, flipped) => ({
   position: "absolute", inset: 0, backfaceVisibility: "hidden", WebkitBackfaceVisibility: "hidden",
   borderRadius: back ? 18 : 0, overflow: "hidden",

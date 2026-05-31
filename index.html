@@ -34,6 +34,11 @@
   *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;-webkit-touch-callout:none;}
   /* buttons inherit text colour/font so iOS doesn't tint unstyled labels blue */
   button{color:inherit;font-family:inherit;}
+  /* iOS-style press feedback */
+  .ph-tap{transition:transform .12s ease, opacity .12s ease;}
+  .ph-tap:active{transform:scale(.84);}
+  .ph-tap-op{transition:opacity .14s ease;}
+  .ph-tap-op:active{opacity:.6;}
   html,body{
     margin:0;padding:0;
     overscroll-behavior:none;            /* kill rubber-band chaining */
@@ -474,7 +479,7 @@ function BottomNav({ active, onNav, onPass }) {
       {/* white "cut" halo carving the nav + content around the diamond */}
       <div style={{ position: "absolute", right: 16, top: -22, width: 58, height: 58, transform: "rotate(45deg)", background: "#fff", borderRadius: 2, zIndex: 6 }} />
       {/* floating My Pass diamond */}
-      <button onClick={onPass} aria-label="My Pass" style={{
+      <button onClick={onPass} aria-label="My Pass" className="ph-tap-op" style={{
         position: "absolute", right: 20, top: -18, width: 51, height: 51,
         transform: "rotate(45deg)", background: active === "pass" ? "var(--ph-red-deep)" : "var(--ph-red)", border: "none",
         borderRadius: 2, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center",
@@ -491,7 +496,7 @@ function BottomNav({ active, onNav, onPass }) {
           const on = active === key;
           const isLast = key === "more";
           return (
-            <button key={key} onClick={() => onNav(key)} style={{
+            <button key={key} onClick={() => onNav(key)} className="ph-tap" style={{
               flex: 1, background: "none", border: "none", cursor: "pointer",
               display: "flex", flexDirection: "column", alignItems: "center", gap: 6,
               color: on ? "var(--ph-red)" : "#1b1b1b", paddingRight: isLast ? 34 : 0,
@@ -643,9 +648,6 @@ function SwitchSheet({ onClose, onSelect }) {
         </div>
         <div style={{ textAlign: "center", marginTop: 14 }}>
           <span style={{ color: "var(--ph-red)", fontFamily: "var(--slab)", fontWeight: 800, fontSize: 20.5 }}>{t("Request addition to another community")}</span>
-        </div>
-        <div style={{ display: "flex", justifyContent: "center", paddingTop: 18, paddingBottom: 2 }}>
-          <span style={{ width: 134, height: 5, borderRadius: 3, background: "#111" }} />
         </div>
       </div>
     </div>
@@ -1421,7 +1423,7 @@ function App() {
       ))}
 
       {/* bottom nav is always present (My Pass is a standalone page, not an overlay with its own chrome) */}
-      <div style={{ position: "absolute", left: 0, right: 0, bottom: 0, zIndex: 30 }}>
+      <div style={{ position: "fixed", left: "50%", transform: "translateX(-50%)", bottom: 0, width: "100%", maxWidth: 480, zIndex: 30 }}>
         <BottomNav
           active={top === "myPass" ? "pass" : tab}
           onNav={nav}
@@ -1482,7 +1484,7 @@ styleEl.textContent = `
 .ph-loader-diamond{width:60px;height:60px;animation:phSpin 1.05s cubic-bezier(.45,.05,.35,1) infinite;}
 @keyframes phSpin{0%{transform:rotate(0) scale(.86);opacity:.55}50%{transform:rotate(180deg) scale(1.08);opacity:1}100%{transform:rotate(360deg) scale(.86);opacity:.55}}
 .ph-sheet-wrap{position:absolute;inset:0;z-index:50;background:rgba(0,0,0,.45);display:flex;flex-direction:column;justify-content:flex-end;animation:fadeIn .2s ease;}
-.ph-sheet{background:#fff;border-top-left-radius:0;border-top-right-radius:0;padding:24px 24px 10px;animation:sheetUp .32s cubic-bezier(.2,.7,.2,1);}
+.ph-sheet{background:#fff;border-top-left-radius:0;border-top-right-radius:0;padding:24px 24px calc(20px + env(safe-area-inset-bottom));animation:sheetUp .32s cubic-bezier(.2,.7,.2,1);}
 @keyframes sheetUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
 @keyframes popIn{from{transform:scale(.92);opacity:0}to{transform:scale(1);opacity:1}}
 `;

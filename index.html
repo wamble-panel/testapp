@@ -363,12 +363,14 @@ function Diamond({ size = 84, src = LOGO, rotate = -8, style }) {
 
 const DIAMOND = "polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%)";
 
-/* Diamond logo (the PNG is already a transparent diamond — no halo/clip). */
+/* Diamond logo with a white "cut" — the white diamond halo carves the black
+   header bar so the logo looks notched into it. */
 function LogoCut({ size = 66, left = 18 }) {
   const side = isRTL() ? { right: left } : { left };
   return (
     <div style={{ position: "absolute", ...side, top: -(size * 0.5), width: size, height: size, zIndex: 3 }}>
-      <img src={LOGO} alt="Palm Hills" style={{ width: "100%", height: "100%", objectFit: "contain", display: "block" }} />
+      <div style={{ position: "absolute", inset: -6, background: "#fff", clipPath: DIAMOND, WebkitClipPath: DIAMOND }} />
+      <img src={LOGO} alt="Palm Hills" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", clipPath: DIAMOND, WebkitClipPath: DIAMOND, display: "block" }} />
     </div>
   );
 }

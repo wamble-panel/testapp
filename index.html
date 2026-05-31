@@ -1267,7 +1267,7 @@ function ScreenMyPass({ time, onSwitch, onBell }) {
     </div>
   );
 }
-const passSeg = (on) => ({ flex: 1, border: "none", cursor: "pointer", borderRadius: 24, padding: "11px 8px", fontFamily: "var(--slab)", fontWeight: 700, fontSize: 18, lineHeight: 1.15, textAlign: "center", whiteSpace: "normal", background: on ? "#161616" : "transparent", color: on ? "#fff" : "#8a8a8a", display: "flex", alignItems: "center", justifyContent: "center" });
+const passSeg = (on) => ({ border: "none", cursor: "pointer", borderRadius: 24, padding: "11px 22px", fontFamily: "var(--slab)", fontWeight: 600, fontSize: 18, whiteSpace: "nowrap", background: on ? "#161616" : "transparent", color: on ? "#fff" : "#8a8a8a" });
 const passFace = (back, flipped) => ({
   position: "absolute", inset: 0, backfaceVisibility: "hidden", WebkitBackfaceVisibility: "hidden",
   borderRadius: 0, overflow: "hidden",

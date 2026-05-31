@@ -124,6 +124,73 @@
 
   <script type="text/babel">
 
+// ===== i18n (English / formal Arabic) =====
+// Module-level current language; App syncs this from state before each render,
+// so every component can call t(...) directly and re-renders translate live.
+let _lang = "en";
+const AR = {
+  // nav + chrome
+  "Hills Today": "هيلز اليوم", "My Space": "مساحتي", "Community": "المجتمع", "More": "المزيد", "My Pass": "تصريحي",
+  "Currently Viewing": "تُعرض حالياً", "Hacienda Bay": "هاسيندا باي", "Welcome back": "مرحباً بعودتك", "Kareem Ali": "كريم علي",
+  // hills today
+  "NEWS": "الأخبار", "& EVENTS": "والفعاليات", "News": "الأخبار", "Events": "الفعاليات", "Reserve Now": "احجز الآن",
+  "SALES": "إطلاقات", "LAUNCHES": "المبيعات",
+  // my space / gate passes
+  "GATE": "تصاريح", "PASSES": "البوابة", "Gate": "البوابة", "Beach/Pool": "الشاطئ/المسبح",
+  "No passes generated yet.": "لم يتم إنشاء أي تصاريح بعد.", "GENERATE NEW PASS": "إنشاء تصريح جديد",
+  "MANAGE YOUR": "إدارة", "UNITS": "وحداتك", "MY UNITS": "وحداتي", "Family Member": "فرد من العائلة", "Child": "ابن",
+  // my units
+  "You are currently viewing units in Hacienda Bay, to view units in other compounds": "أنت تعرض حالياً الوحدات في هاسيندا باي، لعرض الوحدات في كمبوندات أخرى",
+  "Switch Compound": "تبديل الكمبوند", "1 UNIT": "وحدة واحدة", "Select Compound": "اختيار الكمبوند",
+  "Can't find a community you're a part of?": "لا تجد المجتمع الذي تنتمي إليه؟",
+  "Request addition to another community": "اطلب الانضمام إلى مجتمع آخر",
+  // unit details
+  "UNIT DETAILS": "تفاصيل الوحدة", "UNIT": "مستندات", "DOCUMENTS": "الوحدة",
+  // community
+  "ANNOUNCEMENT": "الإعلانات", "Read more": "اقرأ المزيد",
+  "Tonight at": "الليلة في", ": Oriental Night": ": ليلة شرقية", "Beach Cleanup Morning": "صباح تنظيف الشاطئ",
+  "Hacienda Bay owners enjoy free entrance all night": "يتمتع ملاك هاسيندا باي بدخول مجاني طوال الليل",
+  "Join your neighbours for a community beach cleanup": "انضم إلى جيرانك في حملة تنظيف الشاطئ المجتمعية",
+  // more
+  "My Invitations": "دعواتي", "My Users": "مستخدميّ", "My Vehicles": "مركباتي", "My Reservations": "حجوزاتي",
+  "Account & Settings": "الحساب والإعدادات",
+  "Profile & Account and App Settings to manage and customize your information": "الملف الشخصي والحساب وإعدادات التطبيق لإدارة وتخصيص معلوماتك",
+  "Sales Inquiry": "استفسارات المبيعات",
+  "Register here if you are interested to buy a property in Palm Hills": "سجّل هنا إذا كنت مهتماً بشراء عقار في بالم هيلز",
+  "Choose Your Neighbour": "اختر جارك", "Invite who you want to live next to": "ادعُ من تريد أن تعيش بجواره",
+  // settings list
+  "ACCOUNT & SETTINGS": "الحساب والإعدادات", "PROFILE & ACCOUNT": "الملف الشخصي والحساب",
+  "NOTIFICATION SETTING": "إعدادات الإشعارات", "APP LANGUAGE": "لغة التطبيق",
+  "PRIVACY POLICY": "سياسة الخصوصية", "TERMS OF USE": "شروط الاستخدام", "LANGUAGE": "اللغة",
+  // profile
+  "Name*": "الاسم*", "Mobile number*": "رقم الهاتف*", "Email*": "البريد الإلكتروني*", "Password*": "كلمة المرور*",
+  "If you want to update your Name, Mobile Number, or Email": "إذا كنت ترغب في تحديث الاسم أو رقم الهاتف أو البريد الإلكتروني",
+  "Contact Us": "تواصل معنا", "Delete My Account": "حذف حسابي",
+  // notifications setting
+  "Push Notifications": "الإشعارات الفورية", "Email Notifications": "إشعارات البريد الإلكتروني",
+  "Turn on to allow the application to send you Push Notifications ?": "فعّل للسماح للتطبيق بإرسال الإشعارات الفورية إليك؟",
+  "Turn on to allow the application to send you Email Notifications ?": "فعّل للسماح للتطبيق بإرسال إشعارات البريد الإلكتروني إليك؟",
+  // notifications feed
+  "NOTIFICATIONS": "الإشعارات", "Earlier": "الأقدم", "Your gate pass QR code is ready!": "رمز تصريح البوابة الخاص بك جاهز!",
+  // my users
+  "MY USERS": "مستخدميّ", "No family members added yet.": "لم تتم إضافة أي أفراد من العائلة بعد.",
+  "You haven't invited any user yet": "لم تقم بدعوة أي مستخدم بعد",
+  // my reservations / vehicles / invitations
+  "No reservations Yet!": "لا توجد حجوزات بعد!",
+  "No Registered Vehicles!": "لا توجد مركبات مسجلة!", "Add Your First Vehicle": "أضف مركبتك الأولى",
+  "MY INVITATIONS": "دعواتي", "Received": "المستلمة", "Sent": "المرسلة",
+  "There are no invitations at the moment": "لا توجد دعوات في الوقت الحالي",
+  // biometric
+  "Biometric": "المصادقة البيومترية", "Use your biometrics to continue": "استخدم بصمتك للمتابعة",
+  "Use Biometric": "استخدام البصمة", "Authenticating…": "جارٍ التحقق…", "Cancel": "إلغاء",
+  // privacy / terms body
+  "Your privacy and trust matter to us. This page explains how Palm Hills handles your information within the community app.": "خصوصيتك وثقتك تهمّاننا. توضّح هذه الصفحة كيفية تعامل بالم هيلز مع معلوماتك داخل تطبيق المجتمع.",
+  "We collect only the data needed to operate gate passes, units, and announcements, and we never sell your personal information to third parties.": "نجمع فقط البيانات اللازمة لتشغيل تصاريح البوابة والوحدات والإعلانات، ولا نبيع معلوماتك الشخصية لأي طرف ثالث إطلاقاً.",
+  "By using the application you agree to the terms described here. For any questions about this policy, please reach out through Contact Us.": "باستخدامك التطبيق فإنك توافق على الشروط الموضّحة هنا. لأي استفسار حول هذه السياسة، يُرجى التواصل معنا.",
+};
+const t = (s) => (_lang === "ar" ? (AR[s] !== undefined ? AR[s] : s) : s);
+const isRTL = () => _lang === "ar";
+
 // ===== ICONS =====
 // ============ ICONS ============
 // All stroke icons match the Palm Hills app line style (2px, round)
@@ -301,9 +368,9 @@ function HeaderCompound({ time, sub = "Currently Viewing", title = "Hacienda Bay
   return (
     <div className="ph-header" style={{ flex: "none", position: "relative", zIndex: 4 }}>
       <div style={{ background: "var(--ph-black)", color: "#fff", padding: "2px 22px 20px", textAlign: "center", position: "relative" }}>
-        <div style={{ fontFamily: "var(--slab)", fontWeight: 500, fontSize: 21, opacity: .96 }}>{sub}</div>
+        <div style={{ fontFamily: "var(--slab)", fontWeight: 500, fontSize: 21, opacity: .96 }}>{t(sub)}</div>
         <button onClick={onSwitch} style={{ background: "none", border: "none", padding: 0, margin: 0, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: 10, marginTop: 2, width: "100%", color: "#fff" }}>
-          <span style={{ fontFamily: "var(--slab)", fontWeight: 800, fontSize: 33, letterSpacing: ".1px", whiteSpace: "nowrap" }}>{title}</span>
+          <span style={{ fontFamily: "var(--slab)", fontWeight: 800, fontSize: 33, letterSpacing: ".1px", whiteSpace: "nowrap" }}>{t(title)}</span>
           <IconChevDown size={18} stroke="var(--ph-red)" />
         </button>
         <button onClick={onBell} aria-label="Notifications" style={{ position: "absolute", right: 22, top: -2, background: "none", border: "none", padding: 0, cursor: "pointer", color: "#fff", display: "flex" }}><IconBell size={27} /></button>
@@ -320,8 +387,8 @@ function HeaderHome({ time, name = "Kareem Ali", onBell }) {
   return (
     <div className="ph-header" style={{ flex: "none", position: "relative", zIndex: 4 }}>
       <div style={{ background: "var(--ph-black)", color: "#fff", padding: "2px 60px 18px", textAlign: "center", position: "relative" }}>
-        <div style={{ fontFamily: "var(--slab)", fontWeight: 500, fontSize: 20, opacity: .96 }}>Welcome back</div>
-        <div style={{ fontFamily: "var(--slab)", fontWeight: 800, fontSize: 31, marginTop: 1, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{name}</div>
+        <div style={{ fontFamily: "var(--slab)", fontWeight: 500, fontSize: 20, opacity: .96 }}>{t("Welcome back")}</div>
+        <div style={{ fontFamily: "var(--slab)", fontWeight: 800, fontSize: 31, marginTop: 1, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{t(name)}</div>
         <button onClick={onBell} aria-label="Notifications" style={{ position: "absolute", right: 22, top: 14, background: "none", border: "none", padding: 0, cursor: "pointer", color: "#fff", display: "flex" }}><IconBell size={27} /></button>
       </div>
       <div style={{ height: 0, position: "relative" }}>
@@ -332,14 +399,17 @@ function HeaderHome({ time, name = "Kareem Ali", onBell }) {
 }
 
 /* ---- Header: title bar with back ("MY UNITS") ---- */
-function HeaderTitle({ time, title, onBack }) {
+function HeaderTitle({ time, title, onBack, onAdd }) {
   return (
     <div className="ph-header" style={{ flex: "none", position: "relative", zIndex: 4 }}>
-      <div style={{ background: "var(--ph-black)", color: "#fff", padding: "10px 24px 26px", display: "flex", alignItems: "center", position: "relative" }}>
-        <button onClick={onBack} style={{ background: "none", border: "none", color: "#fff", padding: 0, cursor: "pointer", display: "flex" }}>
+      <div style={{ background: "var(--ph-black)", color: "#fff", padding: "10px 24px 26px", display: "flex", alignItems: "center", justifyContent: "space-between", position: "relative" }}>
+        <button onClick={onBack} aria-label="Back" style={{ background: "none", border: "none", color: "#fff", padding: 0, cursor: "pointer", display: "flex", transform: isRTL() ? "scaleX(-1)" : "none" }}>
           <IconChevL size={28} />
         </button>
-        <div style={{ position: "absolute", left: 0, right: 0, textAlign: "center", fontFamily: "var(--slab)", fontWeight: 800, fontSize: 30, letterSpacing: ".5px", pointerEvents: "none" }}>{title}</div>
+        {onAdd
+          ? <button onClick={onAdd} aria-label="Add" style={{ background: "none", border: "none", color: "#fff", padding: 0, cursor: "pointer", display: "flex" }}><IconPlusCircle size={28} stroke="#fff" /></button>
+          : <span style={{ width: 28 }} />}
+        <div style={{ position: "absolute", left: 0, right: 0, textAlign: "center", fontFamily: "var(--slab)", fontWeight: 800, fontSize: 30, letterSpacing: ".5px", pointerEvents: "none" }}>{t(title)}</div>
       </div>
     </div>
   );
@@ -350,7 +420,7 @@ function HeaderName({ time, name, onBell }) {
   return (
     <div className="ph-header" style={{ flex: "none", position: "relative", zIndex: 4 }}>
       <div style={{ background: "var(--ph-black)", color: "#fff", padding: "8px 24px 20px", position: "relative", textAlign: "center" }}>
-        <div style={{ fontFamily: "var(--slab)", fontWeight: 800, fontSize: 32, letterSpacing: ".5px" }}>{name}</div>
+        <div style={{ fontFamily: "var(--slab)", fontWeight: 800, fontSize: 32, letterSpacing: ".5px" }}>{t(name)}</div>
         <button onClick={onBell} aria-label="Notifications" style={{ position: "absolute", right: 22, top: 16, background: "none", border: "none", padding: 0, cursor: "pointer", color: "#fff", display: "flex" }}><IconBell size={27} /></button>
       </div>
       <div style={{ height: 0, position: "relative" }}>
@@ -382,7 +452,7 @@ function BottomNav({ active, onNav, onPass }) {
       }}>
         <span style={{ transform: "rotate(-45deg)", display: "flex", flexDirection: "column", alignItems: "center", gap: 1 }}>
           <IconQR size={16} color="#fff" />
-          <span style={{ color: "#fff", fontSize: 7.5, fontWeight: 700, fontFamily: "var(--slab)", lineHeight: 1 }}>My Pass</span>
+          <span style={{ color: "#fff", fontSize: 7.5, fontWeight: 700, fontFamily: "var(--slab)", lineHeight: 1 }}>{t("My Pass")}</span>
         </span>
       </button>
 
@@ -399,7 +469,7 @@ function BottomNav({ active, onNav, onPass }) {
             }}>
               {on && <span style={{ position: "absolute", top: -12, left: "50%", transform: "translateX(-50%)", width: 34, height: 3, background: "var(--ph-red)", borderRadius: 2 }} />}
               <Icon size={27} stroke={on ? "var(--ph-red)" : "#1b1b1b"} sw={on ? 2.4 : 2} />
-              <span style={{ fontSize: 14, fontWeight: on ? 700 : 500, fontFamily: "var(--sans)", color: on ? "var(--ph-red)" : "#1b1b1b" }}>{label}</span>
+              <span style={{ fontSize: 14, fontWeight: on ? 700 : 500, fontFamily: "var(--sans)", color: on ? "var(--ph-red)" : "#1b1b1b" }}>{t(label)}</span>
             </button>
           );
         })}
@@ -485,7 +555,7 @@ function SwitchSheet({ onClose, onSelect }) {
     <div className="ph-sheet-wrap" onClick={onClose}>
       <div className="ph-sheet" onClick={(e) => e.stopPropagation()}>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "4px 2px 0" }}>
-          <span style={{ fontFamily: "var(--slab)", fontWeight: 800, fontSize: 28, color: "#161616", whiteSpace: "nowrap" }}>Switch Compound</span>
+          <span style={{ fontFamily: "var(--slab)", fontWeight: 800, fontSize: 28, color: "#161616", whiteSpace: "nowrap" }}>{t("Switch Compound")}</span>
           <button onClick={onClose} style={{ background: "none", border: "none", cursor: "pointer", padding: 6, color: "#161616", display: "flex" }}><IconXClose size={30} /></button>
         </div>
 
@@ -495,7 +565,7 @@ function SwitchSheet({ onClose, onSelect }) {
             <div style={{ fontFamily: "var(--slab)", fontWeight: 800, fontSize: 23, color: "#161616", whiteSpace: "nowrap" }}>Hacienda Bay</div>
             <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 8, marginTop: 6, color: "#161616" }}>
               <IconHouseSmall size={22} stroke="#161616" />
-              <span style={{ fontFamily: "var(--slab)", fontWeight: 500, fontSize: 22 }}>1 UNIT</span>
+              <span style={{ fontFamily: "var(--slab)", fontWeight: 500, fontSize: 22 }}>{t("1 UNIT")}</span>
             </div>
           </div>
           <span style={{ flex: "none", width: 26, height: 26, transform: "rotate(45deg)", border: "2.5px solid var(--ph-red)", borderRadius: 5, display: "flex", alignItems: "center", justifyContent: "center" }}>
@@ -504,15 +574,15 @@ function SwitchSheet({ onClose, onSelect }) {
         </div>
 
         <button onClick={onSelect} style={{ width: "100%", marginTop: 30, border: "1.5px solid var(--ph-red)", background: "#fff", color: "var(--ph-red)", borderRadius: 40, padding: "17px", fontFamily: "var(--slab)", fontWeight: 800, fontSize: 22, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: 12, whiteSpace: "nowrap" }}>
-          Select Compound <IconArrowR2 size={24} stroke="var(--ph-red)" />
+          {t("Select Compound")} <IconArrowR2 size={24} stroke="var(--ph-red)" style={{ transform: isRTL() ? "scaleX(-1)" : "none" }} />
         </button>
 
         <div style={{ display: "flex", gap: 10, alignItems: "center", marginTop: 26 }}>
           <IconBulb size={22} stroke="var(--ph-red)" style={{ flex: "none" }} />
-          <span style={{ color: "var(--ph-gray)", fontFamily: "var(--slab)", fontWeight: 500, fontSize: 21 }}>Can't find a community you're a part of?</span>
+          <span style={{ color: "var(--ph-gray)", fontFamily: "var(--slab)", fontWeight: 500, fontSize: 21 }}>{t("Can't find a community you're a part of?")}</span>
         </div>
         <div style={{ textAlign: "center", marginTop: 14 }}>
-          <span style={{ color: "var(--ph-red)", fontFamily: "var(--slab)", fontWeight: 800, fontSize: 23 }}>Request addition to another community</span>
+          <span style={{ color: "var(--ph-red)", fontFamily: "var(--slab)", fontWeight: 800, fontSize: 23 }}>{t("Request addition to another community")}</span>
         </div>
         <div style={{ display: "flex", justifyContent: "center", paddingTop: 18, paddingBottom: 2 }}>
           <span style={{ width: 134, height: 5, borderRadius: 3, background: "#111" }} />
@@ -561,12 +631,12 @@ function BiometricModal({ onSuccess, onCancel }) {
     <div className="ph-sheet-wrap" style={{ justifyContent: "center", alignItems: "center", padding: "0 28px" }} onClick={onCancel}>
       <div onClick={(e) => e.stopPropagation()} style={{ width: "100%", maxWidth: 360, background: "#fff", borderRadius: 22, padding: "34px 26px 24px", textAlign: "center", animation: "popIn .26s cubic-bezier(.2,.8,.2,1)" }}>
         <IconFaceID size={56} stroke="#161616" sw={1.8} />
-        <div style={{ fontFamily: "var(--slab)", fontWeight: 800, fontSize: 34, marginTop: 14, color: "#161616" }}>Biometric</div>
-        <div style={{ fontFamily: "var(--sans)", fontSize: 23, color: "#161616", marginTop: 14 }}>Use your biometrics to continue</div>
+        <div style={{ fontFamily: "var(--slab)", fontWeight: 800, fontSize: 34, marginTop: 14, color: "#161616" }}>{t("Biometric")}</div>
+        <div style={{ fontFamily: "var(--sans)", fontSize: 23, color: "#161616", marginTop: 14 }}>{t("Use your biometrics to continue")}</div>
         <button onClick={authenticate} disabled={busy} style={{ width: "100%", marginTop: 30, border: "1.5px solid var(--ph-red)", background: "#fff", color: "var(--ph-red)", borderRadius: 40, padding: "17px", fontFamily: "var(--slab)", fontWeight: 800, fontSize: 23, cursor: busy ? "default" : "pointer", opacity: busy ? .6 : 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 12 }}>
-          {busy ? "Authenticating…" : <>Use Biometric <IconArrowR size={24} stroke="var(--ph-red)" /></>}
+          {busy ? t("Authenticating…") : <>{t("Use Biometric")} <IconArrowR size={24} stroke="var(--ph-red)" style={{ transform: isRTL() ? "scaleX(-1)" : "none" }} /></>}
         </button>
-        <button onClick={onCancel} style={{ background: "none", border: "none", cursor: "pointer", marginTop: 22, fontFamily: "var(--slab)", fontWeight: 800, fontSize: 26, color: "#161616", textDecoration: "underline" }}>Cancel</button>
+        <button onClick={onCancel} style={{ background: "none", border: "none", cursor: "pointer", marginTop: 22, fontFamily: "var(--slab)", fontWeight: 800, fontSize: 26, color: "#161616", textDecoration: "underline" }}>{t("Cancel")}</button>
       </div>
     </div>
   );
@@ -591,10 +661,10 @@ function ScreenHills({ time, onBell }) {
       <div className="body" style={{ padding: "58px 22px 130px" }}>
         {/* News & Events */}
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8 }}>
-          <h2 style={sectionTitle}>NEWS <span style={{ color: "var(--ph-red)" }}>&amp; EVENTS</span></h2>
+          <h2 style={sectionTitle}>{t("NEWS")} <span style={{ color: "var(--ph-red)" }}>{t("& EVENTS")}</span></h2>
           <div style={pill}>
-            <button onClick={() => setTab("news")} style={pillBtn(tab === "news")}>News</button>
-            <button onClick={() => setTab("events")} style={pillBtn(tab === "events")}>Events</button>
+            <button onClick={() => setTab("news")} style={pillBtn(tab === "news")}>{t("News")}</button>
+            <button onClick={() => setTab("events")} style={pillBtn(tab === "events")}>{t("Events")}</button>
           </div>
         </div>
 
@@ -605,16 +675,16 @@ function ScreenHills({ time, onBell }) {
         <div style={{ marginTop: 14 }}><ReadMore /></div>
 
         {/* Sales Launches */}
-        <h2 style={{ ...sectionTitle, marginTop: 40 }}>SALES <span style={{ color: "var(--ph-red)" }}>LAUNCHES</span></h2>
+        <h2 style={{ ...sectionTitle, marginTop: 40 }}>{t("SALES")} <span style={{ color: "var(--ph-red)" }}>{t("LAUNCHES")}</span></h2>
         <div style={tabRow} className="hscroll">
-          {["P/X", "Palm Hills New Cairo", "Badya", "Ha"].map((t) => (
-            <button key={t} onClick={() => setLaunch(t)} style={tabItem(launch === t)}>{t}</button>
+          {["P/X", "Palm Hills New Cairo", "Badya", "Ha"].map((lt) => (
+            <button key={lt} onClick={() => setLaunch(lt)} style={tabItem(launch === lt)}>{lt}</button>
           ))}
         </div>
         <div style={{ position: "relative", marginTop: 18, borderRadius: 4, overflow: "hidden", height: 188, background: "#fff" }}>
           <Img src={undefined} style={{ position: "absolute", inset: 0, width: "100%", height: "100%" }} />
           <div style={{ position: "absolute", right: 0, bottom: 0, top: 0, width: 150, background: "rgba(40,40,40,.55)", display: "flex", alignItems: "center", justifyContent: "center", textAlign: "center" }}>
-            <span style={{ color: "#fff", fontFamily: "var(--slab)", fontWeight: 700, fontSize: 22, lineHeight: 1.1 }}>Reserve Now</span>
+            <span style={{ color: "#fff", fontFamily: "var(--slab)", fontWeight: 700, fontSize: 22, lineHeight: 1.1 }}>{t("Reserve Now")}</span>
           </div>
         </div>
         <div style={{ display: "flex", gap: 6, justifyContent: "center", marginTop: 14 }}>
@@ -655,31 +725,31 @@ function ScreenSpace({ time, onMyUnits, onGenerate, onSwitch, onBell }) {
     <div className="screen">
       <HeaderCompound time={time} onSwitch={onSwitch} onBell={onBell} />
       <div className="body" style={{ padding: "66px 24px 130px" }}>
-        <h2 style={{ ...sectionTitle, fontSize: 32 }}>GATE <span style={{ color: "var(--ph-red)" }}>PASSES</span>
-          <button onClick={onGenerate} style={{ float: "right", background: "none", border: "none", cursor: "pointer", color: "var(--ph-red)", marginTop: 2 }}><IconPlusCircle size={32} stroke="var(--ph-red)" /></button>
+        <h2 style={{ ...sectionTitle, fontSize: 32 }}>{t("GATE")} <span style={{ color: "var(--ph-red)" }}>{t("PASSES")}</span>
+          <button onClick={onGenerate} style={{ float: isRTL() ? "left" : "right", background: "none", border: "none", cursor: "pointer", color: "var(--ph-red)", marginTop: 2 }}><IconPlusCircle size={32} stroke="var(--ph-red)" /></button>
         </h2>
         <div style={{ ...tabRow, marginTop: 22 }} className="hscroll">
-          <button onClick={() => setTab("gate")} style={tabItem(tab === "gate")}>Gate</button>
-          <button onClick={() => setTab("beach")} style={tabItem(tab === "beach")}>Beach/Pool</button>
+          <button onClick={() => setTab("gate")} style={tabItem(tab === "gate")}>{t("Gate")}</button>
+          <button onClick={() => setTab("beach")} style={tabItem(tab === "beach")}>{t("Beach/Pool")}</button>
         </div>
 
         <div style={{ textAlign: "center", padding: "44px 0 30px" }}>
           <IconGate size={66} stroke="#1b1b1b" sw={1.6} />
-          <div style={{ fontFamily: "var(--slab)", fontWeight: 800, fontSize: 30, marginTop: 18 }}>No passes generated yet.</div>
+          <div style={{ fontFamily: "var(--slab)", fontWeight: 800, fontSize: 30, marginTop: 18 }}>{t("No passes generated yet.")}</div>
         </div>
 
         <button onClick={onGenerate} style={{ width: "100%", border: "1.5px solid var(--ph-red)", background: "#fff", color: "var(--ph-red)", borderRadius: 40, padding: "18px", fontFamily: "var(--slab)", fontWeight: 700, fontSize: 22, letterSpacing: ".5px", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: 14 }}>
-          GENERATE NEW PASS <IconArrowR2 size={24} stroke="var(--ph-red)" />
+          {t("GENERATE NEW PASS")} <IconArrowR2 size={24} stroke="var(--ph-red)" style={{ transform: isRTL() ? "scaleX(-1)" : "none" }} />
         </button>
 
-        <h2 style={{ ...sectionTitle, fontSize: 30, marginTop: 44 }}>MANAGE YOUR <span style={{ color: "var(--ph-red)" }}>UNITS</span></h2>
+        <h2 style={{ ...sectionTitle, fontSize: 30, marginTop: 44 }}>{t("MANAGE YOUR")} <span style={{ color: "var(--ph-red)" }}>{t("UNITS")}</span></h2>
         <button onClick={onMyUnits} style={unitCard}>
           <IconHouseSmall size={28} stroke="#1b1b1b" />
-          <div style={{ textAlign: "left", flex: 1, marginLeft: 14 }}>
-            <div style={{ fontFamily: "var(--slab)", fontWeight: 700, fontSize: 23 }}>MY UNITS</div>
+          <div style={{ textAlign: isRTL() ? "right" : "left", flex: 1, margin: "0 14px" }}>
+            <div style={{ fontFamily: "var(--slab)", fontWeight: 700, fontSize: 23 }}>{t("MY UNITS")}</div>
             <div style={{ color: "var(--ph-gray)", fontFamily: "var(--slab)", fontWeight: 500, fontSize: 21, letterSpacing: .5 }}>HAC-JCH-242BF</div>
           </div>
-          <IconChevR size={22} stroke="var(--ph-red)" />
+          <IconChevR size={22} stroke="var(--ph-red)" style={{ transform: isRTL() ? "scaleX(-1)" : "none" }} />
         </button>
       </div>
     </div>
@@ -692,19 +762,19 @@ function ScreenMyUnits({ time, onBack, onSwitch, onUnit }) {
     <div className="screen">
       <HeaderTitle time={time} title="MY UNITS" onBack={onBack} />
       <div className="body" style={{ padding: "26px 24px 130px" }}>
-        <button onClick={onUnit} style={{ width: "100%", textAlign: "left", background: "#fff", border: "1px solid var(--ph-gray-line)", borderRadius: 4, padding: "26px 22px", display: "flex", alignItems: "center", gap: 18, cursor: "pointer" }}>
+        <button onClick={onUnit} style={{ width: "100%", textAlign: isRTL() ? "right" : "left", background: "#fff", border: "1px solid var(--ph-gray-line)", borderRadius: 4, padding: "26px 22px", display: "flex", alignItems: "center", gap: 18, cursor: "pointer" }}>
           <IconHouseSmall size={34} stroke="#1b1b1b" style={{ flex: "none" }} />
           <div style={{ flex: 1 }}>
             <div style={{ fontFamily: "var(--slab)", fontWeight: 700, fontSize: 30 }}>HAC-JCH-242BF</div>
-            <div style={{ color: "var(--ph-gray)", fontFamily: "var(--slab)", fontWeight: 500, fontSize: 24 }}>Family Member</div>
+            <div style={{ color: "var(--ph-gray)", fontFamily: "var(--slab)", fontWeight: 500, fontSize: 24 }}>{t("Family Member")}</div>
           </div>
-          <IconChevR size={22} stroke="var(--ph-red)" style={{ flex: "none" }} />
+          <IconChevR size={22} stroke="var(--ph-red)" style={{ flex: "none", transform: isRTL() ? "scaleX(-1)" : "none" }} />
         </button>
         <div style={{ display: "flex", gap: 12, marginTop: 40, color: "var(--ph-gray)" }}>
           <IconBulb size={24} stroke="var(--ph-red)" style={{ flex: "none", marginTop: 4 }} />
-          <p style={{ margin: 0, fontFamily: "var(--slab)", fontWeight: 500, fontSize: 23, lineHeight: 1.4, color: "var(--ph-gray)" }}>
-            You are currently viewing units in Hacienda Bay, to view units in other compounds{" "}
-            <button onClick={onSwitch} style={{ background: "none", border: "none", padding: 0, color: "var(--ph-red)", fontWeight: 700, fontFamily: "var(--slab)", fontSize: 23, cursor: "pointer" }}>Switch Compound</button>
+          <p style={{ margin: 0, fontFamily: "var(--slab)", fontWeight: 500, fontSize: 23, lineHeight: 1.4, color: "var(--ph-gray)", textAlign: isRTL() ? "right" : "left" }}>
+            {t("You are currently viewing units in Hacienda Bay, to view units in other compounds")}{" "}
+            <button onClick={onSwitch} style={{ background: "none", border: "none", padding: 0, color: "var(--ph-red)", fontWeight: 700, fontFamily: "var(--slab)", fontSize: 23, cursor: "pointer" }}>{t("Switch Compound")}</button>
           </p>
         </div>
       </div>
@@ -718,10 +788,10 @@ function ScreenCommunity({ time, onSwitch, onBell }) {
     <div className="screen">
       <HeaderCompound time={time} onSwitch={onSwitch} onBell={onBell} />
       <div className="body" style={{ padding: "66px 24px 130px" }}>
-        <h2 style={{ ...sectionTitle, fontSize: 33 }}>ANNOUNCEMENT</h2>
+        <h2 style={{ ...sectionTitle, fontSize: 33 }}>{t("ANNOUNCEMENT")}</h2>
         <div style={{ marginTop: 26, display: "flex", flexDirection: "column", gap: 22 }}>
-          <AnnounceCard date="12 Sep 2025  10:0 PM" title={<>Tonight at <b>SASS</b>: Oriental Night</>} body="Hacienda Bay owners enjoy free entrance all night" />
-          <AnnounceCard date="08 Sep 2025  06:30 PM" title={<>Beach Cleanup Morning</>} body="Join your neighbours for a community beach cleanup" />
+          <AnnounceCard date="12 Sep 2025  10:0 PM" title={<>{t("Tonight at")} <b>SASS</b>{t(": Oriental Night")}</>} body="Hacienda Bay owners enjoy free entrance all night" />
+          <AnnounceCard date="08 Sep 2025  06:30 PM" title={t("Beach Cleanup Morning")} body="Join your neighbours for a community beach cleanup" />
         </div>
       </div>
     </div>
@@ -736,37 +806,37 @@ function AnnounceCard({ date, title, body }) {
       <div style={{ padding: "18px 22px 22px" }}>
         <div style={{ color: "var(--ph-gray)", fontFamily: "var(--slab)", fontWeight: 500, fontSize: 21 }}>{date}</div>
         <div style={{ fontFamily: "var(--slab)", fontWeight: 600, fontSize: 25, textAlign: "center", margin: "14px 0", lineHeight: 1.15 }}>{title}</div>
-        <div style={{ fontFamily: "var(--sans)", fontSize: 21, lineHeight: 1.3, marginBottom: 14 }}>{body}</div>
-        <button style={{ background: "none", border: "none", padding: 0, color: "var(--ph-red)", fontFamily: "var(--slab)", fontWeight: 700, fontSize: 21, cursor: "pointer" }}>Read more</button>
+        <div style={{ fontFamily: "var(--sans)", fontSize: 21, lineHeight: 1.3, marginBottom: 14, textAlign: isRTL() ? "right" : "left" }}>{t(body)}</div>
+        <button style={{ background: "none", border: "none", padding: 0, color: "var(--ph-red)", fontFamily: "var(--slab)", fontWeight: 700, fontSize: 21, cursor: "pointer" }}>{t("Read more")}</button>
       </div>
     </div>
   );
 }
 
 /* ---------- MORE ---------- */
-function ScreenMore({ time, onMyUsers, onSettings, onBell }) {
+function ScreenMore({ time, onMyUsers, onSettings, onBell, onTile }) {
   const tiles = [
-    { Icon: IconPeoplePair, label: "My Invitations" },
+    { Icon: IconPeoplePair, label: "My Invitations", action: () => onTile("invitations") },
     { Icon: IconPeoplePair, label: "My Users", action: onMyUsers },
-    { Icon: IconCar, label: "My Vehicles" },
-    { Icon: IconCheckSquare, label: "My Reservations" },
+    { Icon: IconCar, label: "My Vehicles", action: () => onTile("vehicles") },
+    { Icon: IconCheckSquare, label: "My Reservations", action: () => onTile("reservations") },
   ];
   return (
     <div className="screen">
       <HeaderName time={time} name="Kareem Ali" onBell={onBell} />
       <div className="body" style={{ padding: "58px 22px 130px" }}>
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 18 }}>
-          {tiles.map((t) => (
-            <button key={t.label} onClick={t.action} style={moreTile}>
+          {tiles.map((tile) => (
+            <button key={tile.label} onClick={tile.action} style={moreTile}>
               <div style={{ width: 58, height: 58, borderRadius: "50%", background: "var(--ph-red-soft)", display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 16 }}>
-                <t.Icon size={30} stroke="var(--ph-red)" sw={1.9} />
+                <tile.Icon size={30} stroke="var(--ph-red)" sw={1.9} />
               </div>
-              <span style={{ fontFamily: "var(--sans)", fontSize: 23, fontWeight: 500 }}>{t.label}</span>
+              <span style={{ fontFamily: "var(--sans)", fontSize: 23, fontWeight: 500 }}>{t(tile.label)}</span>
             </button>
           ))}
         </div>
 
-        <ListRow Icon={IconGear} title={<>Account &amp; Settings</>} sub="Profile & Account and App Settings to manage and customize your information" onClick={onSettings} />
+        <ListRow Icon={IconGear} title="Account & Settings" sub="Profile & Account and App Settings to manage and customize your information" onClick={onSettings} />
         <ListRow Icon={IconChat} title="Sales Inquiry" sub="Register here if you are interested to buy a property in Palm Hills" />
         <ListRow Icon={IconCommunity} title="Choose Your Neighbour" sub="Invite who you want to live next to" />
       </div>
@@ -775,13 +845,13 @@ function ScreenMore({ time, onMyUsers, onSettings, onBell }) {
 }
 function ListRow({ Icon, title, sub, onClick }) {
   return (
-    <button onClick={onClick} style={{ width: "100%", textAlign: "left", background: "#fff", border: "1px solid var(--ph-gray-line)", padding: "22px 20px", display: "flex", gap: 16, marginTop: 20, alignItems: "flex-start", cursor: onClick ? "pointer" : "default" }}>
+    <button onClick={onClick} style={{ width: "100%", textAlign: isRTL() ? "right" : "left", background: "#fff", border: "1px solid var(--ph-gray-line)", padding: "22px 20px", display: "flex", gap: 16, marginTop: 20, alignItems: "flex-start", cursor: onClick ? "pointer" : "default" }}>
       <Icon size={26} stroke="#1b1b1b" style={{ flex: "none", marginTop: 4 }} />
       <div style={{ flex: 1 }}>
-        <div style={{ fontFamily: "var(--slab)", fontWeight: 700, fontSize: 26, lineHeight: 1.2, marginBottom: 8 }}>{title}</div>
-        <div style={{ color: "var(--ph-gray)", fontFamily: "var(--sans)", fontSize: 20, lineHeight: 1.4 }}>{sub}</div>
+        <div style={{ fontFamily: "var(--slab)", fontWeight: 700, fontSize: 26, lineHeight: 1.2, marginBottom: 8 }}>{t(title)}</div>
+        <div style={{ color: "var(--ph-gray)", fontFamily: "var(--sans)", fontSize: 20, lineHeight: 1.4 }}>{t(sub)}</div>
       </div>
-      <IconChevR size={22} stroke="var(--ph-red)" style={{ flex: "none", marginTop: 4 }} />
+      <IconChevR size={22} stroke="var(--ph-red)" style={{ flex: "none", marginTop: 4, transform: isRTL() ? "scaleX(-1)" : "none" }} />
     </button>
   );
 }
@@ -813,15 +883,15 @@ function ScreenUnitDetails({ time, onBack }) {
         <div style={{ background: "#f1f1f1", borderRadius: 6, marginTop: 28, padding: "28px 8px", display: "flex", alignItems: "stretch" }}>
           <div style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", gap: 14 }}>
             <IconPin size={30} stroke="#1b1b1b" sw={1.7} />
-            <span style={{ fontFamily: "var(--sans)", fontSize: 23, color: "#1b1b1b" }}>Hacienda Bay</span>
+            <span style={{ fontFamily: "var(--sans)", fontSize: 23, color: "#1b1b1b" }}>{t("Hacienda Bay")}</span>
           </div>
           <div style={{ width: 1, background: "#cfcfcf", margin: "2px 0" }} />
           <div style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", gap: 14, padding: "0 6px" }}>
             <IconUser size={30} stroke="#1b1b1b" sw={1.7} />
-            <span style={{ fontFamily: "var(--sans)", fontSize: 23, color: "#1b1b1b", textAlign: "center", lineHeight: 1.25 }}>Family Member</span>
+            <span style={{ fontFamily: "var(--sans)", fontSize: 23, color: "#1b1b1b", textAlign: "center", lineHeight: 1.25 }}>{t("Family Member")}</span>
           </div>
         </div>
-        <h2 style={{ ...sectionTitle, fontSize: 32, marginTop: 48 }}>UNIT <span style={{ color: "var(--ph-red)" }}>DOCUMENTS</span></h2>
+        <h2 style={{ ...sectionTitle, fontSize: 32, marginTop: 48 }}>{t("UNIT")} <span style={{ color: "var(--ph-red)" }}>{t("DOCUMENTS")}</span></h2>
       </div>
     </div>
   );
@@ -834,8 +904,8 @@ function ScreenMyUsers({ time, onBack }) {
       <HeaderTitle time={time} title="MY USERS" onBack={onBack} />
       <div className="body" style={{ padding: "64px 24px 130px", textAlign: "center" }}>
         <IconPeoplePair size={62} stroke="#1b1b1b" sw={1.7} />
-        <div style={{ fontFamily: "var(--slab)", fontWeight: 800, fontSize: 34, marginTop: 24, lineHeight: 1.2 }}>No family members added yet.</div>
-        <div style={{ marginTop: 20, fontFamily: "var(--slab)", fontWeight: 500, fontSize: 24, color: "#1b1b1b" }}>You haven't invited any user yet</div>
+        <div style={{ fontFamily: "var(--slab)", fontWeight: 800, fontSize: 34, marginTop: 24, lineHeight: 1.2 }}>{t("No family members added yet.")}</div>
+        <div style={{ marginTop: 20, fontFamily: "var(--slab)", fontWeight: 500, fontSize: 24, color: "#1b1b1b" }}>{t("You haven't invited any user yet")}</div>
       </div>
     </div>
   );
@@ -857,8 +927,8 @@ function ScreenSettings({ time, onBack, onProfile, onNotifications, onLanguage, 
         {rows.map((r) => (
           <button key={r.label} onClick={r.action} style={{ width: "100%", border: "1px solid var(--ph-gray-line)", background: "#fff", cursor: "pointer", padding: "24px 20px", display: "flex", alignItems: "center", gap: 16, marginBottom: 22 }}>
             <r.Icon size={28} stroke="#161616" sw={1.9} style={{ flex: "none" }} />
-            <span style={{ flex: 1, textAlign: "left", fontFamily: "var(--slab)", fontWeight: 800, fontSize: 25, color: "#161616", letterSpacing: ".3px" }}>{r.label}</span>
-            <IconChevR size={22} stroke="var(--ph-red)" style={{ flex: "none" }} />
+            <span style={{ flex: 1, textAlign: isRTL() ? "right" : "left", fontFamily: "var(--slab)", fontWeight: 800, fontSize: 25, color: "#161616", letterSpacing: ".3px" }}>{t(r.label)}</span>
+            <IconChevR size={22} stroke="var(--ph-red)" style={{ flex: "none", transform: isRTL() ? "scaleX(-1)" : "none" }} />
           </button>
         ))}
       </div>
@@ -870,7 +940,7 @@ function ScreenSettings({ time, onBack, onProfile, onNotifications, onLanguage, 
 function ProfileField({ label, value, action }) {
   return (
     <div style={{ position: "relative", border: "1px solid var(--ph-gray-line)", borderRadius: 6, padding: "20px 18px", marginTop: 24 }}>
-      <span style={{ position: "absolute", top: -11, left: 14, background: "#fff", padding: "0 7px", fontFamily: "var(--sans)", fontSize: 17, color: "var(--ph-gray)" }}>{label}</span>
+      <span style={{ position: "absolute", top: -11, [isRTL() ? "right" : "left"]: 14, background: "#fff", padding: "0 7px", fontFamily: "var(--sans)", fontSize: 17, color: "var(--ph-gray)" }}>{t(label)}</span>
       <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
         <span style={{ flex: 1, fontFamily: "var(--sans)", fontSize: 24, color: "#161616", wordBreak: "break-word" }}>{value}</span>
         {action}
@@ -897,13 +967,13 @@ function ScreenProfile({ time, onBack }) {
         } />
         <div style={{ display: "flex", gap: 10, marginTop: 30, alignItems: "flex-start" }}>
           <IconBulb size={22} stroke="var(--ph-red)" style={{ flex: "none", marginTop: 2 }} />
-          <p style={{ margin: 0, color: "var(--ph-gray)", fontFamily: "var(--sans)", fontSize: 21, lineHeight: 1.45 }}>
-            If you want to update your Name, Mobile Number, or Email{" "}
-            <button style={{ background: "none", border: "none", padding: 0, color: "var(--ph-red)", fontWeight: 800, fontFamily: "var(--slab)", fontSize: 22, cursor: "pointer" }}>Contact Us</button>
+          <p style={{ margin: 0, color: "var(--ph-gray)", fontFamily: "var(--sans)", fontSize: 21, lineHeight: 1.45, textAlign: isRTL() ? "right" : "left" }}>
+            {t("If you want to update your Name, Mobile Number, or Email")}{" "}
+            <button style={{ background: "none", border: "none", padding: 0, color: "var(--ph-red)", fontWeight: 800, fontFamily: "var(--slab)", fontSize: 22, cursor: "pointer" }}>{t("Contact Us")}</button>
           </p>
         </div>
         <div style={{ textAlign: "center", marginTop: 26 }}>
-          <button style={{ background: "none", border: "none", cursor: "pointer", fontFamily: "var(--slab)", fontWeight: 800, fontSize: 28, color: "#161616", textDecoration: "underline" }}>Delete My Account</button>
+          <button style={{ background: "none", border: "none", cursor: "pointer", fontFamily: "var(--slab)", fontWeight: 800, fontSize: 28, color: "#161616", textDecoration: "underline" }}>{t("Delete My Account")}</button>
         </div>
       </div>
     </div>
@@ -926,10 +996,10 @@ function NotifCard({ Icon, title, sub, on, onToggle }) {
     <div style={{ border: "1px solid var(--ph-gray-line)", padding: "22px 20px", marginBottom: 22 }}>
       <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
         <Icon size={28} stroke="#161616" sw={2} style={{ flex: "none" }} />
-        <span style={{ flex: 1, fontFamily: "var(--slab)", fontWeight: 800, fontSize: 27, color: "#161616" }}>{title}</span>
+        <span style={{ flex: 1, fontFamily: "var(--slab)", fontWeight: 800, fontSize: 27, color: "#161616", textAlign: isRTL() ? "right" : "left" }}>{t(title)}</span>
         <Toggle on={on} onChange={onToggle} />
       </div>
-      <p style={{ margin: "12px 0 0", color: "var(--ph-gray)", fontFamily: "var(--sans)", fontSize: 21, lineHeight: 1.4 }}>{sub}</p>
+      <p style={{ margin: "12px 0 0", color: "var(--ph-gray)", fontFamily: "var(--sans)", fontSize: 21, lineHeight: 1.4, textAlign: isRTL() ? "right" : "left" }}>{t(sub)}</p>
     </div>
   );
 }
@@ -948,19 +1018,26 @@ function ScreenNotifications({ time, onBack }) {
 }
 
 /* ---------- APP LANGUAGE / PRIVACY / TERMS ---------- */
-function ScreenAppLanguage({ time, onBack }) {
-  const [lang, setLang] = React.useState("en");
+/* Diamond radio used by the Language picker (filled = selected) */
+function DiamondRadio({ on }) {
+  return (
+    <span style={{ flex: "none", width: 26, height: 26, transform: "rotate(45deg)", borderRadius: 5, border: on ? "2.5px solid var(--ph-red)" : "2px solid #c4c4c4", display: "flex", alignItems: "center", justifyContent: "center" }}>
+      {on && <span style={{ width: 12, height: 12, background: "var(--ph-red)", borderRadius: 2 }} />}
+    </span>
+  );
+}
+function ScreenAppLanguage({ time, onBack, lang, onChangeLang }) {
   const opts = [{ key: "en", label: "English" }, { key: "ar", label: "العربية" }];
   return (
     <div className="screen">
-      <HeaderTitle time={time} title="APP LANGUAGE" onBack={onBack} />
-      <div className="body" style={{ padding: "30px 24px 130px" }}>
+      <HeaderTitle time={time} title="LANGUAGE" onBack={onBack} />
+      <div className="body" style={{ padding: "34px 24px 130px" }}>
         {opts.map((o) => {
           const on = lang === o.key;
           return (
-            <button key={o.key} onClick={() => setLang(o.key)} style={{ width: "100%", border: on ? "1.5px solid var(--ph-red)" : "1px solid var(--ph-gray-line)", background: "#fff", cursor: "pointer", padding: "22px 20px", display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 18 }}>
-              <span style={{ fontFamily: "var(--slab)", fontWeight: 700, fontSize: 25, color: "#161616" }}>{o.label}</span>
-              <span style={{ width: 24, height: 24, borderRadius: "50%", border: on ? "7px solid var(--ph-red)" : "2px solid #c4c4c4", boxSizing: "border-box" }} />
+            <button key={o.key} onClick={() => onChangeLang(o.key)} style={{ width: "100%", border: "1px solid var(--ph-gray-line)", background: "#fff", cursor: "pointer", padding: "30px 22px", display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 22 }}>
+              <span style={{ fontFamily: "var(--slab)", fontWeight: 700, fontSize: 27, color: "#161616" }}>{o.label}</span>
+              <DiamondRadio on={on} />
             </button>
           );
         })}
@@ -969,15 +1046,67 @@ function ScreenAppLanguage({ time, onBack }) {
   );
 }
 function ScreenPolicy({ time, onBack, title }) {
+  const paras = [
+    "Your privacy and trust matter to us. This page explains how Palm Hills handles your information within the community app.",
+    "We collect only the data needed to operate gate passes, units, and announcements, and we never sell your personal information to third parties.",
+    "By using the application you agree to the terms described here. For any questions about this policy, please reach out through Contact Us.",
+  ];
   return (
     <div className="screen">
       <HeaderTitle time={time} title={title} onBack={onBack} />
       <div className="body" style={{ padding: "30px 26px 130px" }}>
-        {["Your privacy and trust matter to us. This page explains how Palm Hills handles your information within the community app.",
-          "We collect only the data needed to operate gate passes, units, and announcements, and we never sell your personal information to third parties.",
-          "By using the application you agree to the terms described here. For any questions about this policy, please reach out through Contact Us."].map((t, i) => (
-          <p key={i} style={{ margin: "0 0 18px", fontFamily: "var(--sans)", fontSize: 21, lineHeight: 1.5, color: "#3a3a3a" }}>{t}</p>
+        {paras.map((p, i) => (
+          <p key={i} style={{ margin: "0 0 18px", fontFamily: "var(--sans)", fontSize: 21, lineHeight: 1.5, color: "#3a3a3a", textAlign: isRTL() ? "right" : "left" }}>{t(p)}</p>
         ))}
+      </div>
+    </div>
+  );
+}
+
+/* ---------- MY INVITATIONS / MY VEHICLES / MY RESERVATIONS ---------- */
+function ScreenMyInvitations({ time, onBack }) {
+  const [tab, setTab] = React.useState("received");
+  return (
+    <div className="screen">
+      <HeaderTitle time={time} title="MY INVITATIONS" onBack={onBack} onAdd={() => {}} />
+      <div className="body" style={{ padding: "24px 24px 130px", display: "flex", flexDirection: "column" }}>
+        <div style={{ display: "flex", gap: 26, borderBottom: "1px solid #e3e3e3" }}>
+          <button onClick={() => setTab("received")} style={tabItem(tab === "received")}>{t("Received")}</button>
+          <button onClick={() => setTab("sent")} style={tabItem(tab === "sent")}>{t("Sent")}</button>
+        </div>
+        <div style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", textAlign: "center", padding: "60px 10px" }}>
+          <IconSpace size={58} stroke="#1b1b1b" sw={1.7} />
+          <div style={{ marginTop: 22, fontFamily: "var(--slab)", fontWeight: 800, fontSize: 31, lineHeight: 1.25 }}>{t("There are no invitations at the moment")}</div>
+        </div>
+      </div>
+    </div>
+  );
+}
+function ScreenMyVehicles({ time, onBack }) {
+  return (
+    <div className="screen">
+      <HeaderTitle time={time} title="My Vehicles" onBack={onBack} onAdd={() => {}} />
+      <div className="body" style={{ padding: "30px 24px 130px", textAlign: "center" }}>
+        <div style={{ paddingTop: 90 }}>
+          <IconCar size={62} stroke="#1b1b1b" sw={1.7} />
+          <div style={{ marginTop: 26, fontFamily: "var(--slab)", fontWeight: 800, fontSize: 34 }}>{t("No Registered Vehicles!")}</div>
+          <button style={{ width: "100%", marginTop: 40, border: "1.5px solid var(--ph-red)", background: "#fff", color: "var(--ph-red)", borderRadius: 40, padding: "18px", fontFamily: "var(--slab)", fontWeight: 800, fontSize: 24, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: 14 }}>
+            {t("Add Your First Vehicle")} <IconArrowR size={24} stroke="var(--ph-red)" style={{ transform: isRTL() ? "scaleX(-1)" : "none" }} />
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+function ScreenMyReservations({ time, onBack }) {
+  return (
+    <div className="screen">
+      <HeaderTitle time={time} title="My Reservations" onBack={onBack} />
+      <div className="body" style={{ padding: "30px 24px 130px", textAlign: "center" }}>
+        <div style={{ paddingTop: 150 }}>
+          <IconQR size={58} color="#161616" />
+          <div style={{ marginTop: 26, fontFamily: "var(--slab)", fontWeight: 800, fontSize: 34 }}>{t("No reservations Yet!")}</div>
+        </div>
       </div>
     </div>
   );
@@ -990,7 +1119,7 @@ function NotifRow({ title, date }) {
       <span style={{ flex: "none", width: 48, height: 48, borderRadius: "50%", background: "var(--ph-red-soft)", display: "flex", alignItems: "center", justifyContent: "center" }}>
         <IconMailOpen size={24} stroke="var(--ph-red)" sw={1.8} />
       </span>
-      <div style={{ flex: 1, fontFamily: "var(--sans)", fontSize: 23, color: "#161616", lineHeight: 1.25 }}>{title}</div>
+      <div style={{ flex: 1, fontFamily: "var(--sans)", fontSize: 23, color: "#161616", lineHeight: 1.25, textAlign: isRTL() ? "right" : "left" }}>{t(title)}</div>
       <div style={{ flex: "none", fontFamily: "var(--sans)", fontSize: 18, color: "var(--ph-gray)", whiteSpace: "nowrap" }}>{date}</div>
     </div>
   );
@@ -1011,7 +1140,7 @@ function ScreenNotificationFeed({ time, onBack }) {
     <div className="screen">
       <HeaderTitle time={time} title="NOTIFICATIONS" onBack={onBack} />
       <div className="body" style={{ padding: "28px 24px 130px" }}>
-        <div style={{ fontFamily: "var(--slab)", fontWeight: 800, fontSize: 30, color: "#161616", marginBottom: 6 }}>Earlier</div>
+        <div style={{ fontFamily: "var(--slab)", fontWeight: 800, fontSize: 30, color: "#161616", marginBottom: 6, textAlign: isRTL() ? "right" : "left" }}>{t("Earlier")}</div>
         {items.map((n, i) => <NotifRow key={i} title={n.title} date={n.date} />)}
       </div>
     </div>
@@ -1022,6 +1151,7 @@ Object.assign(window, {
   ScreenHills, ScreenSpace, ScreenMyUnits, ScreenCommunity, ScreenMore,
   ScreenUnitDetails, ScreenMyUsers, ScreenSettings, ScreenProfile, ScreenNotifications,
   ScreenAppLanguage, ScreenPolicy, ScreenNotificationFeed,
+  ScreenMyInvitations, ScreenMyVehicles, ScreenMyReservations,
 });
 
 // ===== APP =====
@@ -1039,8 +1169,8 @@ function ScreenMyPass({ time, onSwitch, onBell }) {
       <div className="body" style={{ padding: "66px 24px 130px", display: "flex", flexDirection: "column", alignItems: "center" }}>
         {/* segmented pass-type selector */}
         <div style={{ display: "flex", background: "#ececec", borderRadius: 30, padding: 5, gap: 4 }}>
-          <button onClick={() => setTab("gate")} style={passSeg(tab === "gate")}>Gate</button>
-          <button onClick={() => setTab("beach")} style={passSeg(tab === "beach")}>Beach/Pool</button>
+          <button onClick={() => setTab("gate")} style={passSeg(tab === "gate")}>{t("Gate")}</button>
+          <button onClick={() => setTab("beach")} style={passSeg(tab === "beach")}>{t("Beach/Pool")}</button>
         </div>
 
         {/* flip card */}
@@ -1064,8 +1194,8 @@ function ScreenMyPass({ time, onSwitch, onBell }) {
         </div>
 
         {/* name + relationship */}
-        <div style={{ marginTop: 34, fontFamily: "var(--slab)", fontWeight: 700, fontSize: 32, color: "#161616", whiteSpace: "nowrap" }}>Kareem Ali</div>
-        <div style={{ marginTop: 4, fontFamily: "var(--slab)", fontWeight: 500, fontSize: 23, color: "var(--ph-gray)" }}>Child</div>
+        <div style={{ marginTop: 34, fontFamily: "var(--slab)", fontWeight: 700, fontSize: 32, color: "#161616", whiteSpace: "nowrap" }}>{t("Kareem Ali")}</div>
+        <div style={{ marginTop: 4, fontFamily: "var(--slab)", fontWeight: 500, fontSize: 23, color: "var(--ph-gray)" }}>{t("Child")}</div>
       </div>
     </div>
   );
@@ -1090,8 +1220,18 @@ function App() {
   const [sheet, setSheet] = useS(null);        // "switch" | null
   const [bio, setBio] = useS(false);           // biometric modal (gate-pass generation)
   const [loading, setLoading] = useS(false);   // diamond page-transition loader
+  const [lang, setLangState] = useS(() => { try { return localStorage.getItem("ph_lang") || "en"; } catch (e) { return "en"; } });
+  _lang = lang;                                // sync module flag before children render
+  const rtl = lang === "ar";
   const time = tab === "hills" || tab === "more" ? "7:47" : "7:51";
   const top = stack[stack.length - 1] || null;
+
+  // keep the document direction in sync with the chosen language
+  React.useEffect(() => {
+    document.documentElement.setAttribute("dir", rtl ? "rtl" : "ltr");
+    document.documentElement.setAttribute("lang", lang);
+  }, [lang, rtl]);
+  const changeLang = (l) => { try { localStorage.setItem("ph_lang", l); } catch (e) {} setLangState(l); };
 
   // run fn behind a brief diamond loading screen (used for bottom-tab switches)
   const withLoad = (fn, ms = 620) => {
@@ -1116,7 +1256,7 @@ function App() {
   if (tab === "hills") main = <ScreenHills time={time} onBell={openBell} />;
   else if (tab === "space") main = <ScreenSpace time={time} onMyUnits={() => pushPage("myUnits")} onGenerate={generatePass} onSwitch={openSwitch} onBell={openBell} />;
   else if (tab === "community") main = <ScreenCommunity time={time} onSwitch={openSwitch} onBell={openBell} />;
-  else main = <ScreenMore time={time} onMyUsers={() => pushPage("myUsers")} onSettings={() => pushPage("settings")} onBell={openBell} />;
+  else main = <ScreenMore time={time} onMyUsers={() => pushPage("myUsers")} onSettings={() => pushPage("settings")} onBell={openBell} onTile={pushPage} />;
 
   // map a stack key → its page element
   const renderPage = (key) => {
@@ -1126,10 +1266,13 @@ function App() {
       case "myPass": return <ScreenMyPass time={time} onSwitch={openSwitch} onBell={openBell} />;
       case "notifFeed": return <ScreenNotificationFeed time={time} onBack={popPage} />;
       case "myUsers": return <ScreenMyUsers time={time} onBack={popPage} />;
+      case "invitations": return <ScreenMyInvitations time={time} onBack={popPage} />;
+      case "vehicles": return <ScreenMyVehicles time={time} onBack={popPage} />;
+      case "reservations": return <ScreenMyReservations time={time} onBack={popPage} />;
       case "settings": return <ScreenSettings time={time} onBack={popPage} onProfile={() => pushPage("profile")} onNotifications={() => pushPage("notifications")} onLanguage={() => pushPage("appLanguage")} onPrivacy={() => pushPage("privacy")} onTerms={() => pushPage("terms")} />;
       case "profile": return <ScreenProfile time={time} onBack={popPage} />;
       case "notifications": return <ScreenNotifications time={time} onBack={popPage} />;
-      case "appLanguage": return <ScreenAppLanguage time={time} onBack={popPage} />;
+      case "appLanguage": return <ScreenAppLanguage time={time} onBack={popPage} lang={lang} onChangeLang={changeLang} />;
       case "privacy": return <ScreenPolicy time={time} onBack={popPage} title="PRIVACY POLICY" />;
       case "terms": return <ScreenPolicy time={time} onBack={popPage} title="TERMS OF USE" />;
       default: return null;
@@ -1140,7 +1283,7 @@ function App() {
   const baseShift = stack.length > (closing ? 1 : 0);
 
   return (
-    <div className="phone">
+    <div className="phone" dir={rtl ? "rtl" : "ltr"}>
       {/* base tab screen — parallaxes left + dims behind a pushed sub-page */}
       <div style={{ position: "absolute", inset: 0, display: "flex", flexDirection: "column", transition: "transform .3s cubic-bezier(.32,.72,0,1), filter .3s ease", transform: baseShift ? "translateX(-24%)" : "translateX(0)", filter: baseShift ? "brightness(.72)" : "none" }}>
         <div style={{ flex: 1, minHeight: 0, display: "flex" }}>{main}</div>

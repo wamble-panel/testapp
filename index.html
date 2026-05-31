@@ -44,10 +44,11 @@
     overscroll-behavior:none;            /* kill rubber-band chaining */
     -webkit-user-select:none;user-select:none;  /* native: no text selection */
     touch-action:manipulation;           /* remove 300ms tap delay */
-    height:100%;                         /* resolves to the FULL physical screen
-                                            (vh/dvh resolve to the safe area on
-                                            iOS standalone and leave a bottom strip) */
-    background:#fff;
+    height:100%;
+    /* Root bg = colour of the iOS home-indicator strip (which sits outside the
+       layout viewport). Dark to match the splash; JS flips it to white once the
+       app loads so it matches the white bottom nav. */
+    background:#161616;
   }
   body{
     background:#fff;
@@ -1510,6 +1511,8 @@ ReactDOM.createRoot(document.getElementById("root")).render(<App />);
   function fadeOut() {
     if (done) return;
     done = true;
+    // flip the home-indicator strip from splash-dark to app-white
+    document.documentElement.style.backgroundColor = "#fff";
     splash.classList.add("ph-splash-hide");
     window.setTimeout(function () { if (splash.parentNode) splash.parentNode.removeChild(splash); }, 650);
   }

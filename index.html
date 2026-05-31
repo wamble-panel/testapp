@@ -506,18 +506,18 @@ const NAV = [
 function BottomNav({ active, onNav, onPass }) {
   return (
     <div className="ph-bottomnav" style={{ flex: "none", position: "relative", background: "#fff", borderTop: "1px solid #eee", zIndex: 6 }}>
-      {/* white "cut" diamond — notches up into the black bar and frames the pass */}
-      <div style={{ position: "absolute", right: 6, top: -40, width: 80, height: 80, transform: "rotate(45deg)", background: "#fff", borderRadius: 6, zIndex: 6 }} />
-      {/* floating My Pass diamond */}
+      {/* white "cut" diamond behind the pass */}
+      <div style={{ position: "absolute", right: 26, top: -30, width: 60, height: 60, transform: "rotate(45deg)", background: "#fff", borderRadius: 5, zIndex: 6 }} />
+      {/* floating My Pass diamond — centered over the More tab, half above / half on it */}
       <button onClick={onPass} aria-label="My Pass" className="ph-tap-op" style={{
-        position: "absolute", right: 13, top: -33, width: 66, height: 66,
+        position: "absolute", right: 30, top: -26, width: 52, height: 52,
         transform: "rotate(45deg)", background: active === "pass" ? "var(--ph-red-deep)" : "var(--ph-red)", border: "none",
-        borderRadius: 5, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center",
+        borderRadius: 4, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center",
         zIndex: 7,
       }}>
-        <span style={{ transform: "rotate(-45deg)", display: "flex", flexDirection: "column", alignItems: "center", gap: 3 }}>
-          <IconQR size={21} color="#fff" />
-          <span style={{ color: "#fff", fontSize: 9.5, fontWeight: 700, fontFamily: "var(--slab)", lineHeight: 1 }}>{t("My Pass")}</span>
+        <span style={{ transform: "rotate(-45deg)", display: "flex", flexDirection: "column", alignItems: "center", gap: 2 }}>
+          <IconQR size={17} color="#fff" />
+          <span style={{ color: "#fff", fontSize: 8, fontWeight: 700, fontFamily: "var(--slab)", lineHeight: 1 }}>{t("My Pass")}</span>
         </span>
       </button>
 

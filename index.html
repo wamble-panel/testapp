@@ -135,7 +135,7 @@ let _lang = "en";
 const AR = {
   // nav + chrome
   "Hills Today": "هيلز اليوم", "My Space": "مساحتي", "Community": "المجتمع", "More": "المزيد", "My Pass": "تصريحي",
-  "Currently Viewing": "تُعرض حالياً", "Hacienda Bay": "هاسيندا باي", "Welcome back": "مرحباً بعودتك", "Kareem Ali": "كريم علي",
+  "Currently Viewing": "تُعرض حالياً", "Hacienda Bay": "هاسيندا باي", "Welcome back": "مرحباً بعودتك", "Kareem Sabri": "كريم صبري",
   // hills today
   "NEWS": "الأخبار", "& EVENTS": "والفعاليات", "News": "الأخبار", "Events": "الفعاليات", "Reserve Now": "احجز الآن",
   "SALES": "إطلاقات", "LAUNCHES": "المبيعات",
@@ -379,7 +379,7 @@ function PhotoCut({ size = 80, left = 16 }) {
   return (
     <div style={{ position: "absolute", ...side, top: -(size * 0.52), width: size, height: size, zIndex: 3 }}>
       <div style={{ position: "absolute", inset: -7, background: "#fff", clipPath: DIAMOND, WebkitClipPath: DIAMOND }} />
-      <Img src={PHOTO_URL} alt="Kareem Ali" referrerPolicy="no-referrer" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", clipPath: DIAMOND, WebkitClipPath: DIAMOND, display: "block" }} />
+      <Img src={PHOTO_URL} alt="Kareem Sabri" referrerPolicy="no-referrer" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", clipPath: DIAMOND, WebkitClipPath: DIAMOND, display: "block" }} />
     </div>
   );
 }
@@ -404,7 +404,7 @@ function HeaderCompound({ time, sub = "Currently Viewing", title = "Hacienda Bay
 }
 
 /* ---- Header: home ("Welcome back / MAHMOUD KHALED") ---- */
-function HeaderHome({ time, name = "Kareem Ali", onBell }) {
+function HeaderHome({ time, name = "Kareem Sabri", onBell }) {
   return (
     <div className="ph-header" style={{ flex: "none", position: "relative", zIndex: 4 }}>
       <div style={{ background: "var(--ph-black)", color: "#fff", padding: "2px 60px 18px", textAlign: "center", position: "relative" }}>
@@ -656,7 +656,7 @@ function BiometricModal({ onSuccess, onCancel }) {
           publicKey: {
             challenge,
             rp: { name: "Palm Hills" },
-            user: { id: userId, name: "kareem.ali", displayName: "Kareem Ali" },
+            user: { id: userId, name: "kareem.ali", displayName: "Kareem Sabri" },
             pubKeyCredParams: [{ type: "public-key", alg: -7 }, { type: "public-key", alg: -257 }],
             authenticatorSelection: { authenticatorAttachment: "platform", userVerification: "required" },
             timeout: 60000,
@@ -867,7 +867,7 @@ function ScreenMore({ time, onMyUsers, onSettings, onBell, onTile }) {
   ];
   return (
     <div className="screen">
-      <HeaderName time={time} name="Kareem Ali" onBell={onBell} />
+      <HeaderName time={time} name="Kareem Sabri" onBell={onBell} />
       <div className="body" style={{ padding: "58px 22px 130px" }}>
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 18 }}>
           {tiles.map((tile) => (
@@ -1004,11 +1004,11 @@ function ScreenProfile({ time, onBack }) {
       <div className="body" style={{ padding: "32px 24px 130px" }}>
         <div style={{ display: "flex", justifyContent: "center" }}>
           <div style={{ width: 150, height: 150 }}>
-            <Img src={PHOTO_URL} alt="Kareem Ali" referrerPolicy="no-referrer"
+            <Img src={PHOTO_URL} alt="Kareem Sabri" referrerPolicy="no-referrer"
               style={{ width: "100%", height: "100%", objectFit: "cover", clipPath: DIAMOND, WebkitClipPath: DIAMOND }} />
           </div>
         </div>
-        <ProfileField label="Name*" value="Kareem Ali" />
+        <ProfileField label="Name*" value="Kareem Sabri" />
         <ProfileField label="Mobile number*" value="+201001283564" />
         <ProfileField label="Email*" value="kareemali2933@yahoo.com" />
         <ProfileField label="Password*" value="*********" action={
@@ -1217,33 +1217,34 @@ function ScreenMyPass({ time, onSwitch, onBell }) {
       <HeaderCompound time={time} onSwitch={onSwitch} onBell={onBell} />
       <div className="body" style={{ padding: "66px 24px 130px", display: "flex", flexDirection: "column", alignItems: "center" }}>
         {/* segmented pass-type selector */}
-        <div style={{ display: "flex", background: "#ececec", borderRadius: 30, padding: 5, gap: 4 }}>
+        <div style={{ display: "flex", width: 300, maxWidth: "100%", background: "#fff", border: "1px solid #e2e2e2", borderRadius: 30, padding: 5, gap: 4 }}>
           <button onClick={() => setTab("gate")} style={passSeg(tab === "gate")}>{t("Gate Pass")}</button>
           <button onClick={() => setTab("beach")} style={passSeg(tab === "beach")}>{t("Beach/Pool Pass")}</button>
         </div>
 
-        {/* flip card */}
-        <div style={{ perspective: 1400, marginTop: 40, width: 286, height: 286 }}>
+        {/* flip card — QR (square) on the front, portrait photo on the back;
+            the two faces no longer share identical proportions */}
+        <div style={{ perspective: 1400, marginTop: 36, width: 252, height: 332 }}>
           <div onClick={() => setFlipped((f) => !f)} aria-label="Flip pass" style={{
-            position: "relative", width: 286, height: 286,
+            position: "relative", width: 252, height: 332,
             cursor: "pointer", transformStyle: "preserve-3d", WebkitTransformStyle: "preserve-3d", willChange: "transform",
             transition: "transform .7s cubic-bezier(.4,.2,.2,1)",
             transform: flipped ? "rotateY(180deg)" : "rotateY(0deg)",
           }}>
-            {/* front: QR (clean — no logo, no labels) */}
+            {/* front: QR centered (square, not stretched to the card) */}
             <div style={passFace(false, flipped)}>
-              <QRCode size={244} value="3226864" />
+              <QRCode size={236} value="3226864" />
             </div>
-            {/* back: photo */}
+            {/* back: profile photo shown in full (letterboxed), not cropped */}
             <div style={passFace(true, flipped)}>
-              <Img src={PHOTO_URL} alt="Kareem Ali" referrerPolicy="no-referrer"
-                style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
+              <Img src={PHOTO_URL} alt="Kareem Sabri" referrerPolicy="no-referrer"
+                style={{ width: "100%", height: "100%", objectFit: "contain", display: "block", background: "#fff" }} />
             </div>
           </div>
         </div>
 
         {/* name + relationship */}
-        <div style={{ marginTop: 34, fontFamily: "var(--slab)", fontWeight: 700, fontSize: 32, color: "#161616", whiteSpace: "nowrap" }}>{t("Kareem Ali")}</div>
+        <div style={{ marginTop: 34, fontFamily: "var(--slab)", fontWeight: 700, fontSize: 32, color: "#161616", whiteSpace: "nowrap" }}>{t("Kareem Sabri")}</div>
         <div style={{ marginTop: 4, fontFamily: "var(--slab)", fontWeight: 500, fontSize: 23, color: "var(--ph-gray)" }}>{t("Child")}</div>
 
         {/* help line */}
@@ -1256,7 +1257,7 @@ function ScreenMyPass({ time, onSwitch, onBell }) {
     </div>
   );
 }
-const passSeg = (on) => ({ border: "none", cursor: "pointer", borderRadius: 24, padding: "11px 20px", fontFamily: "var(--slab)", fontWeight: 600, fontSize: 18, whiteSpace: "nowrap", background: on ? "#161616" : "transparent", color: on ? "#fff" : "#8a8a8a" });
+const passSeg = (on) => ({ flex: 1, border: "none", cursor: "pointer", borderRadius: 24, padding: "11px 8px", fontFamily: "var(--slab)", fontWeight: 700, fontSize: 18, lineHeight: 1.15, textAlign: "center", whiteSpace: "normal", background: on ? "#161616" : "transparent", color: on ? "#fff" : "#8a8a8a", display: "flex", alignItems: "center", justifyContent: "center" });
 const passFace = (back, flipped) => ({
   position: "absolute", inset: 0, backfaceVisibility: "hidden", WebkitBackfaceVisibility: "hidden",
   borderRadius: back ? 18 : 0, overflow: "hidden",

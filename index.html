@@ -32,6 +32,8 @@
     --sans:'Mulish', system-ui, sans-serif;
   }
   *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;-webkit-touch-callout:none;}
+  /* buttons inherit text colour/font so iOS doesn't tint unstyled labels blue */
+  button{color:inherit;font-family:inherit;}
   html,body{
     margin:0;padding:0;
     overscroll-behavior:none;            /* kill rubber-band chaining */
@@ -158,6 +160,9 @@ const AR = {
   "Sales Inquiry": "استفسارات المبيعات",
   "Register here if you are interested to buy a property in Palm Hills": "سجّل هنا إذا كنت مهتماً بشراء عقار في بالم هيلز",
   "Choose Your Neighbour": "اختر جارك", "Invite who you want to live next to": "ادعُ من تريد أن تعيش بجواره",
+  "If you know someone interested to buy a property in Palm Hills": "إذا كنت تعرف شخصاً مهتماً بشراء عقار في بالم هيلز",
+  "Send Us a Message": "أرسل لنا رسالة", "In case you have suggestions, complaints, or general inquiries": "في حال كان لديك اقتراحات أو شكاوى أو استفسارات عامة",
+  "Log Out": "تسجيل الخروج",
   // settings list
   "ACCOUNT & SETTINGS": "الحساب والإعدادات", "PROFILE & ACCOUNT": "الملف الشخصي والحساب",
   "NOTIFICATION SETTING": "إعدادات الإشعارات", "APP LANGUAGE": "لغة التطبيق",
@@ -355,10 +360,22 @@ const DIAMOND = "polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%)";
 /* Transparent diamond logo that "cuts" a notch into the header bar.
    White halo = page background carving the black bar; logo sits in it. */
 function LogoCut({ size = 80, left = 16 }) {
+  const side = isRTL() ? { right: left } : { left };
   return (
-    <div style={{ position: "absolute", left, top: -(size * 0.52), width: size, height: size, zIndex: 3 }}>
+    <div style={{ position: "absolute", ...side, top: -(size * 0.52), width: size, height: size, zIndex: 3 }}>
       <div style={{ position: "absolute", inset: -7, background: "#fff", clipPath: DIAMOND }} />
       <img src={LOGO} alt="Palm Hills" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", clipPath: DIAMOND, display: "block" }} />
+    </div>
+  );
+}
+
+/* Same diamond "cut", but framing the user's profile photo (used on the More header) */
+function PhotoCut({ size = 80, left = 16 }) {
+  const side = isRTL() ? { right: left } : { left };
+  return (
+    <div style={{ position: "absolute", ...side, top: -(size * 0.52), width: size, height: size, zIndex: 3 }}>
+      <div style={{ position: "absolute", inset: -7, background: "#fff", clipPath: DIAMOND, WebkitClipPath: DIAMOND }} />
+      <Img src={PHOTO_URL} alt="Kareem Ali" referrerPolicy="no-referrer" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", clipPath: DIAMOND, WebkitClipPath: DIAMOND, display: "block" }} />
     </div>
   );
 }
@@ -424,7 +441,7 @@ function HeaderName({ time, name, onBell }) {
         <button onClick={onBell} aria-label="Notifications" style={{ position: "absolute", right: 22, top: 16, background: "none", border: "none", padding: 0, cursor: "pointer", color: "#fff", display: "flex" }}><IconBell size={27} /></button>
       </div>
       <div style={{ height: 0, position: "relative" }}>
-        <LogoCut size={80} left={16} />
+        <PhotoCut size={80} left={16} />
       </div>
     </div>
   );
@@ -548,6 +565,7 @@ const IconDoc = (p) => (<S {...p}><path d="M7 3h7l4 4v14H7z" /><path d="M14 3v4h
 const IconPencil = (p) => (<S {...p}><path d="M4 20h4L18 10l-4-4L4 16v4Z" /><path d="m13.5 6.5 4 4" /></S>);
 const IconMailOpen = (p) => (<S {...p}><path d="M3 10.5 12 4l9 6.5V19a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z" /><path d="m3 10.5 9 6 9-6" /></S>);
 const IconFaceID = (p) => (<S {...p}><path d="M4 8V6.5A2.5 2.5 0 0 1 6.5 4H8" /><path d="M16 4h1.5A2.5 2.5 0 0 1 20 6.5V8" /><path d="M20 16v1.5a2.5 2.5 0 0 1-2.5 2.5H16" /><path d="M8 20H6.5A2.5 2.5 0 0 1 4 17.5V16" /><path d="M9 9.5v1.5" /><path d="M15 9.5v1.5" /><path d="M12 9.5v3l-1 1" /><path d="M9 15c.9.8 1.9 1.2 3 1.2s2.1-.4 3-1.2" /></S>);
+const IconBuilding = (p) => (<S {...p}><rect x="4" y="3" width="9" height="18" rx="1" /><path d="M13 8h6a1 1 0 0 1 1 1v12h-7" /><path d="M7 6.5h3M7 10h3M7 13.5h3M16 12h1M16 15.5h1" /></S>);
 
 /* Switch Compound bottom sheet */
 function SwitchSheet({ onClose, onSelect }) {
@@ -831,14 +849,19 @@ function ScreenMore({ time, onMyUsers, onSettings, onBell, onTile }) {
               <div style={{ width: 58, height: 58, borderRadius: "50%", background: "var(--ph-red-soft)", display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 16 }}>
                 <tile.Icon size={30} stroke="var(--ph-red)" sw={1.9} />
               </div>
-              <span style={{ fontFamily: "var(--sans)", fontSize: 23, fontWeight: 500 }}>{t(tile.label)}</span>
+              <span style={{ fontFamily: "var(--sans)", fontSize: 23, fontWeight: 500, color: "#161616" }}>{t(tile.label)}</span>
             </button>
           ))}
         </div>
 
         <ListRow Icon={IconGear} title="Account & Settings" sub="Profile & Account and App Settings to manage and customize your information" onClick={onSettings} />
         <ListRow Icon={IconChat} title="Sales Inquiry" sub="Register here if you are interested to buy a property in Palm Hills" />
-        <ListRow Icon={IconCommunity} title="Choose Your Neighbour" sub="Invite who you want to live next to" />
+        <ListRow Icon={IconBuilding} title="Choose Your Neighbour" sub="If you know someone interested to buy a property in Palm Hills" />
+        <ListRow Icon={IconMailOpen} title="Send Us a Message" sub="In case you have suggestions, complaints, or general inquiries" />
+
+        <div style={{ textAlign: "center", marginTop: 34 }}>
+          <button style={{ background: "none", border: "none", cursor: "pointer", fontFamily: "var(--slab)", fontWeight: 800, fontSize: 28, color: "#161616" }}>{t("Log Out")}</button>
+        </div>
       </div>
     </div>
   );
@@ -848,7 +871,7 @@ function ListRow({ Icon, title, sub, onClick }) {
     <button onClick={onClick} style={{ width: "100%", textAlign: isRTL() ? "right" : "left", background: "#fff", border: "1px solid var(--ph-gray-line)", padding: "22px 20px", display: "flex", gap: 16, marginTop: 20, alignItems: "flex-start", cursor: onClick ? "pointer" : "default" }}>
       <Icon size={26} stroke="#1b1b1b" style={{ flex: "none", marginTop: 4 }} />
       <div style={{ flex: 1 }}>
-        <div style={{ fontFamily: "var(--slab)", fontWeight: 700, fontSize: 26, lineHeight: 1.2, marginBottom: 8 }}>{t(title)}</div>
+        <div style={{ fontFamily: "var(--slab)", fontWeight: 700, fontSize: 26, lineHeight: 1.2, marginBottom: 8, color: "#161616" }}>{t(title)}</div>
         <div style={{ color: "var(--ph-gray)", fontFamily: "var(--sans)", fontSize: 20, lineHeight: 1.4 }}>{t(sub)}</div>
       </div>
       <IconChevR size={22} stroke="var(--ph-red)" style={{ flex: "none", marginTop: 4, transform: isRTL() ? "scaleX(-1)" : "none" }} />
@@ -1292,7 +1315,7 @@ function App() {
       {/* full-page views as a stack — each slides like native iOS push/pop.
           Only the topmost animates out on a back; pages beneath are revealed. */}
       {stack.map((key, i) => (
-        <Overlay key={i} closing={closing && i === stack.length - 1}>{renderPage(key)}</Overlay>
+        <Overlay key={i} closing={closing && i === stack.length - 1} onSwipeBack={i === stack.length - 1 ? popPage : null}>{renderPage(key)}</Overlay>
       ))}
 
       {/* bottom nav is always present (My Pass is a standalone page, not an overlay with its own chrome) */}
@@ -1320,9 +1343,27 @@ function App() {
   );
 }
 
-function Overlay({ children, closing }) {
+function Overlay({ children, closing, onSwipeBack }) {
+  // edge-swipe back gesture (start near the leading edge, drag toward trailing)
+  const drag = React.useRef(null);
+  const onTouchStart = (e) => {
+    if (!onSwipeBack) { drag.current = null; return; }
+    const x = e.touches[0].clientX, w = window.innerWidth;
+    const fromEdge = isRTL() ? (w - x < 44) : (x < 44);
+    drag.current = fromEdge ? { x, y: e.touches[0].clientY } : null;
+  };
+  const onTouchEnd = (e) => {
+    if (!drag.current || !onSwipeBack) return;
+    const tch = e.changedTouches[0];
+    const dx = tch.clientX - drag.current.x;
+    const dy = Math.abs(tch.clientY - drag.current.y);
+    const back = isRTL() ? dx < -70 : dx > 70;
+    if (back && dy < 70) onSwipeBack();
+    drag.current = null;
+  };
   return (
-    <div style={{ position: "absolute", inset: 0, zIndex: 20, background: "#fff", boxShadow: "-12px 0 28px -10px rgba(0,0,0,.35)", animation: (closing ? "slideOut" : "slideIn") + " .3s cubic-bezier(.32,.72,0,1) both" }}>
+    <div onTouchStart={onTouchStart} onTouchEnd={onTouchEnd}
+      style={{ position: "absolute", inset: 0, zIndex: 20, background: "#fff", boxShadow: "-12px 0 28px -10px rgba(0,0,0,.35)", animation: (closing ? "slideOut" : "slideIn") + " .3s cubic-bezier(.32,.72,0,1) both" }}>
       {children}
     </div>
   );

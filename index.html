@@ -1537,24 +1537,24 @@ ReactDOM.createRoot(document.getElementById("root")).render(<App />);
 
   </script>
 
-  <!-- TEMP diagnostic: 5 quick taps in the TOP-LEFT corner toggle a debug overlay.
-       When ON: <html> turns magenta (so any home-indicator strip is obvious) and a
-       panel shows the live viewport / safe-area numbers. -->
+  <!-- TEMP diagnostic: AUTO-ON. <html> turns magenta (so any home-indicator strip
+       is obvious) and a panel shows live viewport / safe-area numbers.
+       5 quick taps just BELOW the notch on the left turn it OFF. -->
   <script>
   (function () {
     var KEY = 'ph_debug';
-    var on = function () { try { return localStorage.getItem(KEY) === '1'; } catch (e) { return false; } };
+    var off = function () { try { return localStorage.getItem(KEY) === 'off'; } catch (e) { return false; } };
     var taps = [];
     var hot = document.createElement('div');
-    hot.style.cssText = 'position:fixed;top:0;left:0;width:70px;height:70px;z-index:100001;';
+    hot.style.cssText = 'position:fixed;top:90px;left:0;width:90px;height:90px;z-index:100001;';
     document.documentElement.appendChild(hot);
     hot.addEventListener('click', function () {
       var now = Date.now();
       taps = taps.filter(function (t) { return now - t < 1600; });
       taps.push(now);
-      if (taps.length >= 5) { try { localStorage.setItem(KEY, on() ? '0' : '1'); } catch (e) {} location.reload(); }
+      if (taps.length >= 5) { try { localStorage.setItem(KEY, off() ? 'on' : 'off'); } catch (e) {} location.reload(); }
     });
-    if (!on()) return;
+    if (off()) return;
 
     document.documentElement.style.setProperty('background', '#ff00ff', 'important'); // magenta = <html>/canvas
     var mk = function (css) { var e = document.createElement('div'); e.style.cssText = css; document.body.appendChild(e); return e; };

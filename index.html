@@ -139,6 +139,7 @@ const AR = {
   // hills today
   "NEWS": "الأخبار", "& EVENTS": "والفعاليات", "News": "الأخبار", "Events": "الفعاليات", "Reserve Now": "احجز الآن",
   "SALES": "إطلاقات", "LAUNCHES": "المبيعات",
+  "Reserve": "احجز", "Now!": "الآن!", "P/X, A New Perspective": "P/X، منظور جديد", "Explore & Reserve": "استكشف واحجز",
   // my space / gate passes
   "GATE": "تصاريح", "PASSES": "البوابة", "Gate": "البوابة", "Beach/Pool": "الشاطئ/المسبح",
   "No passes generated yet.": "لم يتم إنشاء أي تصاريح بعد.", "GENERATE NEW PASS": "إنشاء تصريح جديد",
@@ -344,6 +345,7 @@ Object.assign(window, {
 // ============ CHROME: Logo, Headers, BottomNav, QR ============
 
 const LOGO = "assets/logo-diamond.png";
+const LAUNCH_IMG = "https://new-projects-media.propertyfinder.com/project/c4fc7d45-a99c-4aad-a82c-88179fdce51a/gallery/image/6CtewdO_VZB_9Jhmyw9PKRvf6YmK_LfSySlJZSbDPmE=/medium.webp";
 
 function Diamond({ size = 84, src = LOGO, rotate = -8, style }) {
   // red diamond logo, slightly rotated, hanging off the header
@@ -361,14 +363,12 @@ function Diamond({ size = 84, src = LOGO, rotate = -8, style }) {
 
 const DIAMOND = "polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%)";
 
-/* Transparent diamond logo that "cuts" a notch into the header bar.
-   White halo = page background carving the black bar; logo sits in it. */
-function LogoCut({ size = 80, left = 16 }) {
+/* Diamond logo (the PNG is already a transparent diamond — no halo/clip). */
+function LogoCut({ size = 66, left = 18 }) {
   const side = isRTL() ? { right: left } : { left };
   return (
-    <div style={{ position: "absolute", ...side, top: -(size * 0.52), width: size, height: size, zIndex: 3 }}>
-      <div style={{ position: "absolute", inset: -7, background: "#fff", clipPath: DIAMOND }} />
-      <img src={LOGO} alt="Palm Hills" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", clipPath: DIAMOND, display: "block" }} />
+    <div style={{ position: "absolute", ...side, top: -(size * 0.5), width: size, height: size, zIndex: 3 }}>
+      <img src={LOGO} alt="Palm Hills" style={{ width: "100%", height: "100%", objectFit: "contain", display: "block" }} />
     </div>
   );
 }
@@ -397,7 +397,7 @@ function HeaderCompound({ time, sub = "Currently Viewing", title = "Hacienda Bay
         <button onClick={onBell} aria-label="Notifications" style={{ position: "absolute", right: 22, top: -2, background: "none", border: "none", padding: 0, cursor: "pointer", color: "#fff", display: "flex" }}><IconBell size={27} /></button>
       </div>
       <div style={{ height: 0, position: "relative" }}>
-        <LogoCut size={80} left={16} />
+        <LogoCut size={66} left={18} />
       </div>
     </div>
   );
@@ -413,7 +413,7 @@ function HeaderHome({ time, name = "Kareem Sabri", onBell }) {
         <button onClick={onBell} aria-label="Notifications" style={{ position: "absolute", right: 22, top: 14, background: "none", border: "none", padding: 0, cursor: "pointer", color: "#fff", display: "flex" }}><IconBell size={27} /></button>
       </div>
       <div style={{ height: 0, position: "relative" }}>
-        <LogoCut size={80} left={16} />
+        <LogoCut size={66} left={18} />
       </div>
     </div>
   );
@@ -463,12 +463,12 @@ function BottomNav({ active, onNav, onPass }) {
   return (
     <div className="ph-bottomnav" style={{ flex: "none", position: "relative", background: "#fff", borderTop: "1px solid #eee", zIndex: 6 }}>
       {/* white "cut" halo carving the nav + content around the diamond */}
-      <div style={{ position: "absolute", right: 13, top: -25, width: 66, height: 66, transform: "rotate(45deg)", background: "#fff", borderRadius: 18, zIndex: 6 }} />
+      <div style={{ position: "absolute", right: 13, top: -25, width: 66, height: 66, transform: "rotate(45deg)", background: "#fff", borderRadius: 2, zIndex: 6 }} />
       {/* floating My Pass diamond */}
       <button onClick={onPass} aria-label="My Pass" style={{
         position: "absolute", right: 17, top: -21, width: 58, height: 58,
         transform: "rotate(45deg)", background: active === "pass" ? "var(--ph-red-deep)" : "var(--ph-red)", border: "none",
-        borderRadius: 16, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center",
+        borderRadius: 2, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center",
         boxShadow: "0 6px 16px -5px rgba(196,32,60,.6)", zIndex: 7,
       }}>
         <span style={{ transform: "rotate(-45deg)", display: "flex", flexDirection: "column", alignItems: "center", gap: 1 }}>
@@ -725,14 +725,24 @@ function ScreenHills({ time, onBell }) {
             <button key={lt} onClick={() => setLaunch(lt)} style={tabItem(launch === lt)}>{lt}</button>
           ))}
         </div>
-        <div style={{ position: "relative", marginTop: 18, borderRadius: 4, overflow: "hidden", height: 188, background: "#fff" }}>
-          <Img src={undefined} style={{ position: "absolute", inset: 0, width: "100%", height: "100%" }} />
-          <div style={{ position: "absolute", right: 0, bottom: 0, top: 0, width: 150, background: "rgba(40,40,40,.55)", display: "flex", alignItems: "center", justifyContent: "center", textAlign: "center" }}>
-            <span style={{ color: "#fff", fontFamily: "var(--slab)", fontWeight: 700, fontSize: 22, lineHeight: 1.1 }}>{t("Reserve Now")}</span>
+        <div style={{ margin: "18px -22px 0" }}>
+          <div style={{ position: "relative", overflow: "hidden", height: 230, background: "#161616" }}>
+            <img src={LAUNCH_IMG} alt="P/X" referrerPolicy="no-referrer" onError={(e) => { e.currentTarget.style.display = "none"; }}
+              style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
+            <div style={{ position: "absolute", top: 0, right: 22, background: "#7c7c84", color: "#fff", padding: "10px 18px 12px", textAlign: "center", borderTop: "4px solid var(--ph-red)" }}>
+              <div style={{ fontFamily: "var(--slab)", fontWeight: 800, fontSize: 22, lineHeight: 1.05 }}>{t("Reserve")}</div>
+              <div style={{ fontFamily: "var(--slab)", fontWeight: 800, fontSize: 22, lineHeight: 1.05 }}>{t("Now!")}</div>
+            </div>
           </div>
-        </div>
-        <div style={{ display: "flex", gap: 6, justifyContent: "center", marginTop: 14 }}>
-          {[0, 1, 2].map((i) => <span key={i} style={{ width: i === 0 ? 18 : 7, height: 7, borderRadius: 4, background: i === 0 ? "var(--ph-red)" : "#d6d6d6" }} />)}
+          <div style={{ background: "#161616", padding: "24px 22px 26px" }}>
+            <div style={{ color: "#fff", fontFamily: "var(--slab)", fontWeight: 700, fontSize: 27 }}>{t("P/X, A New Perspective")}</div>
+            <button style={{ width: "100%", marginTop: 22, border: "1.5px solid #fff", background: "transparent", color: "#fff", borderRadius: 40, padding: "16px", fontFamily: "var(--slab)", fontWeight: 800, fontSize: 22, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: 12 }}>
+              {t("Explore & Reserve")} <IconArrowR size={24} stroke="#fff" style={{ transform: isRTL() ? "scaleX(-1)" : "none" }} />
+            </button>
+            <div style={{ display: "flex", gap: 6, justifyContent: "center", marginTop: 22 }}>
+              {[0, 1, 2].map((i) => <span key={i} style={{ width: i === 0 ? 18 : 7, height: 7, borderRadius: 4, background: i === 0 ? "var(--ph-red)" : "#5a5a5a" }} />)}
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -1217,7 +1227,7 @@ function ScreenMyPass({ time, onSwitch, onBell }) {
       <HeaderCompound time={time} onSwitch={onSwitch} onBell={onBell} />
       <div className="body" style={{ padding: "66px 24px 130px", display: "flex", flexDirection: "column", alignItems: "center" }}>
         {/* segmented pass-type selector */}
-        <div style={{ display: "flex", width: 300, maxWidth: "100%", background: "#fff", border: "1px solid #e2e2e2", borderRadius: 30, padding: 5, gap: 4 }}>
+        <div style={{ display: "inline-flex", maxWidth: "100%", background: "#fff", border: "1px solid #e2e2e2", borderRadius: 30, padding: 5, gap: 4 }}>
           <button onClick={() => setTab("gate")} style={passSeg(tab === "gate")}>{t("Gate Pass")}</button>
           <button onClick={() => setTab("beach")} style={passSeg(tab === "beach")}>{t("Beach/Pool Pass")}</button>
         </div>
@@ -1235,10 +1245,10 @@ function ScreenMyPass({ time, onSwitch, onBell }) {
             <div style={passFace(false, flipped)}>
               <QRCode size={236} value="3226864" />
             </div>
-            {/* back: profile photo shown in full (letterboxed), not cropped */}
+            {/* back: profile photo, full bleed, no frame/shadow */}
             <div style={passFace(true, flipped)}>
               <Img src={PHOTO_URL} alt="Kareem Sabri" referrerPolicy="no-referrer"
-                style={{ width: "100%", height: "100%", objectFit: "contain", display: "block", background: "#fff" }} />
+                style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
             </div>
           </div>
         </div>
@@ -1260,9 +1270,8 @@ function ScreenMyPass({ time, onSwitch, onBell }) {
 const passSeg = (on) => ({ flex: 1, border: "none", cursor: "pointer", borderRadius: 24, padding: "11px 8px", fontFamily: "var(--slab)", fontWeight: 700, fontSize: 18, lineHeight: 1.15, textAlign: "center", whiteSpace: "normal", background: on ? "#161616" : "transparent", color: on ? "#fff" : "#8a8a8a", display: "flex", alignItems: "center", justifyContent: "center" });
 const passFace = (back, flipped) => ({
   position: "absolute", inset: 0, backfaceVisibility: "hidden", WebkitBackfaceVisibility: "hidden",
-  borderRadius: back ? 18 : 0, overflow: "hidden",
-  background: back ? "#fff" : "transparent",
-  boxShadow: back ? "0 18px 44px -14px rgba(0,0,0,.32)" : "none",
+  borderRadius: 0, overflow: "hidden",
+  background: "transparent",
   display: "flex", alignItems: "center", justifyContent: "center",
   transform: back ? "rotateY(180deg)" : "rotateY(0deg)",
   opacity: back ? (flipped ? 1 : 0) : (flipped ? 0 : 1),

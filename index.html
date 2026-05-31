@@ -44,18 +44,16 @@
     overscroll-behavior:none;            /* kill rubber-band chaining */
     -webkit-user-select:none;user-select:none;  /* native: no text selection */
     touch-action:manipulation;           /* remove 300ms tap delay */
-    height:100%;
+    height:100%;                         /* resolves to the FULL physical screen
+                                            (vh/dvh resolve to the safe area on
+                                            iOS standalone and leave a bottom strip) */
+    background:#fff;
   }
   body{
-    /* White (matching the app) so the bottom home-indicator safe-area strip
-       is seamless on a phone. Use 100dvh (dynamic viewport) — the reliable
-       way to fill an iOS standalone PWA without a bottom gap. */
     background:#fff;
     font-family:var(--sans);
     color:var(--ph-ink);
-    height:100vh;
-    height:100dvh;
-    min-height:100dvh;
+    height:100%;
     overflow:hidden;
   }
   /* On wider screens the app is a centered phone-width column — frame it on dark */
@@ -63,14 +61,14 @@
   /* allow selection only where it would be expected (none here, but keep hook) */
   .selectable{-webkit-user-select:text;user-select:text;}
   #stage{
-    width:100%;height:100vh;height:100dvh;
+    width:100%;height:100%;
     display:flex;align-items:stretch;justify-content:center;
   }
   /* ---------- App viewport: full-bleed; centered phone-width column on desktop ---------- */
   .phone{
     position:relative;
     width:100%;max-width:480px;
-    height:100vh;height:100dvh;
+    height:100%;
     background:#fff;
     overflow:hidden;
     flex:none;
@@ -1428,7 +1426,7 @@ function App() {
         {loading && <DiamondLoader />}
       </div>
 
-      {/* bottom nav — a normal flex child pinned at the bottom of the 100dvh
+      {/* bottom nav — a normal flex child pinned at the bottom of the full-height
           column (no fixed positioning → no iOS standalone bottom gap) */}
       <BottomNav
         active={top === "myPass" ? "pass" : tab}

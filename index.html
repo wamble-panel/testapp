@@ -468,6 +468,15 @@ function DiamondLoader() {
 
 function IconXClose(p) { return (<S {...p} sw={2.4}><line x1="5" y1="5" x2="19" y2="19" /><line x1="19" y1="5" x2="5" y2="19" /></S>); }
 
+// icons used by the detail / settings sub-pages
+const IconPin = (p) => (<S {...p}><path d="M12 21s-6-5.2-6-10a6 6 0 1 1 12 0c0 4.8-6 10-6 10Z" /><circle cx="12" cy="11" r="2.3" /></S>);
+const IconUser = (p) => (<S {...p}><circle cx="12" cy="8" r="3.3" /><path d="M5.5 20a6.5 6.5 0 0 1 13 0" /></S>);
+const IconMail = (p) => (<S {...p}><rect x="3" y="5" width="18" height="14" rx="2" /><path d="m4 7 8 6 8-6" /></S>);
+const IconTranslate = (p) => (<S {...p}><path d="M4 5h7" /><path d="M8 4v2c0 3.2-1.8 6-4 7.2" /><path d="M5 9.5c0 2 2.2 4.2 5.2 5.2" /><path d="m12.5 20 3.6-8 3.6 8" /><path d="M13.8 17h4.6" /></S>);
+const IconShield = (p) => (<S {...p}><path d="M12 3 5 6v5c0 4.2 2.9 7.7 7 9 4.1-1.3 7-4.8 7-9V6l-7-3Z" /><path d="m9.2 12 1.9 2 3.7-3.8" /></S>);
+const IconDoc = (p) => (<S {...p}><path d="M7 3h7l4 4v14H7z" /><path d="M14 3v4h4" /></S>);
+const IconPencil = (p) => (<S {...p}><path d="M4 20h4L18 10l-4-4L4 16v4Z" /><path d="m13.5 6.5 4 4" /></S>);
+
 /* Switch Compound bottom sheet */
 function SwitchSheet({ onClose, onSelect }) {
   return (
@@ -626,23 +635,24 @@ function ScreenSpace({ time, onMyUnits, onGenerate, onSwitch }) {
 }
 
 /* ---------- MY UNITS (subpage) ---------- */
-function ScreenMyUnits({ time, onBack }) {
+function ScreenMyUnits({ time, onBack, onSwitch, onUnit }) {
   return (
     <div className="screen">
       <HeaderTitle time={time} title="MY UNITS" onBack={onBack} />
       <div className="body" style={{ padding: "26px 24px 130px" }}>
-        <div style={{ border: "1px solid var(--ph-gray-line)", borderRadius: 4, padding: "26px 22px", display: "flex", alignItems: "center", gap: 18 }}>
-          <IconHouseSmall size={34} stroke="#1b1b1b" />
-          <div>
+        <button onClick={onUnit} style={{ width: "100%", textAlign: "left", background: "#fff", border: "1px solid var(--ph-gray-line)", borderRadius: 4, padding: "26px 22px", display: "flex", alignItems: "center", gap: 18, cursor: "pointer" }}>
+          <IconHouseSmall size={34} stroke="#1b1b1b" style={{ flex: "none" }} />
+          <div style={{ flex: 1 }}>
             <div style={{ fontFamily: "var(--slab)", fontWeight: 700, fontSize: 30 }}>HAC-JCH-242BF</div>
             <div style={{ color: "var(--ph-gray)", fontFamily: "var(--slab)", fontWeight: 500, fontSize: 24 }}>Family Member</div>
           </div>
-        </div>
+          <IconChevR size={22} stroke="var(--ph-red)" style={{ flex: "none" }} />
+        </button>
         <div style={{ display: "flex", gap: 12, marginTop: 40, color: "var(--ph-gray)" }}>
-          <IconBulb size={24} stroke="var(--ph-red)" />
+          <IconBulb size={24} stroke="var(--ph-red)" style={{ flex: "none", marginTop: 4 }} />
           <p style={{ margin: 0, fontFamily: "var(--slab)", fontWeight: 500, fontSize: 23, lineHeight: 1.4, color: "var(--ph-gray)" }}>
-            You are currently viewing units in Hacienda Bay,to view <br />
-            units in other compounds <span style={{ color: "var(--ph-red)", fontWeight: 700 }}>Switch Compound</span>
+            You are currently viewing units in Hacienda Bay, to view units in other compounds{" "}
+            <button onClick={onSwitch} style={{ background: "none", border: "none", padding: 0, color: "var(--ph-red)", fontWeight: 700, fontFamily: "var(--slab)", fontSize: 23, cursor: "pointer" }}>Switch Compound</button>
           </p>
         </div>
       </div>
@@ -682,7 +692,7 @@ function AnnounceCard({ date, title, body }) {
 }
 
 /* ---------- MORE ---------- */
-function ScreenMore({ time, onMyUsers }) {
+function ScreenMore({ time, onMyUsers, onSettings }) {
   const tiles = [
     { Icon: IconPeoplePair, label: "My Invitations" },
     { Icon: IconPeoplePair, label: "My Users", action: onMyUsers },
@@ -704,23 +714,23 @@ function ScreenMore({ time, onMyUsers }) {
           ))}
         </div>
 
-        <ListRow Icon={IconGear} title={<>Account &amp; Settings</>} sub="Profile & Account and App Settings to manage and customize your information" />
+        <ListRow Icon={IconGear} title={<>Account &amp; Settings</>} sub="Profile & Account and App Settings to manage and customize your information" onClick={onSettings} />
         <ListRow Icon={IconChat} title="Sales Inquiry" sub="Register here if you are interested to buy a property in Palm Hills" />
         <ListRow Icon={IconCommunity} title="Choose Your Neighbour" sub="Invite who you want to live next to" />
       </div>
     </div>
   );
 }
-function ListRow({ Icon, title, sub }) {
+function ListRow({ Icon, title, sub, onClick }) {
   return (
-    <div style={{ border: "1px solid var(--ph-gray-line)", padding: "22px 20px", display: "flex", gap: 16, marginTop: 20, alignItems: "flex-start" }}>
+    <button onClick={onClick} style={{ width: "100%", textAlign: "left", background: "#fff", border: "1px solid var(--ph-gray-line)", padding: "22px 20px", display: "flex", gap: 16, marginTop: 20, alignItems: "flex-start", cursor: onClick ? "pointer" : "default" }}>
       <Icon size={26} stroke="#1b1b1b" style={{ flex: "none", marginTop: 4 }} />
       <div style={{ flex: 1 }}>
         <div style={{ fontFamily: "var(--slab)", fontWeight: 700, fontSize: 26, lineHeight: 1.2, marginBottom: 8 }}>{title}</div>
         <div style={{ color: "var(--ph-gray)", fontFamily: "var(--sans)", fontSize: 20, lineHeight: 1.4 }}>{sub}</div>
       </div>
       <IconChevR size={22} stroke="var(--ph-red)" style={{ flex: "none", marginTop: 4 }} />
-    </div>
+    </button>
   );
 }
 
@@ -741,7 +751,191 @@ const tabItem = (on) => ({ border: "none", background: "none", cursor: "pointer"
 const unitCard = { width: "100%", marginTop: 22, border: "1px solid var(--ph-gray-line)", borderRadius: 4, padding: "22px 20px", display: "flex", alignItems: "center", background: "#fff", cursor: "pointer" };
 const moreTile = { border: "1px solid var(--ph-gray-line)", background: "#fff", cursor: "pointer", padding: "26px 14px", display: "flex", flexDirection: "column", alignItems: "center" };
 
-Object.assign(window, { ScreenHills, ScreenSpace, ScreenMyUnits, ScreenCommunity, ScreenMore });
+/* ---------- UNIT DETAILS (subpage of My Units) ---------- */
+function ScreenUnitDetails({ time, onBack }) {
+  return (
+    <div className="screen">
+      <HeaderTitle time={time} title="UNIT DETAILS" onBack={onBack} />
+      <div className="body" style={{ padding: "26px 24px 130px" }}>
+        <div style={{ fontFamily: "var(--slab)", fontWeight: 800, fontSize: 38, color: "#161616" }}>HAC-JCH-242BF</div>
+        <div style={{ background: "#f1f1f1", borderRadius: 6, marginTop: 28, padding: "28px 8px", display: "flex", alignItems: "stretch" }}>
+          <div style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", gap: 14 }}>
+            <IconPin size={30} stroke="#1b1b1b" sw={1.7} />
+            <span style={{ fontFamily: "var(--sans)", fontSize: 23, color: "#1b1b1b" }}>Hacienda Bay</span>
+          </div>
+          <div style={{ width: 1, background: "#cfcfcf", margin: "2px 0" }} />
+          <div style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", gap: 14, padding: "0 6px" }}>
+            <IconUser size={30} stroke="#1b1b1b" sw={1.7} />
+            <span style={{ fontFamily: "var(--sans)", fontSize: 23, color: "#1b1b1b", textAlign: "center", lineHeight: 1.25 }}>Family Member</span>
+          </div>
+        </div>
+        <h2 style={{ ...sectionTitle, fontSize: 32, marginTop: 48 }}>UNIT <span style={{ color: "var(--ph-red)" }}>DOCUMENTS</span></h2>
+      </div>
+    </div>
+  );
+}
+
+/* ---------- MY USERS (subpage of More) ---------- */
+function ScreenMyUsers({ time, onBack }) {
+  return (
+    <div className="screen">
+      <HeaderTitle time={time} title="MY USERS" onBack={onBack} />
+      <div className="body" style={{ padding: "64px 24px 130px", textAlign: "center" }}>
+        <IconPeoplePair size={62} stroke="#1b1b1b" sw={1.7} />
+        <div style={{ fontFamily: "var(--slab)", fontWeight: 800, fontSize: 34, marginTop: 24, lineHeight: 1.2 }}>No family members added yet.</div>
+        <div style={{ marginTop: 20, fontFamily: "var(--slab)", fontWeight: 500, fontSize: 24, color: "#1b1b1b" }}>You haven't invited any user yet</div>
+      </div>
+    </div>
+  );
+}
+
+/* ---------- ACCOUNT & SETTINGS (subpage of More) ---------- */
+function ScreenSettings({ time, onBack, onProfile, onNotifications, onLanguage, onPrivacy, onTerms }) {
+  const rows = [
+    { Icon: IconGear, label: "PROFILE & ACCOUNT", action: onProfile },
+    { Icon: IconBell, label: "NOTIFICATION SETTING", action: onNotifications },
+    { Icon: IconTranslate, label: "APP LANGUAGE", action: onLanguage },
+    { Icon: IconShield, label: "PRIVACY POLICY", action: onPrivacy },
+    { Icon: IconDoc, label: "TERMS OF USE", action: onTerms },
+  ];
+  return (
+    <div className="screen">
+      <HeaderTitle time={time} title="ACCOUNT & SETTINGS" onBack={onBack} />
+      <div className="body" style={{ padding: "30px 24px 130px" }}>
+        {rows.map((r) => (
+          <button key={r.label} onClick={r.action} style={{ width: "100%", border: "1px solid var(--ph-gray-line)", background: "#fff", cursor: "pointer", padding: "24px 20px", display: "flex", alignItems: "center", gap: 16, marginBottom: 22 }}>
+            <r.Icon size={28} stroke="#161616" sw={1.9} style={{ flex: "none" }} />
+            <span style={{ flex: 1, textAlign: "left", fontFamily: "var(--slab)", fontWeight: 800, fontSize: 25, color: "#161616", letterSpacing: ".3px" }}>{r.label}</span>
+            <IconChevR size={22} stroke="var(--ph-red)" style={{ flex: "none" }} />
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+/* ---------- PROFILE & ACCOUNT ---------- */
+function ProfileField({ label, value, action }) {
+  return (
+    <div style={{ position: "relative", border: "1px solid var(--ph-gray-line)", borderRadius: 6, padding: "20px 18px", marginTop: 24 }}>
+      <span style={{ position: "absolute", top: -11, left: 14, background: "#fff", padding: "0 7px", fontFamily: "var(--sans)", fontSize: 17, color: "var(--ph-gray)" }}>{label}</span>
+      <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+        <span style={{ flex: 1, fontFamily: "var(--sans)", fontSize: 24, color: "#161616", wordBreak: "break-word" }}>{value}</span>
+        {action}
+      </div>
+    </div>
+  );
+}
+function ScreenProfile({ time, onBack }) {
+  return (
+    <div className="screen">
+      <HeaderTitle time={time} title="PROFILE & ACCOUNT" onBack={onBack} />
+      <div className="body" style={{ padding: "32px 24px 130px" }}>
+        <div style={{ display: "flex", justifyContent: "center" }}>
+          <div style={{ width: 150, height: 150 }}>
+            <Img src={PHOTO_URL} alt="Kareem Ali" referrerPolicy="no-referrer"
+              style={{ width: "100%", height: "100%", objectFit: "cover", clipPath: DIAMOND, WebkitClipPath: DIAMOND }} />
+          </div>
+        </div>
+        <ProfileField label="Name*" value="Kareem Ali" />
+        <ProfileField label="Mobile number*" value="+201001283564" />
+        <ProfileField label="Email*" value="kareemali2933@yahoo.com" />
+        <ProfileField label="Password*" value="*********" action={
+          <button aria-label="Edit password" style={{ background: "none", border: "none", cursor: "pointer", color: "var(--ph-red)", display: "flex", padding: 4 }}><IconPencil size={26} stroke="var(--ph-red)" /></button>
+        } />
+        <div style={{ display: "flex", gap: 10, marginTop: 30, alignItems: "flex-start" }}>
+          <IconBulb size={22} stroke="var(--ph-red)" style={{ flex: "none", marginTop: 2 }} />
+          <p style={{ margin: 0, color: "var(--ph-gray)", fontFamily: "var(--sans)", fontSize: 21, lineHeight: 1.45 }}>
+            If you want to update your Name, Mobile Number, or Email{" "}
+            <button style={{ background: "none", border: "none", padding: 0, color: "var(--ph-red)", fontWeight: 800, fontFamily: "var(--slab)", fontSize: 22, cursor: "pointer" }}>Contact Us</button>
+          </p>
+        </div>
+        <div style={{ textAlign: "center", marginTop: 26 }}>
+          <button style={{ background: "none", border: "none", cursor: "pointer", fontFamily: "var(--slab)", fontWeight: 800, fontSize: 28, color: "#161616", textDecoration: "underline" }}>Delete My Account</button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ---------- NOTIFICATION SETTING ---------- */
+function Toggle({ on, onChange }) {
+  return (
+    <button onClick={onChange} aria-pressed={on} style={{
+      width: 58, height: 32, borderRadius: 20, border: "none", cursor: "pointer", flex: "none", padding: 0,
+      background: on ? "#34c759" : "#e3e3e6", position: "relative", transition: "background .2s",
+    }}>
+      <span style={{ position: "absolute", top: 3, left: on ? 29 : 3, width: 26, height: 26, borderRadius: "50%", background: "#fff", boxShadow: "0 1px 3px rgba(0,0,0,.3)", transition: "left .2s" }} />
+    </button>
+  );
+}
+function NotifCard({ Icon, title, sub, on, onToggle }) {
+  return (
+    <div style={{ border: "1px solid var(--ph-gray-line)", padding: "22px 20px", marginBottom: 22 }}>
+      <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
+        <Icon size={28} stroke="#161616" sw={2} style={{ flex: "none" }} />
+        <span style={{ flex: 1, fontFamily: "var(--slab)", fontWeight: 800, fontSize: 27, color: "#161616" }}>{title}</span>
+        <Toggle on={on} onChange={onToggle} />
+      </div>
+      <p style={{ margin: "12px 0 0", color: "var(--ph-gray)", fontFamily: "var(--sans)", fontSize: 21, lineHeight: 1.4 }}>{sub}</p>
+    </div>
+  );
+}
+function ScreenNotifications({ time, onBack }) {
+  const [push, setPush] = React.useState(true);
+  const [email, setEmail] = React.useState(false);
+  return (
+    <div className="screen">
+      <HeaderTitle time={time} title="NOTIFICATION SETTING" onBack={onBack} />
+      <div className="body" style={{ padding: "30px 24px 130px" }}>
+        <NotifCard Icon={IconBell} title="Push Notifications" sub="Turn on to allow the application to send you Push Notifications ?" on={push} onToggle={() => setPush((v) => !v)} />
+        <NotifCard Icon={IconMail} title="Email Notifications" sub="Turn on to allow the application to send you Email Notifications ?" on={email} onToggle={() => setEmail((v) => !v)} />
+      </div>
+    </div>
+  );
+}
+
+/* ---------- APP LANGUAGE / PRIVACY / TERMS ---------- */
+function ScreenAppLanguage({ time, onBack }) {
+  const [lang, setLang] = React.useState("en");
+  const opts = [{ key: "en", label: "English" }, { key: "ar", label: "العربية" }];
+  return (
+    <div className="screen">
+      <HeaderTitle time={time} title="APP LANGUAGE" onBack={onBack} />
+      <div className="body" style={{ padding: "30px 24px 130px" }}>
+        {opts.map((o) => {
+          const on = lang === o.key;
+          return (
+            <button key={o.key} onClick={() => setLang(o.key)} style={{ width: "100%", border: on ? "1.5px solid var(--ph-red)" : "1px solid var(--ph-gray-line)", background: "#fff", cursor: "pointer", padding: "22px 20px", display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 18 }}>
+              <span style={{ fontFamily: "var(--slab)", fontWeight: 700, fontSize: 25, color: "#161616" }}>{o.label}</span>
+              <span style={{ width: 24, height: 24, borderRadius: "50%", border: on ? "7px solid var(--ph-red)" : "2px solid #c4c4c4", boxSizing: "border-box" }} />
+            </button>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+function ScreenPolicy({ time, onBack, title }) {
+  return (
+    <div className="screen">
+      <HeaderTitle time={time} title={title} onBack={onBack} />
+      <div className="body" style={{ padding: "30px 26px 130px" }}>
+        {["Your privacy and trust matter to us. This page explains how Palm Hills handles your information within the community app.",
+          "We collect only the data needed to operate gate passes, units, and announcements, and we never sell your personal information to third parties.",
+          "By using the application you agree to the terms described here. For any questions about this policy, please reach out through Contact Us."].map((t, i) => (
+          <p key={i} style={{ margin: "0 0 18px", fontFamily: "var(--sans)", fontSize: 21, lineHeight: 1.5, color: "#3a3a3a" }}>{t}</p>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+Object.assign(window, {
+  ScreenHills, ScreenSpace, ScreenMyUnits, ScreenCommunity, ScreenMore,
+  ScreenUnitDetails, ScreenMyUsers, ScreenSettings, ScreenProfile, ScreenNotifications,
+  ScreenAppLanguage, ScreenPolicy,
+});
 
 // ===== APP =====
 // ============ MY PASS + APP ============
@@ -804,11 +998,12 @@ const passFace = (back, flipped) => ({
 /* ---------------- APP ---------------- */
 function App() {
   const [tab, setTab] = useS("space");        // active bottom tab
-  const [overlay, setOverlay] = useS(null);    // "myUnits" | "myPass" | null
+  const [stack, setStack] = useS([]);          // navigation stack of sub-page keys
   const [closing, setClosing] = useS(false);   // sub-page pop (slide-out) in progress
   const [sheet, setSheet] = useS(null);        // "switch" | null
   const [loading, setLoading] = useS(false);   // diamond page-transition loader
   const time = tab === "hills" || tab === "more" ? "7:47" : "7:51";
+  const top = stack[stack.length - 1] || null;
 
   // run fn behind a brief diamond loading screen (used for bottom-tab switches)
   const withLoad = (fn, ms = 620) => {
@@ -816,23 +1011,40 @@ function App() {
     window.setTimeout(() => { fn && fn(); setLoading(false); }, ms);
   };
 
-  // bottom-tab switch → diamond loader
-  const nav = (k) => withLoad(() => { setSheet(null); setOverlay(null); setClosing(false); setTab(k); });
+  // bottom-tab switch → diamond loader (resets the sub-page stack)
+  const nav = (k) => withLoad(() => { setSheet(null); setStack([]); setClosing(false); setTab(k); });
   // sub-page push (slide in from right) / pop (slide out to right) — native iOS nav
-  const pushPage = (k) => { setSheet(null); setClosing(false); setOverlay(k); };
-  const popPage = () => { setClosing(true); window.setTimeout(() => { setOverlay(null); setClosing(false); }, 300); };
-  const openPass = () => pushPage("myPass");
-  const openUnits = () => pushPage("myUnits");
+  const pushPage = (k) => { setSheet(null); setClosing(false); setStack((s) => [...s, k]); };
+  const popPage = () => { setClosing(true); window.setTimeout(() => { setStack((s) => s.slice(0, -1)); setClosing(false); }, 300); };
+  const openPass = () => { setSheet(null); setClosing(false); setStack(["myPass"]); };
   const openSwitch = () => setSheet("switch");
   const selectCompound = () => withLoad(() => setSheet(null));
 
   let main;
   if (tab === "hills") main = <ScreenHills time={time} />;
-  else if (tab === "space") main = <ScreenSpace time={time} onMyUnits={openUnits} onGenerate={openPass} onSwitch={openSwitch} />;
+  else if (tab === "space") main = <ScreenSpace time={time} onMyUnits={() => pushPage("myUnits")} onGenerate={openPass} onSwitch={openSwitch} />;
   else if (tab === "community") main = <ScreenCommunity time={time} onSwitch={openSwitch} />;
-  else main = <ScreenMore time={time} onMyUsers={openUnits} />;
+  else main = <ScreenMore time={time} onMyUsers={() => pushPage("myUsers")} onSettings={() => pushPage("settings")} />;
 
-  const baseShift = !!overlay && !closing;   // parallax the underlying screen during push
+  // map a stack key → its page element
+  const renderPage = (key) => {
+    switch (key) {
+      case "myUnits": return <ScreenMyUnits time={time} onBack={popPage} onSwitch={openSwitch} onUnit={() => pushPage("unitDetails")} />;
+      case "unitDetails": return <ScreenUnitDetails time={time} onBack={popPage} />;
+      case "myPass": return <ScreenMyPass time={time} onSwitch={openSwitch} />;
+      case "myUsers": return <ScreenMyUsers time={time} onBack={popPage} />;
+      case "settings": return <ScreenSettings time={time} onBack={popPage} onProfile={() => pushPage("profile")} onNotifications={() => pushPage("notifications")} onLanguage={() => pushPage("appLanguage")} onPrivacy={() => pushPage("privacy")} onTerms={() => pushPage("terms")} />;
+      case "profile": return <ScreenProfile time={time} onBack={popPage} />;
+      case "notifications": return <ScreenNotifications time={time} onBack={popPage} />;
+      case "appLanguage": return <ScreenAppLanguage time={time} onBack={popPage} />;
+      case "privacy": return <ScreenPolicy time={time} onBack={popPage} title="PRIVACY POLICY" />;
+      case "terms": return <ScreenPolicy time={time} onBack={popPage} title="TERMS OF USE" />;
+      default: return null;
+    }
+  };
+
+  // base tab stays shifted while any sub-page remains after the in-flight pop
+  const baseShift = stack.length > (closing ? 1 : 0);
 
   return (
     <div className="phone">
@@ -841,18 +1053,16 @@ function App() {
         <div style={{ flex: 1, minHeight: 0, display: "flex" }}>{main}</div>
       </div>
 
-      {/* full-page views — slide like native iOS push/pop */}
-      {overlay === "myUnits" && (
-        <Overlay closing={closing}><ScreenMyUnits time={time} onBack={popPage} /></Overlay>
-      )}
-      {overlay === "myPass" && (
-        <Overlay closing={closing}><ScreenMyPass time={time} onSwitch={openSwitch} /></Overlay>
-      )}
+      {/* full-page views as a stack — each slides like native iOS push/pop.
+          Only the topmost animates out on a back; pages beneath are revealed. */}
+      {stack.map((key, i) => (
+        <Overlay key={i} closing={closing && i === stack.length - 1}>{renderPage(key)}</Overlay>
+      ))}
 
       {/* bottom nav is always present (My Pass is a standalone page, not an overlay with its own chrome) */}
       <div style={{ position: "absolute", left: 0, right: 0, bottom: 0, zIndex: 30 }}>
         <BottomNav
-          active={overlay === "myPass" ? "pass" : tab}
+          active={top === "myPass" ? "pass" : tab}
           onNav={nav}
           onPass={openPass}
         />

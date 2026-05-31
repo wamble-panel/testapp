@@ -123,6 +123,8 @@
   <script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
   <script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
   <script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+  <!-- real QR encoder (window.qrcode); the pass falls back to a decorative pattern if it fails to load -->
+  <script src="https://unpkg.com/qrcode-generator@1.4.4/qrcode.js" crossorigin="anonymous"></script>
 
   <script type="text/babel">
 
@@ -141,6 +143,8 @@ const AR = {
   "GATE": "تصاريح", "PASSES": "البوابة", "Gate": "البوابة", "Beach/Pool": "الشاطئ/المسبح",
   "No passes generated yet.": "لم يتم إنشاء أي تصاريح بعد.", "GENERATE NEW PASS": "إنشاء تصريح جديد",
   "MANAGE YOUR": "إدارة", "UNITS": "وحداتك", "MY UNITS": "وحداتي", "Family Member": "فرد من العائلة", "Child": "ابن",
+  "Gate Pass": "تصريح البوابة", "Beach/Pool Pass": "تصريح الشاطئ/المسبح",
+  "In case you have any issues, Please.": "في حال واجهت أي مشكلة، من فضلك.",
   // my units
   "You are currently viewing units in Hacienda Bay, to view units in other compounds": "أنت تعرض حالياً الوحدات في هاسيندا باي، لعرض الوحدات في كمبوندات أخرى",
   "Switch Compound": "تبديل الكمبوند", "1 UNIT": "وحدة واحدة", "Select Compound": "اختيار الكمبوند",
@@ -459,12 +463,12 @@ function BottomNav({ active, onNav, onPass }) {
   return (
     <div className="ph-bottomnav" style={{ flex: "none", position: "relative", background: "#fff", borderTop: "1px solid #eee", zIndex: 6 }}>
       {/* white "cut" halo carving the nav + content around the diamond */}
-      <div style={{ position: "absolute", right: 13, top: -25, width: 66, height: 66, transform: "rotate(45deg)", background: "#fff", borderRadius: 12, zIndex: 6 }} />
+      <div style={{ position: "absolute", right: 13, top: -25, width: 66, height: 66, transform: "rotate(45deg)", background: "#fff", borderRadius: 18, zIndex: 6 }} />
       {/* floating My Pass diamond */}
       <button onClick={onPass} aria-label="My Pass" style={{
         position: "absolute", right: 17, top: -21, width: 58, height: 58,
         transform: "rotate(45deg)", background: active === "pass" ? "var(--ph-red-deep)" : "var(--ph-red)", border: "none",
-        borderRadius: 9, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center",
+        borderRadius: 16, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center",
         boxShadow: "0 6px 16px -5px rgba(196,32,60,.6)", zIndex: 7,
       }}>
         <span style={{ transform: "rotate(-45deg)", display: "flex", flexDirection: "column", alignItems: "center", gap: 1 }}>
@@ -497,6 +501,28 @@ function BottomNav({ active, onNav, onPass }) {
 
 /* ---- QR code (deterministic pseudo-QR, looks real) ---- */
 function QRCode({ size = 220, value = "PALM-HILLS" }) {
+  // Real, scannable QR when the encoder loaded; decorative fallback otherwise.
+  if (typeof window !== "undefined" && typeof window.qrcode === "function") {
+    try {
+      const qr = window.qrcode(0, "M");
+      qr.addData(String(value));
+      qr.make();
+      const count = qr.getModuleCount();
+      const cell = size / count;
+      const rects = [];
+      for (let r = 0; r < count; r++) {
+        for (let c = 0; c < count; c++) {
+          if (qr.isDark(r, c)) rects.push(<rect key={r + "-" + c} x={(c * cell).toFixed(2)} y={(r * cell).toFixed(2)} width={Math.ceil(cell)} height={Math.ceil(cell)} fill="#161616" />);
+        }
+      }
+      return (
+        <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} shapeRendering="crispEdges" style={{ display: "block" }}>
+          <rect width={size} height={size} fill="#fff" />
+          {rects}
+        </svg>
+      );
+    } catch (e) { /* fall through to decorative pattern */ }
+  }
   const N = 29;
   // deterministic PRNG seeded from value
   let seed = 0; for (let i = 0; i < value.length; i++) seed = (seed * 31 + value.charCodeAt(i)) >>> 0;
@@ -1192,8 +1218,8 @@ function ScreenMyPass({ time, onSwitch, onBell }) {
       <div className="body" style={{ padding: "66px 24px 130px", display: "flex", flexDirection: "column", alignItems: "center" }}>
         {/* segmented pass-type selector */}
         <div style={{ display: "flex", background: "#ececec", borderRadius: 30, padding: 5, gap: 4 }}>
-          <button onClick={() => setTab("gate")} style={passSeg(tab === "gate")}>{t("Gate")}</button>
-          <button onClick={() => setTab("beach")} style={passSeg(tab === "beach")}>{t("Beach/Pool")}</button>
+          <button onClick={() => setTab("gate")} style={passSeg(tab === "gate")}>{t("Gate Pass")}</button>
+          <button onClick={() => setTab("beach")} style={passSeg(tab === "beach")}>{t("Beach/Pool Pass")}</button>
         </div>
 
         {/* flip card */}
@@ -1206,7 +1232,7 @@ function ScreenMyPass({ time, onSwitch, onBell }) {
           }}>
             {/* front: QR (clean — no logo, no labels) */}
             <div style={passFace(false, flipped)}>
-              <QRCode size={244} value="PALM-HILLS-KAREEM-ALI-242BF" />
+              <QRCode size={244} value="3226864" />
             </div>
             {/* back: photo */}
             <div style={passFace(true, flipped)}>
@@ -1219,11 +1245,18 @@ function ScreenMyPass({ time, onSwitch, onBell }) {
         {/* name + relationship */}
         <div style={{ marginTop: 34, fontFamily: "var(--slab)", fontWeight: 700, fontSize: 32, color: "#161616", whiteSpace: "nowrap" }}>{t("Kareem Ali")}</div>
         <div style={{ marginTop: 4, fontFamily: "var(--slab)", fontWeight: 500, fontSize: 23, color: "var(--ph-gray)" }}>{t("Child")}</div>
+
+        {/* help line */}
+        <div style={{ marginTop: 22, display: "flex", alignItems: "center", justifyContent: "center", gap: 8, flexWrap: "wrap", color: "var(--ph-gray)" }}>
+          <IconBulb size={20} stroke="var(--ph-red)" style={{ flex: "none" }} />
+          <span style={{ fontFamily: "var(--sans)", fontSize: 19 }}>{t("In case you have any issues, Please.")}</span>
+          <button style={{ background: "none", border: "none", padding: 0, cursor: "pointer", color: "var(--ph-red)", fontFamily: "var(--slab)", fontWeight: 800, fontSize: 20 }}>{t("Contact Us")}</button>
+        </div>
       </div>
     </div>
   );
 }
-const passSeg = (on) => ({ border: "none", cursor: "pointer", borderRadius: 24, padding: "11px 30px", fontFamily: "var(--slab)", fontWeight: 600, fontSize: 19, background: on ? "#161616" : "transparent", color: on ? "#fff" : "#8a8a8a" });
+const passSeg = (on) => ({ border: "none", cursor: "pointer", borderRadius: 24, padding: "11px 20px", fontFamily: "var(--slab)", fontWeight: 600, fontSize: 18, whiteSpace: "nowrap", background: on ? "#161616" : "transparent", color: on ? "#fff" : "#8a8a8a" });
 const passFace = (back, flipped) => ({
   position: "absolute", inset: 0, backfaceVisibility: "hidden", WebkitBackfaceVisibility: "hidden",
   borderRadius: back ? 18 : 0, overflow: "hidden",

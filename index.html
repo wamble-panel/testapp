@@ -168,6 +168,13 @@ const AR = {
   "If you know someone interested to buy a property in Palm Hills": "إذا كنت تعرف شخصاً مهتماً بشراء عقار في بالم هيلز",
   "Send Us a Message": "أرسل لنا رسالة", "In case you have suggestions, complaints, or general inquiries": "في حال كان لديك اقتراحات أو شكاوى أو استفسارات عامة",
   "Log Out": "تسجيل الخروج",
+  // change password
+  "CHANGE PASSWORD": "تغيير كلمة المرور", "Current Password *": "كلمة المرور الحالية *", "New Password *": "كلمة المرور الجديدة *",
+  "Password should be at least 8 characters long.": "يجب أن تتكون كلمة المرور من 8 أحرف على الأقل.",
+  "At least one upper case and lower case letters.": "حرف كبير وحرف صغير واحد على الأقل.",
+  "At least one special characters (@#$%^*!).": "رمز خاص واحد على الأقل (@#$%^*!).",
+  "At least one number.": "رقم واحد على الأقل.",
+  "Forgot Password?": "هل نسيت كلمة المرور؟", "Save & Update": "حفظ وتحديث",
   // settings list
   "ACCOUNT & SETTINGS": "الحساب والإعدادات", "PROFILE & ACCOUNT": "الملف الشخصي والحساب",
   "NOTIFICATION SETTING": "إعدادات الإشعارات", "APP LANGUAGE": "لغة التطبيق",
@@ -391,9 +398,9 @@ function HeaderCompound({ time, sub = "Currently Viewing", title = "Hacienda Bay
   return (
     <div className="ph-header" style={{ flex: "none", position: "relative", zIndex: 4 }}>
       <div style={{ background: "var(--ph-black)", color: "#fff", padding: "2px 22px 20px", textAlign: "center", position: "relative" }}>
-        <div style={{ fontFamily: "var(--slab)", fontWeight: 500, fontSize: 21, opacity: .96 }}>{t(sub)}</div>
+        <div style={{ fontFamily: "var(--slab)", fontWeight: 500, fontSize: 19, opacity: .96 }}>{t(sub)}</div>
         <button onClick={onSwitch} style={{ background: "none", border: "none", padding: 0, margin: 0, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: 10, marginTop: 2, width: "100%", color: "#fff" }}>
-          <span style={{ fontFamily: "var(--slab)", fontWeight: 800, fontSize: 33, letterSpacing: ".1px", whiteSpace: "nowrap" }}>{t(title)}</span>
+          <span style={{ fontFamily: "var(--slab)", fontWeight: 800, fontSize: 29.5, letterSpacing: ".1px", whiteSpace: "nowrap" }}>{t(title)}</span>
           <IconChevDown size={18} stroke="var(--ph-red)" />
         </button>
         <button onClick={onBell} aria-label="Notifications" style={{ position: "absolute", right: 22, top: -2, background: "none", border: "none", padding: 0, cursor: "pointer", color: "#fff", display: "flex" }}><IconBell size={27} /></button>
@@ -410,8 +417,8 @@ function HeaderHome({ time, name = "Kareem Sabri", onBell }) {
   return (
     <div className="ph-header" style={{ flex: "none", position: "relative", zIndex: 4 }}>
       <div style={{ background: "var(--ph-black)", color: "#fff", padding: "2px 60px 18px", textAlign: "center", position: "relative" }}>
-        <div style={{ fontFamily: "var(--slab)", fontWeight: 500, fontSize: 20, opacity: .96 }}>{t("Welcome back")}</div>
-        <div style={{ fontFamily: "var(--slab)", fontWeight: 800, fontSize: 31, marginTop: 1, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{t(name)}</div>
+        <div style={{ fontFamily: "var(--slab)", fontWeight: 500, fontSize: 18, opacity: .96 }}>{t("Welcome back")}</div>
+        <div style={{ fontFamily: "var(--slab)", fontWeight: 800, fontSize: 28, marginTop: 1, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{t(name)}</div>
         <button onClick={onBell} aria-label="Notifications" style={{ position: "absolute", right: 22, top: 14, background: "none", border: "none", padding: 0, cursor: "pointer", color: "#fff", display: "flex" }}><IconBell size={27} /></button>
       </div>
       <div style={{ height: 0, position: "relative" }}>
@@ -432,7 +439,7 @@ function HeaderTitle({ time, title, onBack, onAdd }) {
         {onAdd
           ? <button onClick={onAdd} aria-label="Add" style={{ background: "none", border: "none", color: "#fff", padding: 0, cursor: "pointer", display: "flex" }}><IconPlusCircle size={28} stroke="#fff" /></button>
           : <span style={{ width: 28 }} />}
-        <div style={{ position: "absolute", left: 0, right: 0, textAlign: "center", fontFamily: "var(--slab)", fontWeight: 800, fontSize: 30, letterSpacing: ".5px", pointerEvents: "none" }}>{t(title)}</div>
+        <div style={{ position: "absolute", left: 0, right: 0, textAlign: "center", fontFamily: "var(--slab)", fontWeight: 800, fontSize: 27, letterSpacing: ".5px", pointerEvents: "none" }}>{t(title)}</div>
       </div>
     </div>
   );
@@ -443,7 +450,7 @@ function HeaderName({ time, name, onBell }) {
   return (
     <div className="ph-header" style={{ flex: "none", position: "relative", zIndex: 4 }}>
       <div style={{ background: "var(--ph-black)", color: "#fff", padding: "8px 24px 20px", position: "relative", textAlign: "center" }}>
-        <div style={{ fontFamily: "var(--slab)", fontWeight: 800, fontSize: 32, letterSpacing: ".5px" }}>{t(name)}</div>
+        <div style={{ fontFamily: "var(--slab)", fontWeight: 800, fontSize: 29, letterSpacing: ".5px" }}>{t(name)}</div>
         <button onClick={onBell} aria-label="Notifications" style={{ position: "absolute", right: 22, top: 16, background: "none", border: "none", padding: 0, cursor: "pointer", color: "#fff", display: "flex" }}><IconBell size={27} /></button>
       </div>
       <div style={{ height: 0, position: "relative" }}>
@@ -465,17 +472,17 @@ function BottomNav({ active, onNav, onPass }) {
   return (
     <div className="ph-bottomnav" style={{ flex: "none", position: "relative", background: "#fff", borderTop: "1px solid #eee", zIndex: 6 }}>
       {/* white "cut" halo carving the nav + content around the diamond */}
-      <div style={{ position: "absolute", right: 13, top: -25, width: 66, height: 66, transform: "rotate(45deg)", background: "#fff", borderRadius: 2, zIndex: 6 }} />
+      <div style={{ position: "absolute", right: 16, top: -22, width: 58, height: 58, transform: "rotate(45deg)", background: "#fff", borderRadius: 2, zIndex: 6 }} />
       {/* floating My Pass diamond */}
       <button onClick={onPass} aria-label="My Pass" style={{
-        position: "absolute", right: 17, top: -21, width: 58, height: 58,
+        position: "absolute", right: 20, top: -18, width: 51, height: 51,
         transform: "rotate(45deg)", background: active === "pass" ? "var(--ph-red-deep)" : "var(--ph-red)", border: "none",
         borderRadius: 2, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center",
-        boxShadow: "0 6px 16px -5px rgba(196,32,60,.6)", zIndex: 7,
+        zIndex: 7,
       }}>
         <span style={{ transform: "rotate(-45deg)", display: "flex", flexDirection: "column", alignItems: "center", gap: 1 }}>
           <IconQR size={16} color="#fff" />
-          <span style={{ color: "#fff", fontSize: 7.5, fontWeight: 700, fontFamily: "var(--slab)", lineHeight: 1 }}>{t("My Pass")}</span>
+          <span style={{ color: "#fff", fontSize: 7, fontWeight: 700, fontFamily: "var(--slab)", lineHeight: 1 }}>{t("My Pass")}</span>
         </span>
       </button>
 
@@ -492,7 +499,7 @@ function BottomNav({ active, onNav, onPass }) {
             }}>
               {on && <span style={{ position: "absolute", top: -12, left: "50%", transform: "translateX(-50%)", width: 34, height: 3, background: "var(--ph-red)", borderRadius: 2 }} />}
               <Icon size={27} stroke={on ? "var(--ph-red)" : "#1b1b1b"} sw={on ? 2.4 : 2} />
-              <span style={{ fontSize: 14, fontWeight: on ? 700 : 500, fontFamily: "var(--sans)", color: on ? "var(--ph-red)" : "#1b1b1b" }}>{t(label)}</span>
+              <span style={{ fontSize: 12.5, fontWeight: on ? 700 : 500, fontFamily: "var(--sans)", color: on ? "var(--ph-red)" : "#1b1b1b" }}>{t(label)}</span>
             </button>
           );
         })}
@@ -594,6 +601,13 @@ const IconPencil = (p) => (<S {...p}><path d="M4 20h4L18 10l-4-4L4 16v4Z" /><pat
 const IconMailOpen = (p) => (<S {...p}><path d="M3 10.5 12 4l9 6.5V19a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z" /><path d="m3 10.5 9 6 9-6" /></S>);
 const IconFaceID = (p) => (<S {...p}><path d="M4 8V6.5A2.5 2.5 0 0 1 6.5 4H8" /><path d="M16 4h1.5A2.5 2.5 0 0 1 20 6.5V8" /><path d="M20 16v1.5a2.5 2.5 0 0 1-2.5 2.5H16" /><path d="M8 20H6.5A2.5 2.5 0 0 1 4 17.5V16" /><path d="M9 9.5v1.5" /><path d="M15 9.5v1.5" /><path d="M12 9.5v3l-1 1" /><path d="M9 15c.9.8 1.9 1.2 3 1.2s2.1-.4 3-1.2" /></S>);
 const IconBuilding = (p) => (<S {...p}><rect x="4" y="3" width="9" height="18" rx="1" /><path d="M13 8h6a1 1 0 0 1 1 1v12h-7" /><path d="M7 6.5h3M7 10h3M7 13.5h3M16 12h1M16 15.5h1" /></S>);
+const IconEye = (p) => (<S {...p}><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7-10-7-10-7Z" /><circle cx="12" cy="12" r="3" /></S>);
+const IconEyeOff = (p) => (<S {...p}><path d="M3 3l18 18" /><path d="M10.6 6.1A10.7 10.7 0 0 1 12 6c6.4 0 10 7 10 7a16.8 16.8 0 0 1-3.4 4.1" /><path d="M6.2 7.6A16.8 16.8 0 0 0 2 12s3.6 7 10 7c1.2 0 2.3-.2 3.4-.6" /><path d="M9.9 9.9a3 3 0 0 0 4.2 4.2" /></S>);
+const IconInfo = ({ size = 24, stroke = "currentColor", sw = 2, style }) => (
+  <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={stroke} strokeWidth={sw} strokeLinecap="round" strokeLinejoin="round" style={style}>
+    <circle cx="12" cy="12" r="9" /><line x1="12" y1="8" x2="12" y2="12.5" /><circle cx="12" cy="16.2" r="0.6" fill={stroke} stroke="none" />
+  </svg>
+);
 
 /* Switch Compound bottom sheet */
 function SwitchSheet({ onClose, onSelect }) {
@@ -601,17 +615,17 @@ function SwitchSheet({ onClose, onSelect }) {
     <div className="ph-sheet-wrap" onClick={onClose}>
       <div className="ph-sheet" onClick={(e) => e.stopPropagation()}>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "4px 2px 0" }}>
-          <span style={{ fontFamily: "var(--slab)", fontWeight: 800, fontSize: 28, color: "#161616", whiteSpace: "nowrap" }}>{t("Switch Compound")}</span>
+          <span style={{ fontFamily: "var(--slab)", fontWeight: 800, fontSize: 25, color: "#161616", whiteSpace: "nowrap" }}>{t("Switch Compound")}</span>
           <button onClick={onClose} style={{ background: "none", border: "none", cursor: "pointer", padding: 6, color: "#161616", display: "flex" }}><IconXClose size={30} /></button>
         </div>
 
         <div style={{ border: "1px solid var(--ph-gray-line)", borderRadius: 4, marginTop: 26, padding: "20px", display: "flex", alignItems: "center", gap: 14 }}>
           <Img src={HB_LOGO} alt="Hacienda Bay" style={{ width: 84, height: 34, objectFit: "contain", flex: "none", background: "transparent" }} />
           <div style={{ flex: 1, textAlign: "center" }}>
-            <div style={{ fontFamily: "var(--slab)", fontWeight: 800, fontSize: 23, color: "#161616", whiteSpace: "nowrap" }}>Hacienda Bay</div>
+            <div style={{ fontFamily: "var(--slab)", fontWeight: 800, fontSize: 20.5, color: "#161616", whiteSpace: "nowrap" }}>Hacienda Bay</div>
             <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 8, marginTop: 6, color: "#161616" }}>
               <IconHouseSmall size={22} stroke="#161616" />
-              <span style={{ fontFamily: "var(--slab)", fontWeight: 500, fontSize: 22 }}>{t("1 UNIT")}</span>
+              <span style={{ fontFamily: "var(--slab)", fontWeight: 500, fontSize: 20 }}>{t("1 UNIT")}</span>
             </div>
           </div>
           <span style={{ flex: "none", width: 26, height: 26, transform: "rotate(45deg)", border: "2.5px solid var(--ph-red)", borderRadius: 5, display: "flex", alignItems: "center", justifyContent: "center" }}>
@@ -619,16 +633,16 @@ function SwitchSheet({ onClose, onSelect }) {
           </span>
         </div>
 
-        <button onClick={onSelect} style={{ width: "100%", marginTop: 30, border: "1.5px solid var(--ph-red)", background: "#fff", color: "var(--ph-red)", borderRadius: 40, padding: "17px", fontFamily: "var(--slab)", fontWeight: 800, fontSize: 22, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: 12, whiteSpace: "nowrap" }}>
+        <button onClick={onSelect} style={{ width: "100%", marginTop: 30, border: "1.5px solid var(--ph-red)", background: "#fff", color: "var(--ph-red)", borderRadius: 40, padding: "17px", fontFamily: "var(--slab)", fontWeight: 800, fontSize: 20, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: 12, whiteSpace: "nowrap" }}>
           {t("Select Compound")} <IconArrowR2 size={24} stroke="var(--ph-red)" style={{ transform: isRTL() ? "scaleX(-1)" : "none" }} />
         </button>
 
         <div style={{ display: "flex", gap: 10, alignItems: "center", marginTop: 26 }}>
           <IconBulb size={22} stroke="var(--ph-red)" style={{ flex: "none" }} />
-          <span style={{ color: "var(--ph-gray)", fontFamily: "var(--slab)", fontWeight: 500, fontSize: 21 }}>{t("Can't find a community you're a part of?")}</span>
+          <span style={{ color: "var(--ph-gray)", fontFamily: "var(--slab)", fontWeight: 500, fontSize: 19 }}>{t("Can't find a community you're a part of?")}</span>
         </div>
         <div style={{ textAlign: "center", marginTop: 14 }}>
-          <span style={{ color: "var(--ph-red)", fontFamily: "var(--slab)", fontWeight: 800, fontSize: 23 }}>{t("Request addition to another community")}</span>
+          <span style={{ color: "var(--ph-red)", fontFamily: "var(--slab)", fontWeight: 800, fontSize: 20.5 }}>{t("Request addition to another community")}</span>
         </div>
         <div style={{ display: "flex", justifyContent: "center", paddingTop: 18, paddingBottom: 2 }}>
           <span style={{ width: 134, height: 5, borderRadius: 3, background: "#111" }} />
@@ -677,12 +691,12 @@ function BiometricModal({ onSuccess, onCancel }) {
     <div className="ph-sheet-wrap" style={{ justifyContent: "center", alignItems: "center", padding: "0 28px" }} onClick={onCancel}>
       <div onClick={(e) => e.stopPropagation()} style={{ width: "100%", maxWidth: 360, background: "#fff", borderRadius: 22, padding: "34px 26px 24px", textAlign: "center", animation: "popIn .26s cubic-bezier(.2,.8,.2,1)" }}>
         <IconFaceID size={56} stroke="#161616" sw={1.8} />
-        <div style={{ fontFamily: "var(--slab)", fontWeight: 800, fontSize: 34, marginTop: 14, color: "#161616" }}>{t("Biometric")}</div>
-        <div style={{ fontFamily: "var(--sans)", fontSize: 23, color: "#161616", marginTop: 14 }}>{t("Use your biometrics to continue")}</div>
-        <button onClick={authenticate} disabled={busy} style={{ width: "100%", marginTop: 30, border: "1.5px solid var(--ph-red)", background: "#fff", color: "var(--ph-red)", borderRadius: 40, padding: "17px", fontFamily: "var(--slab)", fontWeight: 800, fontSize: 23, cursor: busy ? "default" : "pointer", opacity: busy ? .6 : 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 12 }}>
+        <div style={{ fontFamily: "var(--slab)", fontWeight: 800, fontSize: 30.5, marginTop: 14, color: "#161616" }}>{t("Biometric")}</div>
+        <div style={{ fontFamily: "var(--sans)", fontSize: 20.5, color: "#161616", marginTop: 14 }}>{t("Use your biometrics to continue")}</div>
+        <button onClick={authenticate} disabled={busy} style={{ width: "100%", marginTop: 30, border: "1.5px solid var(--ph-red)", background: "#fff", color: "var(--ph-red)", borderRadius: 40, padding: "17px", fontFamily: "var(--slab)", fontWeight: 800, fontSize: 20.5, cursor: busy ? "default" : "pointer", opacity: busy ? .6 : 1, display: "flex", alignItems: "center", justifyContent: "center", gap: 12 }}>
           {busy ? t("Authenticating…") : <>{t("Use Biometric")} <IconArrowR size={24} stroke="var(--ph-red)" style={{ transform: isRTL() ? "scaleX(-1)" : "none" }} /></>}
         </button>
-        <button onClick={onCancel} style={{ background: "none", border: "none", cursor: "pointer", marginTop: 22, fontFamily: "var(--slab)", fontWeight: 800, fontSize: 26, color: "#161616", textDecoration: "underline" }}>{t("Cancel")}</button>
+        <button onClick={onCancel} style={{ background: "none", border: "none", cursor: "pointer", marginTop: 22, fontFamily: "var(--slab)", fontWeight: 800, fontSize: 23.5, color: "#161616", textDecoration: "underline" }}>{t("Cancel")}</button>
       </div>
     </div>
   );
@@ -732,13 +746,13 @@ function ScreenHills({ time, onBell }) {
             <img src={LAUNCH_IMG} alt="P/X" referrerPolicy="no-referrer" onError={(e) => { e.currentTarget.style.display = "none"; }}
               style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
             <div style={{ position: "absolute", top: 0, right: 22, background: "#7c7c84", color: "#fff", padding: "10px 18px 12px", textAlign: "center", borderTop: "4px solid var(--ph-red)" }}>
-              <div style={{ fontFamily: "var(--slab)", fontWeight: 800, fontSize: 22, lineHeight: 1.05 }}>{t("Reserve")}</div>
-              <div style={{ fontFamily: "var(--slab)", fontWeight: 800, fontSize: 22, lineHeight: 1.05 }}>{t("Now!")}</div>
+              <div style={{ fontFamily: "var(--slab)", fontWeight: 800, fontSize: 20, lineHeight: 1.05 }}>{t("Reserve")}</div>
+              <div style={{ fontFamily: "var(--slab)", fontWeight: 800, fontSize: 20, lineHeight: 1.05 }}>{t("Now!")}</div>
             </div>
           </div>
           <div style={{ background: "#161616", padding: "24px 22px 26px" }}>
-            <div style={{ color: "#fff", fontFamily: "var(--slab)", fontWeight: 700, fontSize: 27 }}>{t("P/X, A New Perspective")}</div>
-            <button style={{ width: "100%", marginTop: 22, border: "1.5px solid #fff", background: "transparent", color: "#fff", borderRadius: 40, padding: "16px", fontFamily: "var(--slab)", fontWeight: 800, fontSize: 22, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: 12 }}>
+            <div style={{ color: "#fff", fontFamily: "var(--slab)", fontWeight: 700, fontSize: 24.5 }}>{t("P/X, A New Perspective")}</div>
+            <button style={{ width: "100%", marginTop: 22, border: "1.5px solid #fff", background: "transparent", color: "#fff", borderRadius: 40, padding: "16px", fontFamily: "var(--slab)", fontWeight: 800, fontSize: 20, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: 12 }}>
               {t("Explore & Reserve")} <IconArrowR size={24} stroke="#fff" style={{ transform: isRTL() ? "scaleX(-1)" : "none" }} />
             </button>
             <div style={{ display: "flex", gap: 6, justifyContent: "center", marginTop: 22 }}>
@@ -756,11 +770,11 @@ function NewsCard({ date, title, src }) {
     <div style={{ flex: "none", width: 270, borderRadius: 4, overflow: "hidden", position: "relative", height: 230, background: "#fff", boxShadow: "0 2px 10px rgba(0,0,0,.08)" }}>
       <Img src={src} style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }} />
       <div style={{ position: "absolute", top: 0, right: 22, background: "#7c7c84", color: "#fff", padding: "8px 14px 10px", textAlign: "center", borderTop: "4px solid var(--ph-red)" }}>
-        <div style={{ fontFamily: "var(--slab)", fontWeight: 700, fontSize: 21, lineHeight: 1 }}>{date.split(" ").slice(0, 2).join(" ")}</div>
-        <div style={{ fontFamily: "var(--slab)", fontWeight: 700, fontSize: 21, lineHeight: 1.1 }}>{date.split(" ")[2]}</div>
+        <div style={{ fontFamily: "var(--slab)", fontWeight: 700, fontSize: 19, lineHeight: 1 }}>{date.split(" ").slice(0, 2).join(" ")}</div>
+        <div style={{ fontFamily: "var(--slab)", fontWeight: 700, fontSize: 19, lineHeight: 1.1 }}>{date.split(" ")[2]}</div>
       </div>
       <div style={{ position: "absolute", left: 0, right: 0, bottom: 0, padding: "30px 18px 16px", background: "linear-gradient(transparent,rgba(20,20,20,.78))" }}>
-        <span style={{ color: "#fff", fontFamily: "var(--sans)", fontWeight: 600, fontSize: 21, lineHeight: 1.15 }}>{title}</span>
+        <span style={{ color: "#fff", fontFamily: "var(--sans)", fontWeight: 600, fontSize: 19, lineHeight: 1.15 }}>{title}</span>
       </div>
     </div>
   );
@@ -768,7 +782,7 @@ function NewsCard({ date, title, src }) {
 
 function ReadMore({ text = "Read more" }) {
   return (
-    <button style={{ background: "none", border: "1.5px solid var(--ph-red)", color: "var(--ph-red)", borderRadius: 30, padding: "10px 22px", fontFamily: "var(--slab)", fontWeight: 700, fontSize: 18, display: "inline-flex", alignItems: "center", gap: 10, cursor: "pointer" }}>
+    <button style={{ background: "none", border: "1.5px solid var(--ph-red)", color: "var(--ph-red)", borderRadius: 30, padding: "10px 22px", fontFamily: "var(--slab)", fontWeight: 700, fontSize: 16, display: "inline-flex", alignItems: "center", gap: 10, cursor: "pointer" }}>
       {text} <IconArrowR2 size={20} stroke="var(--ph-red)" sw={2} />
     </button>
   );
@@ -781,7 +795,7 @@ function ScreenSpace({ time, onMyUnits, onGenerate, onSwitch, onBell }) {
     <div className="screen">
       <HeaderCompound time={time} onSwitch={onSwitch} onBell={onBell} />
       <div className="body" style={{ padding: "66px 24px 130px" }}>
-        <h2 style={{ ...sectionTitle, fontSize: 32 }}>{t("GATE")} <span style={{ color: "var(--ph-red)" }}>{t("PASSES")}</span>
+        <h2 style={{ ...sectionTitle, fontSize: 29 }}>{t("GATE")} <span style={{ color: "var(--ph-red)" }}>{t("PASSES")}</span>
           <button onClick={onGenerate} style={{ float: isRTL() ? "left" : "right", background: "none", border: "none", cursor: "pointer", color: "var(--ph-red)", marginTop: 2 }}><IconPlusCircle size={32} stroke="var(--ph-red)" /></button>
         </h2>
         <div style={{ ...tabRow, marginTop: 22 }} className="hscroll">
@@ -791,19 +805,19 @@ function ScreenSpace({ time, onMyUnits, onGenerate, onSwitch, onBell }) {
 
         <div style={{ textAlign: "center", padding: "44px 0 30px" }}>
           <IconGate size={66} stroke="#1b1b1b" sw={1.6} />
-          <div style={{ fontFamily: "var(--slab)", fontWeight: 800, fontSize: 30, marginTop: 18 }}>{t("No passes generated yet.")}</div>
+          <div style={{ fontFamily: "var(--slab)", fontWeight: 800, fontSize: 27, marginTop: 18 }}>{t("No passes generated yet.")}</div>
         </div>
 
-        <button onClick={onGenerate} style={{ width: "100%", border: "1.5px solid var(--ph-red)", background: "#fff", color: "var(--ph-red)", borderRadius: 40, padding: "18px", fontFamily: "var(--slab)", fontWeight: 700, fontSize: 22, letterSpacing: ".5px", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: 14 }}>
+        <button onClick={onGenerate} style={{ width: "100%", border: "1.5px solid var(--ph-red)", background: "#fff", color: "var(--ph-red)", borderRadius: 40, padding: "18px", fontFamily: "var(--slab)", fontWeight: 700, fontSize: 20, letterSpacing: ".5px", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: 14 }}>
           {t("GENERATE NEW PASS")} <IconArrowR2 size={24} stroke="var(--ph-red)" style={{ transform: isRTL() ? "scaleX(-1)" : "none" }} />
         </button>
 
-        <h2 style={{ ...sectionTitle, fontSize: 30, marginTop: 44 }}>{t("MANAGE YOUR")} <span style={{ color: "var(--ph-red)" }}>{t("UNITS")}</span></h2>
+        <h2 style={{ ...sectionTitle, fontSize: 27, marginTop: 44 }}>{t("MANAGE YOUR")} <span style={{ color: "var(--ph-red)" }}>{t("UNITS")}</span></h2>
         <button onClick={onMyUnits} style={unitCard}>
           <IconHouseSmall size={28} stroke="#1b1b1b" />
           <div style={{ textAlign: isRTL() ? "right" : "left", flex: 1, margin: "0 14px" }}>
-            <div style={{ fontFamily: "var(--slab)", fontWeight: 700, fontSize: 23 }}>{t("MY UNITS")}</div>
-            <div style={{ color: "var(--ph-gray)", fontFamily: "var(--slab)", fontWeight: 500, fontSize: 21, letterSpacing: .5 }}>HAC-JCH-242BF</div>
+            <div style={{ fontFamily: "var(--slab)", fontWeight: 700, fontSize: 20.5 }}>{t("MY UNITS")}</div>
+            <div style={{ color: "var(--ph-gray)", fontFamily: "var(--slab)", fontWeight: 500, fontSize: 19, letterSpacing: .5 }}>HAC-JCH-242BF</div>
           </div>
           <IconChevR size={22} stroke="var(--ph-red)" style={{ transform: isRTL() ? "scaleX(-1)" : "none" }} />
         </button>
@@ -821,16 +835,16 @@ function ScreenMyUnits({ time, onBack, onSwitch, onUnit }) {
         <button onClick={onUnit} style={{ width: "100%", textAlign: isRTL() ? "right" : "left", background: "#fff", border: "1px solid var(--ph-gray-line)", borderRadius: 4, padding: "26px 22px", display: "flex", alignItems: "center", gap: 18, cursor: "pointer" }}>
           <IconHouseSmall size={34} stroke="#1b1b1b" style={{ flex: "none" }} />
           <div style={{ flex: 1 }}>
-            <div style={{ fontFamily: "var(--slab)", fontWeight: 700, fontSize: 30 }}>HAC-JCH-242BF</div>
-            <div style={{ color: "var(--ph-gray)", fontFamily: "var(--slab)", fontWeight: 500, fontSize: 24 }}>{t("Family Member")}</div>
+            <div style={{ fontFamily: "var(--slab)", fontWeight: 700, fontSize: 27 }}>HAC-JCH-242BF</div>
+            <div style={{ color: "var(--ph-gray)", fontFamily: "var(--slab)", fontWeight: 500, fontSize: 21.5 }}>{t("Family Member")}</div>
           </div>
           <IconChevR size={22} stroke="var(--ph-red)" style={{ flex: "none", transform: isRTL() ? "scaleX(-1)" : "none" }} />
         </button>
         <div style={{ display: "flex", gap: 12, marginTop: 40, color: "var(--ph-gray)" }}>
           <IconBulb size={24} stroke="var(--ph-red)" style={{ flex: "none", marginTop: 4 }} />
-          <p style={{ margin: 0, fontFamily: "var(--slab)", fontWeight: 500, fontSize: 23, lineHeight: 1.4, color: "var(--ph-gray)", textAlign: isRTL() ? "right" : "left" }}>
+          <p style={{ margin: 0, fontFamily: "var(--slab)", fontWeight: 500, fontSize: 20.5, lineHeight: 1.4, color: "var(--ph-gray)", textAlign: isRTL() ? "right" : "left" }}>
             {t("You are currently viewing units in Hacienda Bay, to view units in other compounds")}{" "}
-            <button onClick={onSwitch} style={{ background: "none", border: "none", padding: 0, color: "var(--ph-red)", fontWeight: 700, fontFamily: "var(--slab)", fontSize: 23, cursor: "pointer" }}>{t("Switch Compound")}</button>
+            <button onClick={onSwitch} style={{ background: "none", border: "none", padding: 0, color: "var(--ph-red)", fontWeight: 700, fontFamily: "var(--slab)", fontSize: 20.5, cursor: "pointer" }}>{t("Switch Compound")}</button>
           </p>
         </div>
       </div>
@@ -844,7 +858,7 @@ function ScreenCommunity({ time, onSwitch, onBell }) {
     <div className="screen">
       <HeaderCompound time={time} onSwitch={onSwitch} onBell={onBell} />
       <div className="body" style={{ padding: "66px 24px 130px" }}>
-        <h2 style={{ ...sectionTitle, fontSize: 33 }}>{t("ANNOUNCEMENT")}</h2>
+        <h2 style={{ ...sectionTitle, fontSize: 29.5 }}>{t("ANNOUNCEMENT")}</h2>
         <div style={{ marginTop: 26, display: "flex", flexDirection: "column", gap: 22 }}>
           <AnnounceCard date="12 Sep 2025  10:0 PM" title={<>{t("Tonight at")} <b>SASS</b>{t(": Oriental Night")}</>} body="Hacienda Bay owners enjoy free entrance all night" />
           <AnnounceCard date="08 Sep 2025  06:30 PM" title={t("Beach Cleanup Morning")} body="Join your neighbours for a community beach cleanup" />
@@ -860,10 +874,10 @@ function AnnounceCard({ date, title, body }) {
         <Img src={undefined} style={{ position: "absolute", inset: 0, width: "100%", height: "100%" }} />
       </div>
       <div style={{ padding: "18px 22px 22px" }}>
-        <div style={{ color: "var(--ph-gray)", fontFamily: "var(--slab)", fontWeight: 500, fontSize: 21 }}>{date}</div>
-        <div style={{ fontFamily: "var(--slab)", fontWeight: 600, fontSize: 25, textAlign: "center", margin: "14px 0", lineHeight: 1.15 }}>{title}</div>
-        <div style={{ fontFamily: "var(--sans)", fontSize: 21, lineHeight: 1.3, marginBottom: 14, textAlign: isRTL() ? "right" : "left" }}>{t(body)}</div>
-        <button style={{ background: "none", border: "none", padding: 0, color: "var(--ph-red)", fontFamily: "var(--slab)", fontWeight: 700, fontSize: 21, cursor: "pointer" }}>{t("Read more")}</button>
+        <div style={{ color: "var(--ph-gray)", fontFamily: "var(--slab)", fontWeight: 500, fontSize: 19 }}>{date}</div>
+        <div style={{ fontFamily: "var(--slab)", fontWeight: 600, fontSize: 22.5, textAlign: "center", margin: "14px 0", lineHeight: 1.15 }}>{title}</div>
+        <div style={{ fontFamily: "var(--sans)", fontSize: 19, lineHeight: 1.3, marginBottom: 14, textAlign: isRTL() ? "right" : "left" }}>{t(body)}</div>
+        <button style={{ background: "none", border: "none", padding: 0, color: "var(--ph-red)", fontFamily: "var(--slab)", fontWeight: 700, fontSize: 19, cursor: "pointer" }}>{t("Read more")}</button>
       </div>
     </div>
   );
@@ -887,7 +901,7 @@ function ScreenMore({ time, onMyUsers, onSettings, onBell, onTile }) {
               <div style={{ width: 58, height: 58, borderRadius: "50%", background: "var(--ph-red-soft)", display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 16 }}>
                 <tile.Icon size={30} stroke="var(--ph-red)" sw={1.9} />
               </div>
-              <span style={{ fontFamily: "var(--sans)", fontSize: 23, fontWeight: 500, color: "#161616" }}>{t(tile.label)}</span>
+              <span style={{ fontFamily: "var(--sans)", fontSize: 20.5, fontWeight: 500, color: "#161616" }}>{t(tile.label)}</span>
             </button>
           ))}
         </div>
@@ -898,7 +912,7 @@ function ScreenMore({ time, onMyUsers, onSettings, onBell, onTile }) {
         <ListRow Icon={IconMailOpen} title="Send Us a Message" sub="In case you have suggestions, complaints, or general inquiries" />
 
         <div style={{ textAlign: "center", marginTop: 34 }}>
-          <button style={{ background: "none", border: "none", cursor: "pointer", fontFamily: "var(--slab)", fontWeight: 800, fontSize: 28, color: "#161616" }}>{t("Log Out")}</button>
+          <button style={{ background: "none", border: "none", cursor: "pointer", fontFamily: "var(--slab)", fontWeight: 800, fontSize: 25, color: "#161616" }}>{t("Log Out")}</button>
         </div>
       </div>
     </div>
@@ -909,8 +923,8 @@ function ListRow({ Icon, title, sub, onClick }) {
     <button onClick={onClick} style={{ width: "100%", textAlign: isRTL() ? "right" : "left", background: "#fff", border: "1px solid var(--ph-gray-line)", padding: "22px 20px", display: "flex", gap: 16, marginTop: 20, alignItems: "flex-start", cursor: onClick ? "pointer" : "default" }}>
       <Icon size={26} stroke="#1b1b1b" style={{ flex: "none", marginTop: 4 }} />
       <div style={{ flex: 1 }}>
-        <div style={{ fontFamily: "var(--slab)", fontWeight: 700, fontSize: 26, lineHeight: 1.2, marginBottom: 8, color: "#161616" }}>{t(title)}</div>
-        <div style={{ color: "var(--ph-gray)", fontFamily: "var(--sans)", fontSize: 20, lineHeight: 1.4 }}>{t(sub)}</div>
+        <div style={{ fontFamily: "var(--slab)", fontWeight: 700, fontSize: 23.5, lineHeight: 1.2, marginBottom: 8, color: "#161616" }}>{t(title)}</div>
+        <div style={{ color: "var(--ph-gray)", fontFamily: "var(--sans)", fontSize: 18, lineHeight: 1.4 }}>{t(sub)}</div>
       </div>
       <IconChevR size={22} stroke="var(--ph-red)" style={{ flex: "none", marginTop: 4, transform: isRTL() ? "scaleX(-1)" : "none" }} />
     </button>
@@ -921,16 +935,16 @@ function ListRow({ Icon, title, sub, onClick }) {
 function Stripe({ label, light }) {
   return (
     <div style={{ position: "absolute", inset: 0, backgroundImage: "repeating-linear-gradient(45deg,rgba(0,0,0,.04) 0 10px,transparent 10px 20px)", display: "flex", alignItems: "center", justifyContent: "center" }}>
-      <span style={{ fontFamily: "ui-monospace,monospace", fontSize: 12, color: light ? "#b3b3bb" : "#7f8794", letterSpacing: 1 }}>{label}</span>
+      <span style={{ fontFamily: "ui-monospace,monospace", fontSize: 11, color: light ? "#b3b3bb" : "#7f8794", letterSpacing: 1 }}>{label}</span>
     </div>
   );
 }
 
-const sectionTitle = { fontFamily: "var(--slab)", fontWeight: 800, fontSize: 33, margin: 0, color: "#161616", letterSpacing: ".2px" };
+const sectionTitle = { fontFamily: "var(--slab)", fontWeight: 800, fontSize: 29.5, margin: 0, color: "#161616", letterSpacing: ".2px" };
 const pill = { display: "flex", background: "#ececec", borderRadius: 30, padding: 4, flex: "none" };
-const pillBtn = (on) => ({ border: "none", cursor: "pointer", borderRadius: 30, padding: "7px 18px", fontFamily: "var(--slab)", fontWeight: 600, fontSize: 18, background: on ? "#161616" : "transparent", color: on ? "#fff" : "#8a8a8a" });
+const pillBtn = (on) => ({ border: "none", cursor: "pointer", borderRadius: 30, padding: "7px 18px", fontFamily: "var(--slab)", fontWeight: 600, fontSize: 16, background: on ? "#161616" : "transparent", color: on ? "#fff" : "#8a8a8a" });
 const tabRow = { display: "flex", gap: 26, marginTop: 16, borderBottom: "1px solid #e3e3e3", paddingBottom: 0, overflowX: "auto" };
-const tabItem = (on) => ({ border: "none", background: "none", cursor: "pointer", fontFamily: "var(--slab)", fontWeight: on ? 700 : 500, fontSize: 23, color: on ? "#161616" : "#9a9a9a", paddingBottom: 12, borderBottom: on ? "3px solid #161616" : "3px solid transparent", whiteSpace: "nowrap", flex: "none" });
+const tabItem = (on) => ({ border: "none", background: "none", cursor: "pointer", fontFamily: "var(--slab)", fontWeight: on ? 700 : 500, fontSize: 20.5, color: on ? "#161616" : "#9a9a9a", paddingBottom: 12, borderBottom: on ? "3px solid #161616" : "3px solid transparent", whiteSpace: "nowrap", flex: "none" });
 const unitCard = { width: "100%", marginTop: 22, border: "1px solid var(--ph-gray-line)", borderRadius: 4, padding: "22px 20px", display: "flex", alignItems: "center", background: "#fff", cursor: "pointer" };
 const moreTile = { border: "1px solid var(--ph-gray-line)", background: "#fff", cursor: "pointer", padding: "26px 14px", display: "flex", flexDirection: "column", alignItems: "center" };
 
@@ -940,19 +954,19 @@ function ScreenUnitDetails({ time, onBack }) {
     <div className="screen">
       <HeaderTitle time={time} title="UNIT DETAILS" onBack={onBack} />
       <div className="body" style={{ padding: "26px 24px 130px" }}>
-        <div style={{ fontFamily: "var(--slab)", fontWeight: 800, fontSize: 38, color: "#161616" }}>HAC-JCH-242BF</div>
+        <div style={{ fontFamily: "var(--slab)", fontWeight: 800, fontSize: 34, color: "#161616" }}>HAC-JCH-242BF</div>
         <div style={{ background: "#f1f1f1", borderRadius: 6, marginTop: 28, padding: "28px 8px", display: "flex", alignItems: "stretch" }}>
           <div style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", gap: 14 }}>
             <IconPin size={30} stroke="#1b1b1b" sw={1.7} />
-            <span style={{ fontFamily: "var(--sans)", fontSize: 23, color: "#1b1b1b" }}>{t("Hacienda Bay")}</span>
+            <span style={{ fontFamily: "var(--sans)", fontSize: 20.5, color: "#1b1b1b" }}>{t("Hacienda Bay")}</span>
           </div>
           <div style={{ width: 1, background: "#cfcfcf", margin: "2px 0" }} />
           <div style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", gap: 14, padding: "0 6px" }}>
             <IconUser size={30} stroke="#1b1b1b" sw={1.7} />
-            <span style={{ fontFamily: "var(--sans)", fontSize: 23, color: "#1b1b1b", textAlign: "center", lineHeight: 1.25 }}>{t("Family Member")}</span>
+            <span style={{ fontFamily: "var(--sans)", fontSize: 20.5, color: "#1b1b1b", textAlign: "center", lineHeight: 1.25 }}>{t("Family Member")}</span>
           </div>
         </div>
-        <h2 style={{ ...sectionTitle, fontSize: 32, marginTop: 48 }}>{t("UNIT")} <span style={{ color: "var(--ph-red)" }}>{t("DOCUMENTS")}</span></h2>
+        <h2 style={{ ...sectionTitle, fontSize: 29, marginTop: 48 }}>{t("UNIT")} <span style={{ color: "var(--ph-red)" }}>{t("DOCUMENTS")}</span></h2>
       </div>
     </div>
   );
@@ -965,8 +979,8 @@ function ScreenMyUsers({ time, onBack }) {
       <HeaderTitle time={time} title="MY USERS" onBack={onBack} />
       <div className="body" style={{ padding: "64px 24px 130px", textAlign: "center" }}>
         <IconPeoplePair size={62} stroke="#1b1b1b" sw={1.7} />
-        <div style={{ fontFamily: "var(--slab)", fontWeight: 800, fontSize: 34, marginTop: 24, lineHeight: 1.2 }}>{t("No family members added yet.")}</div>
-        <div style={{ marginTop: 20, fontFamily: "var(--slab)", fontWeight: 500, fontSize: 24, color: "#1b1b1b" }}>{t("You haven't invited any user yet")}</div>
+        <div style={{ fontFamily: "var(--slab)", fontWeight: 800, fontSize: 30.5, marginTop: 24, lineHeight: 1.2 }}>{t("No family members added yet.")}</div>
+        <div style={{ marginTop: 20, fontFamily: "var(--slab)", fontWeight: 500, fontSize: 21.5, color: "#1b1b1b" }}>{t("You haven't invited any user yet")}</div>
       </div>
     </div>
   );
@@ -988,7 +1002,7 @@ function ScreenSettings({ time, onBack, onProfile, onNotifications, onLanguage, 
         {rows.map((r) => (
           <button key={r.label} onClick={r.action} style={{ width: "100%", border: "1px solid var(--ph-gray-line)", background: "#fff", cursor: "pointer", padding: "24px 20px", display: "flex", alignItems: "center", gap: 16, marginBottom: 22 }}>
             <r.Icon size={28} stroke="#161616" sw={1.9} style={{ flex: "none" }} />
-            <span style={{ flex: 1, textAlign: isRTL() ? "right" : "left", fontFamily: "var(--slab)", fontWeight: 800, fontSize: 25, color: "#161616", letterSpacing: ".3px" }}>{t(r.label)}</span>
+            <span style={{ flex: 1, textAlign: isRTL() ? "right" : "left", fontFamily: "var(--slab)", fontWeight: 800, fontSize: 22.5, color: "#161616", letterSpacing: ".3px" }}>{t(r.label)}</span>
             <IconChevR size={22} stroke="var(--ph-red)" style={{ flex: "none", transform: isRTL() ? "scaleX(-1)" : "none" }} />
           </button>
         ))}
@@ -1001,15 +1015,15 @@ function ScreenSettings({ time, onBack, onProfile, onNotifications, onLanguage, 
 function ProfileField({ label, value, action }) {
   return (
     <div style={{ position: "relative", border: "1px solid var(--ph-gray-line)", borderRadius: 6, padding: "20px 18px", marginTop: 24 }}>
-      <span style={{ position: "absolute", top: -11, [isRTL() ? "right" : "left"]: 14, background: "#fff", padding: "0 7px", fontFamily: "var(--sans)", fontSize: 17, color: "var(--ph-gray)" }}>{t(label)}</span>
+      <span style={{ position: "absolute", top: -11, [isRTL() ? "right" : "left"]: 14, background: "#fff", padding: "0 7px", fontFamily: "var(--sans)", fontSize: 15.5, color: "var(--ph-gray)" }}>{t(label)}</span>
       <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-        <span style={{ flex: 1, fontFamily: "var(--sans)", fontSize: 24, color: "#161616", wordBreak: "break-word" }}>{value}</span>
+        <span style={{ flex: 1, fontFamily: "var(--sans)", fontSize: 21.5, color: "#161616", wordBreak: "break-word" }}>{value}</span>
         {action}
       </div>
     </div>
   );
 }
-function ScreenProfile({ time, onBack }) {
+function ScreenProfile({ time, onBack, onEditPassword }) {
   return (
     <div className="screen">
       <HeaderTitle time={time} title="PROFILE & ACCOUNT" onBack={onBack} />
@@ -1024,17 +1038,17 @@ function ScreenProfile({ time, onBack }) {
         <ProfileField label="Mobile number*" value="+201001283564" />
         <ProfileField label="Email*" value="kareemali2933@yahoo.com" />
         <ProfileField label="Password*" value="*********" action={
-          <button aria-label="Edit password" style={{ background: "none", border: "none", cursor: "pointer", color: "var(--ph-red)", display: "flex", padding: 4 }}><IconPencil size={26} stroke="var(--ph-red)" /></button>
+          <button onClick={onEditPassword} aria-label="Edit password" style={{ background: "none", border: "none", cursor: "pointer", color: "var(--ph-red)", display: "flex", padding: 4 }}><IconPencil size={26} stroke="var(--ph-red)" /></button>
         } />
         <div style={{ display: "flex", gap: 10, marginTop: 30, alignItems: "flex-start" }}>
           <IconBulb size={22} stroke="var(--ph-red)" style={{ flex: "none", marginTop: 2 }} />
-          <p style={{ margin: 0, color: "var(--ph-gray)", fontFamily: "var(--sans)", fontSize: 21, lineHeight: 1.45, textAlign: isRTL() ? "right" : "left" }}>
+          <p style={{ margin: 0, color: "var(--ph-gray)", fontFamily: "var(--sans)", fontSize: 19, lineHeight: 1.45, textAlign: isRTL() ? "right" : "left" }}>
             {t("If you want to update your Name, Mobile Number, or Email")}{" "}
-            <button style={{ background: "none", border: "none", padding: 0, color: "var(--ph-red)", fontWeight: 800, fontFamily: "var(--slab)", fontSize: 22, cursor: "pointer" }}>{t("Contact Us")}</button>
+            <button style={{ background: "none", border: "none", padding: 0, color: "var(--ph-red)", fontWeight: 800, fontFamily: "var(--slab)", fontSize: 20, cursor: "pointer" }}>{t("Contact Us")}</button>
           </p>
         </div>
         <div style={{ textAlign: "center", marginTop: 26 }}>
-          <button style={{ background: "none", border: "none", cursor: "pointer", fontFamily: "var(--slab)", fontWeight: 800, fontSize: 28, color: "#161616", textDecoration: "underline" }}>{t("Delete My Account")}</button>
+          <button style={{ background: "none", border: "none", cursor: "pointer", fontFamily: "var(--slab)", fontWeight: 800, fontSize: 25, color: "#161616", textDecoration: "underline" }}>{t("Delete My Account")}</button>
         </div>
       </div>
     </div>
@@ -1057,10 +1071,10 @@ function NotifCard({ Icon, title, sub, on, onToggle }) {
     <div style={{ border: "1px solid var(--ph-gray-line)", padding: "22px 20px", marginBottom: 22 }}>
       <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
         <Icon size={28} stroke="#161616" sw={2} style={{ flex: "none" }} />
-        <span style={{ flex: 1, fontFamily: "var(--slab)", fontWeight: 800, fontSize: 27, color: "#161616", textAlign: isRTL() ? "right" : "left" }}>{t(title)}</span>
+        <span style={{ flex: 1, fontFamily: "var(--slab)", fontWeight: 800, fontSize: 24.5, color: "#161616", textAlign: isRTL() ? "right" : "left" }}>{t(title)}</span>
         <Toggle on={on} onChange={onToggle} />
       </div>
-      <p style={{ margin: "12px 0 0", color: "var(--ph-gray)", fontFamily: "var(--sans)", fontSize: 21, lineHeight: 1.4, textAlign: isRTL() ? "right" : "left" }}>{t(sub)}</p>
+      <p style={{ margin: "12px 0 0", color: "var(--ph-gray)", fontFamily: "var(--sans)", fontSize: 19, lineHeight: 1.4, textAlign: isRTL() ? "right" : "left" }}>{t(sub)}</p>
     </div>
   );
 }
@@ -1073,6 +1087,48 @@ function ScreenNotifications({ time, onBack }) {
       <div className="body" style={{ padding: "30px 24px 130px" }}>
         <NotifCard Icon={IconBell} title="Push Notifications" sub="Turn on to allow the application to send you Push Notifications ?" on={push} onToggle={() => setPush((v) => !v)} />
         <NotifCard Icon={IconMail} title="Email Notifications" sub="Turn on to allow the application to send you Email Notifications ?" on={email} onToggle={() => setEmail((v) => !v)} />
+      </div>
+    </div>
+  );
+}
+
+/* ---------- CHANGE PASSWORD ---------- */
+function PwField({ label, value, onChange, show, onToggleShow }) {
+  return (
+    <div style={{ border: "1px solid var(--ph-gray-line)", borderRadius: 6, padding: "4px 16px", display: "flex", alignItems: "center", marginBottom: 22 }}>
+      <input type={show ? "text" : "password"} value={value} onChange={(e) => onChange(e.target.value)} placeholder={t(label)}
+        dir={isRTL() ? "rtl" : "ltr"}
+        style={{ flex: 1, border: "none", outline: "none", background: "transparent", fontFamily: "var(--sans)", fontSize: 20, color: "#161616", padding: "18px 0", WebkitUserSelect: "text", userSelect: "text" }} />
+      <button onClick={onToggleShow} aria-label="Show/hide" style={{ background: "none", border: "none", cursor: "pointer", color: "#161616", display: "flex", padding: 4, flex: "none" }}>
+        {show ? <IconEye size={26} stroke="#161616" sw={1.8} /> : <IconEyeOff size={26} stroke="#161616" sw={1.8} />}
+      </button>
+    </div>
+  );
+}
+function ScreenChangePassword({ time, onBack }) {
+  const [cur, setCur] = React.useState("");
+  const [nw, setNw] = React.useState("");
+  const [sc, setSc] = React.useState(false);
+  const [sn, setSn] = React.useState(false);
+  return (
+    <div className="screen">
+      <HeaderTitle time={time} title="CHANGE PASSWORD" onBack={onBack} />
+      <div className="body" style={{ padding: "40px 24px 130px" }}>
+        <PwField label="Current Password *" value={cur} onChange={setCur} show={sc} onToggleShow={() => setSc((v) => !v)} />
+        <PwField label="New Password *" value={nw} onChange={setNw} show={sn} onToggleShow={() => setSn((v) => !v)} />
+        <div style={{ display: "flex", gap: 10, marginTop: 10, alignItems: "flex-start" }}>
+          <IconInfo size={22} stroke="var(--ph-gray)" style={{ flex: "none", marginTop: 3 }} />
+          <p style={{ margin: 0, color: "var(--ph-gray)", fontFamily: "var(--sans)", fontSize: 19, lineHeight: 1.5, textAlign: isRTL() ? "right" : "left" }}>
+            {t("Password should be at least 8 characters long.")}<br />
+            {t("At least one upper case and lower case letters.")}<br />
+            {t("At least one special characters (@#$%^*!).")}<br />
+            {t("At least one number.")}
+          </p>
+        </div>
+        <div style={{ textAlign: "center", marginTop: 22 }}>
+          <button style={{ background: "none", border: "none", cursor: "pointer", color: "var(--ph-red)", fontFamily: "var(--slab)", fontWeight: 800, fontSize: 19 }}>{t("Forgot Password?")}</button>
+        </div>
+        <button style={{ width: "100%", marginTop: 34, border: "1.5px solid var(--ph-gray-line)", background: "#fff", color: "var(--ph-gray)", borderRadius: 40, padding: "18px", fontFamily: "var(--slab)", fontWeight: 800, fontSize: 21.5, cursor: "pointer" }}>{t("Save & Update")}</button>
       </div>
     </div>
   );
@@ -1097,7 +1153,7 @@ function ScreenAppLanguage({ time, onBack, lang, onChangeLang }) {
           const on = lang === o.key;
           return (
             <button key={o.key} onClick={() => onChangeLang(o.key)} style={{ width: "100%", border: "1px solid var(--ph-gray-line)", background: "#fff", cursor: "pointer", padding: "30px 22px", display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 22 }}>
-              <span style={{ fontFamily: "var(--slab)", fontWeight: 700, fontSize: 27, color: "#161616" }}>{o.label}</span>
+              <span style={{ fontFamily: "var(--slab)", fontWeight: 700, fontSize: 24.5, color: "#161616" }}>{o.label}</span>
               <DiamondRadio on={on} />
             </button>
           );
@@ -1117,7 +1173,7 @@ function ScreenPolicy({ time, onBack, title }) {
       <HeaderTitle time={time} title={title} onBack={onBack} />
       <div className="body" style={{ padding: "30px 26px 130px" }}>
         {paras.map((p, i) => (
-          <p key={i} style={{ margin: "0 0 18px", fontFamily: "var(--sans)", fontSize: 21, lineHeight: 1.5, color: "#3a3a3a", textAlign: isRTL() ? "right" : "left" }}>{t(p)}</p>
+          <p key={i} style={{ margin: "0 0 18px", fontFamily: "var(--sans)", fontSize: 19, lineHeight: 1.5, color: "#3a3a3a", textAlign: isRTL() ? "right" : "left" }}>{t(p)}</p>
         ))}
       </div>
     </div>
@@ -1137,7 +1193,7 @@ function ScreenMyInvitations({ time, onBack }) {
         </div>
         <div style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", textAlign: "center", padding: "60px 10px" }}>
           <IconSpace size={58} stroke="#1b1b1b" sw={1.7} />
-          <div style={{ marginTop: 22, fontFamily: "var(--slab)", fontWeight: 800, fontSize: 31, lineHeight: 1.25 }}>{t("There are no invitations at the moment")}</div>
+          <div style={{ marginTop: 22, fontFamily: "var(--slab)", fontWeight: 800, fontSize: 28, lineHeight: 1.25 }}>{t("There are no invitations at the moment")}</div>
         </div>
       </div>
     </div>
@@ -1150,8 +1206,8 @@ function ScreenMyVehicles({ time, onBack }) {
       <div className="body" style={{ padding: "30px 24px 130px", textAlign: "center" }}>
         <div style={{ paddingTop: 90 }}>
           <IconCar size={62} stroke="#1b1b1b" sw={1.7} />
-          <div style={{ marginTop: 26, fontFamily: "var(--slab)", fontWeight: 800, fontSize: 34 }}>{t("No Registered Vehicles!")}</div>
-          <button style={{ width: "100%", marginTop: 40, border: "1.5px solid var(--ph-red)", background: "#fff", color: "var(--ph-red)", borderRadius: 40, padding: "18px", fontFamily: "var(--slab)", fontWeight: 800, fontSize: 24, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: 14 }}>
+          <div style={{ marginTop: 26, fontFamily: "var(--slab)", fontWeight: 800, fontSize: 30.5 }}>{t("No Registered Vehicles!")}</div>
+          <button style={{ width: "100%", marginTop: 40, border: "1.5px solid var(--ph-red)", background: "#fff", color: "var(--ph-red)", borderRadius: 40, padding: "18px", fontFamily: "var(--slab)", fontWeight: 800, fontSize: 21.5, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: 14 }}>
             {t("Add Your First Vehicle")} <IconArrowR size={24} stroke="var(--ph-red)" style={{ transform: isRTL() ? "scaleX(-1)" : "none" }} />
           </button>
         </div>
@@ -1166,7 +1222,7 @@ function ScreenMyReservations({ time, onBack }) {
       <div className="body" style={{ padding: "30px 24px 130px", textAlign: "center" }}>
         <div style={{ paddingTop: 150 }}>
           <IconQR size={58} color="#161616" />
-          <div style={{ marginTop: 26, fontFamily: "var(--slab)", fontWeight: 800, fontSize: 34 }}>{t("No reservations Yet!")}</div>
+          <div style={{ marginTop: 26, fontFamily: "var(--slab)", fontWeight: 800, fontSize: 30.5 }}>{t("No reservations Yet!")}</div>
         </div>
       </div>
     </div>
@@ -1180,8 +1236,8 @@ function NotifRow({ title, date }) {
       <span style={{ flex: "none", width: 48, height: 48, borderRadius: "50%", background: "var(--ph-red-soft)", display: "flex", alignItems: "center", justifyContent: "center" }}>
         <IconMailOpen size={24} stroke="var(--ph-red)" sw={1.8} />
       </span>
-      <div style={{ flex: 1, fontFamily: "var(--sans)", fontSize: 23, color: "#161616", lineHeight: 1.25, textAlign: isRTL() ? "right" : "left" }}>{t(title)}</div>
-      <div style={{ flex: "none", fontFamily: "var(--sans)", fontSize: 18, color: "var(--ph-gray)", whiteSpace: "nowrap" }}>{date}</div>
+      <div style={{ flex: 1, fontFamily: "var(--sans)", fontSize: 20.5, color: "#161616", lineHeight: 1.25, textAlign: isRTL() ? "right" : "left" }}>{t(title)}</div>
+      <div style={{ flex: "none", fontFamily: "var(--sans)", fontSize: 16, color: "var(--ph-gray)", whiteSpace: "nowrap" }}>{date}</div>
     </div>
   );
 }
@@ -1201,7 +1257,7 @@ function ScreenNotificationFeed({ time, onBack }) {
     <div className="screen">
       <HeaderTitle time={time} title="NOTIFICATIONS" onBack={onBack} />
       <div className="body" style={{ padding: "28px 24px 130px" }}>
-        <div style={{ fontFamily: "var(--slab)", fontWeight: 800, fontSize: 30, color: "#161616", marginBottom: 6, textAlign: isRTL() ? "right" : "left" }}>{t("Earlier")}</div>
+        <div style={{ fontFamily: "var(--slab)", fontWeight: 800, fontSize: 27, color: "#161616", marginBottom: 6, textAlign: isRTL() ? "right" : "left" }}>{t("Earlier")}</div>
         {items.map((n, i) => <NotifRow key={i} title={n.title} date={n.date} />)}
       </div>
     </div>
@@ -1212,14 +1268,14 @@ Object.assign(window, {
   ScreenHills, ScreenSpace, ScreenMyUnits, ScreenCommunity, ScreenMore,
   ScreenUnitDetails, ScreenMyUsers, ScreenSettings, ScreenProfile, ScreenNotifications,
   ScreenAppLanguage, ScreenPolicy, ScreenNotificationFeed,
-  ScreenMyInvitations, ScreenMyVehicles, ScreenMyReservations,
+  ScreenMyInvitations, ScreenMyVehicles, ScreenMyReservations, ScreenChangePassword,
 });
 
 // ===== APP =====
 // ============ MY PASS + APP ============
 const { useState: useS } = React;
 
-const PHOTO_URL = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQO2RZqXTweE4Ju_K7EU5rDvXu0it5xvi75ww&s";
+const PHOTO_URL = "assets/profile.jpg";
 
 function ScreenMyPass({ time, onSwitch, onBell }) {
   const [tab, setTab] = useS("gate");
@@ -1236,7 +1292,7 @@ function ScreenMyPass({ time, onSwitch, onBell }) {
 
         {/* flip card — QR (square) on the front, portrait photo on the back;
             the two faces no longer share identical proportions */}
-        <div style={{ perspective: 1400, marginTop: 36, width: 252, height: 332 }}>
+        <div style={{ perspective: 1400, marginTop: 18, width: 252, height: 332 }}>
           <div onClick={() => setFlipped((f) => !f)} aria-label="Flip pass" style={{
             position: "relative", width: 252, height: 332,
             cursor: "pointer", transformStyle: "preserve-3d", WebkitTransformStyle: "preserve-3d", willChange: "transform",
@@ -1256,20 +1312,20 @@ function ScreenMyPass({ time, onSwitch, onBell }) {
         </div>
 
         {/* name + relationship */}
-        <div style={{ marginTop: 34, fontFamily: "var(--slab)", fontWeight: 700, fontSize: 32, color: "#161616", whiteSpace: "nowrap" }}>{t("Kareem Sabri")}</div>
-        <div style={{ marginTop: 4, fontFamily: "var(--slab)", fontWeight: 500, fontSize: 23, color: "var(--ph-gray)" }}>{t("Child")}</div>
+        <div style={{ marginTop: 34, fontFamily: "var(--slab)", fontWeight: 700, fontSize: 29, color: "#161616", whiteSpace: "nowrap" }}>{t("Kareem Sabri")}</div>
+        <div style={{ marginTop: 4, fontFamily: "var(--slab)", fontWeight: 500, fontSize: 20.5, color: "var(--ph-gray)" }}>{t("Child")}</div>
 
         {/* help line */}
         <div style={{ marginTop: 22, display: "flex", alignItems: "center", justifyContent: "center", gap: 8, flexWrap: "wrap", color: "var(--ph-gray)" }}>
           <IconBulb size={20} stroke="var(--ph-red)" style={{ flex: "none" }} />
-          <span style={{ fontFamily: "var(--sans)", fontSize: 19 }}>{t("In case you have any issues, Please.")}</span>
-          <button style={{ background: "none", border: "none", padding: 0, cursor: "pointer", color: "var(--ph-red)", fontFamily: "var(--slab)", fontWeight: 800, fontSize: 20 }}>{t("Contact Us")}</button>
+          <span style={{ fontFamily: "var(--sans)", fontSize: 17 }}>{t("In case you have any issues, Please.")}</span>
+          <button style={{ background: "none", border: "none", padding: 0, cursor: "pointer", color: "var(--ph-red)", fontFamily: "var(--slab)", fontWeight: 800, fontSize: 18 }}>{t("Contact Us")}</button>
         </div>
       </div>
     </div>
   );
 }
-const passSeg = (on) => ({ border: "none", cursor: "pointer", borderRadius: 24, padding: "11px 22px", fontFamily: "var(--slab)", fontWeight: 600, fontSize: 18, whiteSpace: "nowrap", background: on ? "#161616" : "transparent", color: on ? "#fff" : "#8a8a8a" });
+const passSeg = (on) => ({ border: "none", cursor: "pointer", borderRadius: 24, padding: "11px 22px", fontFamily: "var(--slab)", fontWeight: 600, fontSize: 16, whiteSpace: "nowrap", background: on ? "#161616" : "transparent", color: on ? "#fff" : "#8a8a8a" });
 const passFace = (back, flipped) => ({
   position: "absolute", inset: 0, backfaceVisibility: "hidden", WebkitBackfaceVisibility: "hidden",
   borderRadius: 0, overflow: "hidden",
@@ -1338,7 +1394,8 @@ function App() {
       case "vehicles": return <ScreenMyVehicles time={time} onBack={popPage} />;
       case "reservations": return <ScreenMyReservations time={time} onBack={popPage} />;
       case "settings": return <ScreenSettings time={time} onBack={popPage} onProfile={() => pushPage("profile")} onNotifications={() => pushPage("notifications")} onLanguage={() => pushPage("appLanguage")} onPrivacy={() => pushPage("privacy")} onTerms={() => pushPage("terms")} />;
-      case "profile": return <ScreenProfile time={time} onBack={popPage} />;
+      case "profile": return <ScreenProfile time={time} onBack={popPage} onEditPassword={() => pushPage("changePassword")} />;
+      case "changePassword": return <ScreenChangePassword time={time} onBack={popPage} />;
       case "notifications": return <ScreenNotifications time={time} onBack={popPage} />;
       case "appLanguage": return <ScreenAppLanguage time={time} onBack={popPage} lang={lang} onChangeLang={changeLang} />;
       case "privacy": return <ScreenPolicy time={time} onBack={popPage} title="PRIVACY POLICY" />;
@@ -1421,7 +1478,7 @@ styleEl.textContent = `
 @keyframes fadeIn{from{opacity:0}to{opacity:1}}
 .hscroll::-webkit-scrollbar{height:0;width:0;}
 .hscroll{scrollbar-width:none;-ms-overflow-style:none;}
-.ph-loader{position:absolute;inset:0;z-index:80;background:rgba(255,255,255,.96);display:flex;align-items:center;justify-content:center;}
+.ph-loader{position:absolute;inset:0;z-index:25;background:rgba(255,255,255,.96);display:flex;align-items:center;justify-content:center;}
 .ph-loader-diamond{width:60px;height:60px;animation:phSpin 1.05s cubic-bezier(.45,.05,.35,1) infinite;}
 @keyframes phSpin{0%{transform:rotate(0) scale(.86);opacity:.55}50%{transform:rotate(180deg) scale(1.08);opacity:1}100%{transform:rotate(360deg) scale(.86);opacity:.55}}
 .ph-sheet-wrap{position:absolute;inset:0;z-index:50;background:rgba(0,0,0,.45);display:flex;flex-direction:column;justify-content:flex-end;animation:fadeIn .2s ease;}

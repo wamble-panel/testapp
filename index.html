@@ -74,6 +74,7 @@
     background:#fff;
     overflow:hidden;
     flex:none;
+    display:flex;flex-direction:column;
   }
   .screen{
     position:absolute;inset:0;
@@ -1410,27 +1411,32 @@ function App() {
 
   return (
     <div className="phone" dir={rtl ? "rtl" : "ltr"}>
-      {/* base tab screen — parallaxes left + dims behind a pushed sub-page */}
-      <div style={{ position: "absolute", inset: 0, display: "flex", flexDirection: "column", transition: "transform .3s cubic-bezier(.32,.72,0,1), filter .3s ease", transform: baseShift ? "translateX(-24%)" : "translateX(0)", filter: baseShift ? "brightness(.72)" : "none" }}>
-        <div style={{ flex: 1, minHeight: 0, display: "flex" }}>{main}</div>
+      {/* content region — fills above the nav; the loader/overlays live here so
+          they never cover the bottom nav */}
+      <div style={{ flex: 1, position: "relative", minHeight: 0, overflow: "hidden", zIndex: 0 }}>
+        {/* base tab screen — parallaxes left + dims behind a pushed sub-page */}
+        <div style={{ position: "absolute", inset: 0, display: "flex", flexDirection: "column", transition: "transform .3s cubic-bezier(.32,.72,0,1), filter .3s ease", transform: baseShift ? "translateX(-24%)" : "translateX(0)", filter: baseShift ? "brightness(.72)" : "none" }}>
+          <div style={{ flex: 1, minHeight: 0, display: "flex" }}>{main}</div>
+        </div>
+
+        {/* full-page views as a stack — each slides like native iOS push/pop. */}
+        {stack.map((key, i) => (
+          <Overlay key={i} closing={closing && i === stack.length - 1} onSwipeBack={i === stack.length - 1 ? popPage : null}>{renderPage(key)}</Overlay>
+        ))}
+
+        {/* diamond page-transition loader — covers content only, not the nav */}
+        {loading && <DiamondLoader />}
       </div>
 
-      {/* full-page views as a stack — each slides like native iOS push/pop.
-          Only the topmost animates out on a back; pages beneath are revealed. */}
-      {stack.map((key, i) => (
-        <Overlay key={i} closing={closing && i === stack.length - 1} onSwipeBack={i === stack.length - 1 ? popPage : null}>{renderPage(key)}</Overlay>
-      ))}
+      {/* bottom nav — a normal flex child pinned at the bottom of the 100dvh
+          column (no fixed positioning → no iOS standalone bottom gap) */}
+      <BottomNav
+        active={top === "myPass" ? "pass" : tab}
+        onNav={nav}
+        onPass={openPass}
+      />
 
-      {/* bottom nav is always present (My Pass is a standalone page, not an overlay with its own chrome) */}
-      <div style={{ position: "fixed", left: "50%", transform: "translateX(-50%)", bottom: 0, width: "100%", maxWidth: 480, zIndex: 30 }}>
-        <BottomNav
-          active={top === "myPass" ? "pass" : tab}
-          onNav={nav}
-          onPass={openPass}
-        />
-      </div>
-
-      {/* Switch Compound bottom sheet — select or click-away both load then dismiss */}
+      {/* Switch Compound bottom sheet (covers the whole screen incl. nav) */}
       {sheet === "switch" && (
         <SwitchSheet onClose={() => setSheet(null)} onSelect={selectCompound} />
       )}
@@ -1439,9 +1445,6 @@ function App() {
       {bio && (
         <BiometricModal onSuccess={onBioSuccess} onCancel={() => setBio(false)} />
       )}
-
-      {/* diamond page-transition loader */}
-      {loading && <DiamondLoader />}
     </div>
   );
 }

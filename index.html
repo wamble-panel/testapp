@@ -47,17 +47,17 @@
     overscroll-behavior:none;            /* kill rubber-band chaining */
     -webkit-user-select:none;user-select:none;  /* native: no text selection */
     touch-action:manipulation;           /* remove 300ms tap delay */
-    height:100%;
-    /* Root bg = colour of the iOS home-indicator strip (which sits outside the
-       layout viewport). Dark to match the splash; JS flips it to white once the
-       app loads so it matches the white bottom nav. */
-    background:#161616;
+    /* On this device 100% / 100dvh = 793 (59px short of the screen) while
+       100vh = 852 = the full physical screen. In a standalone PWA there's no
+       browser toolbar, so 100vh is the correct full-screen height. */
+    height:100vh;
+    background:#fff;
   }
   body{
     background:#fff;
     font-family:var(--sans);
     color:var(--ph-ink);
-    height:100%;
+    height:100vh;
     overflow:hidden;
   }
   /* On wider screens the app is a centered phone-width column — frame it on dark */
@@ -65,14 +65,14 @@
   /* allow selection only where it would be expected (none here, but keep hook) */
   .selectable{-webkit-user-select:text;user-select:text;}
   #stage{
-    width:100%;height:100%;
+    width:100%;height:100vh;
     display:flex;align-items:stretch;justify-content:center;
   }
   /* ---------- App viewport: full-bleed; centered phone-width column on desktop ---------- */
   .phone{
     position:relative;
     width:100%;max-width:480px;
-    height:100%;
+    height:100vh;
     background:#fff;
     overflow:hidden;
     flex:none;
@@ -89,7 +89,7 @@
   .body::-webkit-scrollbar{width:0;}
   /* hide things */
   .vis-hidden{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);}
-  #root{width:100%;height:100%;}
+  #root{width:100%;height:100vh;}
 
   /* ====== Real-device safe areas (notch + home swipe area) ====== */
   /* Black header fills the top inset; min keeps breathing room in a browser tab */
@@ -100,9 +100,8 @@
 
   /* ====== Launch / splash screen (shown on every open, then fades out) ====== */
   #ph-splash{
-    /* size by height:100% (full physical screen) instead of inset/bottom:0,
-       which on iOS snaps to the safe-area bottom and leaves a white strip */
-    position:fixed;top:0;left:0;width:100%;height:100%;z-index:9999;background:#161616;
+    /* 100vh = full physical screen on iOS standalone (100%/dvh fall ~59px short) */
+    position:fixed;top:0;left:0;width:100%;height:100vh;z-index:9999;background:#161616;
     display:flex;align-items:stretch;justify-content:center;
     transition:opacity .55s ease;
   }

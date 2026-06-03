@@ -6,7 +6,7 @@
   ],
   "headers": [
     {
-      "source": "/manifest.webmanifest",
+      "source": "/:name.webmanifest",
       "headers": [
         { "key": "Content-Type", "value": "application/manifest+json; charset=utf-8" }
       ]

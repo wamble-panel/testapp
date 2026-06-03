@@ -21,6 +21,20 @@
 <meta name="apple-mobile-web-app-title" content="Palm Hills" />
 <meta name="format-detection" content="telephone=no" />
 <link rel="manifest" href="manifest.webmanifest" />
+<script>
+  /* Per-profile manifest so a /youssef home-screen shortcut launches /youssef
+     (the manifest start_url, not the default "/"). Runs before add-to-home. */
+  (function () {
+    try {
+      var slug = (location.pathname || "").replace(/^\/+|\/+$/g, "").toLowerCase().split("/")[0];
+      var MANIFESTS = { youssef: "/youssef.webmanifest" };
+      if (MANIFESTS[slug]) {
+        var link = document.querySelector('link[rel="manifest"]');
+        if (link) link.setAttribute("href", MANIFESTS[slug]);
+      }
+    } catch (e) {}
+  })();
+</script>
 <link rel="apple-touch-icon" href="assets/apple-touch-icon.png" />
 <link rel="icon" type="image/png" sizes="192x192" href="assets/icon-192.png" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />

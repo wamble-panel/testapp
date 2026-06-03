@@ -235,6 +235,7 @@ const AR = {
   // biometric
   "Biometric": "المصادقة البيومترية", "Use your biometrics to continue": "استخدم بصمتك للمتابعة",
   "Use Biometric": "استخدام البصمة", "Authenticating…": "جارٍ التحقق…", "Cancel": "إلغاء",
+  "Please Generate QR while inside the compound": "يرجى إنشاء رمز QR أثناء وجودك داخل الكمبوند",
   // privacy / terms body
   "Your privacy and trust matter to us. This page explains how Palm Hills handles your information within the community app.": "خصوصيتك وثقتك تهمّاننا. توضّح هذه الصفحة كيفية تعامل بالم هيلز مع معلوماتك داخل تطبيق المجتمع.",
   "We collect only the data needed to operate gate passes, units, and announcements, and we never sell your personal information to third parties.": "نجمع فقط البيانات اللازمة لتشغيل تصاريح البوابة والوحدات والإعلانات، ولا نبيع معلوماتك الشخصية لأي طرف ثالث إطلاقاً.",
@@ -736,9 +737,22 @@ function BiometricModal({ onSuccess, onCancel }) {
   );
 }
 
+/* Shown after a successful biometric: gate-pass QR is geofenced to the compound */
+function QRNoticeModal({ onClose }) {
+  return (
+    <div className="ph-sheet-wrap" style={{ justifyContent: "center", alignItems: "center", padding: "0 28px" }} onClick={onClose}>
+      <div onClick={(e) => e.stopPropagation()} style={{ width: "100%", maxWidth: 360, background: "#fff", borderRadius: 22, padding: "36px 26px 24px", textAlign: "center", animation: "popIn .26s cubic-bezier(.2,.8,.2,1)" }}>
+        <IconQR size={46} color="var(--ph-red)" />
+        <div style={{ fontFamily: "var(--slab)", fontWeight: 800, fontSize: 27, marginTop: 18, color: "#161616", lineHeight: 1.3 }}>{t("Please Generate QR while inside the compound")}</div>
+        <button onClick={onClose} style={{ background: "none", border: "none", cursor: "pointer", marginTop: 26, fontFamily: "var(--slab)", fontWeight: 800, fontSize: 23.5, color: "#161616", textDecoration: "underline" }}>{t("Cancel")}</button>
+      </div>
+    </div>
+  );
+}
+
 Object.assign(window, {
   Diamond, HeaderCompound, HeaderHome, HeaderTitle, HeaderName, BottomNav, QRCode, LOGO,
-  Img, DiamondLoader, SwitchSheet, HB_LOGO, BiometricModal,
+  Img, DiamondLoader, SwitchSheet, HB_LOGO, BiometricModal, QRNoticeModal,
 });
 
 // ===== SCREENS =====
@@ -1377,6 +1391,7 @@ function App() {
   const [closing, setClosing] = useS(false);   // sub-page pop (slide-out) in progress
   const [sheet, setSheet] = useS(null);        // "switch" | null
   const [bio, setBio] = useS(false);           // biometric modal (gate-pass generation)
+  const [qrNotice, setQrNotice] = useS(false); // "generate QR inside the compound" notice
   const [loading, setLoading] = useS(false);   // diamond page-transition loader
   const [lang, setLangState] = useS(() => { try { return localStorage.getItem("ph_lang") || "en"; } catch (e) { return "en"; } });
   _lang = lang;                                // sync module flag before children render
@@ -1408,7 +1423,8 @@ function App() {
   const selectCompound = () => withLoad(() => setSheet(null));
   // Generate New Pass → confirm with biometrics, then reveal the pass
   const generatePass = () => setBio(true);
-  const onBioSuccess = () => { setBio(false); withLoad(() => openPass()); };
+  // after biometric, the gate-pass QR is geofenced — prompt to be inside the compound
+  const onBioSuccess = () => { setBio(false); setQrNotice(true); };
 
   let main;
   if (tab === "hills") main = <ScreenHills time={time} onBell={openBell} />;
@@ -1476,6 +1492,11 @@ function App() {
       {/* Biometric confirmation before generating a new gate pass */}
       {bio && (
         <BiometricModal onSuccess={onBioSuccess} onCancel={() => setBio(false)} />
+      )}
+
+      {/* After biometric: gate-pass QR must be generated inside the compound */}
+      {qrNotice && (
+        <QRNoticeModal onClose={() => setQrNotice(false)} />
       )}
     </div>
   );

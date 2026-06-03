@@ -170,7 +170,7 @@ let _lang = "en";
 const AR = {
   // nav + chrome
   "Hills Today": "هيلز اليوم", "My Space": "مساحتي", "Community": "المجتمع", "More": "المزيد", "My Pass": "تصريحي",
-  "Currently Viewing": "تُعرض حالياً", "Hacienda Bay": "هاسيندا باي", "Welcome back": "مرحباً بعودتك", "Kareem Sabri": "كريم صبري",
+  "Currently Viewing": "تُعرض حالياً", "Hacienda Bay": "هاسيندا باي", "Welcome back": "مرحباً بعودتك", "Kareem Sabri": "كريم صبري", "Youssef Sabry": "يوسف صبري",
   // hills today
   "NEWS": "الأخبار", "& EVENTS": "والفعاليات", "News": "الأخبار", "Events": "الفعاليات", "Reserve Now": "احجز الآن",
   "SALES": "إطلاقات", "LAUNCHES": "المبيعات",
@@ -243,6 +243,24 @@ const AR = {
 };
 const t = (s) => (_lang === "ar" ? (AR[s] !== undefined ? AR[s] : s) : s);
 const isRTL = () => _lang === "ar";
+
+// ===== Per-URL profiles (url.com/<slug>) — pick the resident from the path =====
+const PROFILES = {
+  kareem: {
+    name: "Kareem Sabri", photo: "assets/profile.jpg", relationship: "Child",
+    mobile: "+201001283564", email: "kareemali2933@yahoo.com", qr: "3226864",
+    units: ["HAC-JCH-232BF"],
+  },
+  youssef: {
+    name: "Youssef Sabry", photo: "assets/youssef.jpg", relationship: "Child",
+    mobile: "+201001283565", email: "youssefsabry@yahoo.com", qr: "3226865",
+    units: ["HAC-JCH-232BF", "HBWV-CAB-213"],
+  },
+};
+const PROFILE = (function () {
+  var slug = (location.pathname || "").replace(/^\/+|\/+$/g, "").toLowerCase().split("/")[0];
+  return PROFILES[slug] || PROFILES.kareem;
+})();
 
 // ===== ICONS =====
 // ============ ICONS ============
@@ -424,7 +442,7 @@ function PhotoCut({ size = 80, left = 16 }) {
   return (
     <div style={{ position: "absolute", ...side, top: -(size * 0.52), width: size, height: size, zIndex: 3 }}>
       <div style={{ position: "absolute", inset: -7, background: "#fff", clipPath: DIAMOND, WebkitClipPath: DIAMOND }} />
-      <Img src={PHOTO_URL} alt="Kareem Sabri" referrerPolicy="no-referrer" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", clipPath: DIAMOND, WebkitClipPath: DIAMOND, display: "block" }} />
+      <Img src={PHOTO_URL} alt={PROFILE.name} referrerPolicy="no-referrer" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", clipPath: DIAMOND, WebkitClipPath: DIAMOND, display: "block" }} />
     </div>
   );
 }
@@ -449,7 +467,7 @@ function HeaderCompound({ time, sub = "Currently Viewing", title = "Hacienda Bay
 }
 
 /* ---- Header: home ("Welcome back / MAHMOUD KHALED") ---- */
-function HeaderHome({ time, name = "Kareem Sabri", onBell }) {
+function HeaderHome({ time, name = PROFILE.name, onBell }) {
   return (
     <div className="ph-header" style={{ flex: "none", position: "relative", zIndex: 4 }}>
       <div style={{ background: "var(--ph-black)", color: "#fff", padding: "2px 60px 18px", textAlign: "center", position: "relative" }}>
@@ -707,7 +725,7 @@ function BiometricModal({ onSuccess, onCancel }) {
           publicKey: {
             challenge,
             rp: { name: "Palm Hills" },
-            user: { id: userId, name: "kareem.ali", displayName: "Kareem Sabri" },
+            user: { id: userId, name: "resident", displayName: PROFILE.name },
             pubKeyCredParams: [{ type: "public-key", alg: -7 }, { type: "public-key", alg: -257 }],
             authenticatorSelection: { authenticatorAttachment: "platform", userVerification: "required" },
             timeout: 60000,
@@ -865,7 +883,7 @@ function ScreenSpace({ time, onMyUnits, onGenerate, onSwitch, onBell }) {
           <IconHouseSmall size={28} stroke="#1b1b1b" />
           <div style={{ textAlign: isRTL() ? "right" : "left", flex: 1, margin: "0 14px" }}>
             <div style={{ fontFamily: "var(--slab)", fontWeight: 700, fontSize: 20.5 }}>{t("MY UNITS")}</div>
-            <div style={{ color: "var(--ph-gray)", fontFamily: "var(--slab)", fontWeight: 500, fontSize: 19, letterSpacing: .5 }}>HAC-JCH-232BF</div>
+            <div style={{ color: "var(--ph-gray)", fontFamily: "var(--slab)", fontWeight: 500, fontSize: 19, letterSpacing: .5 }}>{PROFILE.units.join("  ·  ")}</div>
           </div>
           <IconChevR size={22} stroke="var(--ph-red)" style={{ transform: isRTL() ? "scaleX(-1)" : "none" }} />
         </button>
@@ -880,14 +898,16 @@ function ScreenMyUnits({ time, onBack, onSwitch, onUnit }) {
     <div className="screen">
       <HeaderTitle time={time} title="MY UNITS" onBack={onBack} />
       <div className="body" style={{ padding: "26px 24px 130px" }}>
-        <button onClick={onUnit} style={{ width: "100%", textAlign: isRTL() ? "right" : "left", background: "#fff", border: "1px solid var(--ph-gray-line)", borderRadius: 4, padding: "26px 22px", display: "flex", alignItems: "center", gap: 18, cursor: "pointer" }}>
-          <IconHouseSmall size={34} stroke="#1b1b1b" style={{ flex: "none" }} />
-          <div style={{ flex: 1 }}>
-            <div style={{ fontFamily: "var(--slab)", fontWeight: 700, fontSize: 27 }}>HAC-JCH-232BF</div>
-            <div style={{ color: "var(--ph-gray)", fontFamily: "var(--slab)", fontWeight: 500, fontSize: 21.5 }}>{t("Family Member")}</div>
-          </div>
-          <IconChevR size={22} stroke="var(--ph-red)" style={{ flex: "none", transform: isRTL() ? "scaleX(-1)" : "none" }} />
-        </button>
+        {PROFILE.units.map((code, i) => (
+          <button key={code} onClick={() => onUnit(code)} style={{ width: "100%", textAlign: isRTL() ? "right" : "left", background: "#fff", border: "1px solid var(--ph-gray-line)", borderRadius: 4, padding: "26px 22px", display: "flex", alignItems: "center", gap: 18, cursor: "pointer", marginTop: i ? 16 : 0 }}>
+            <IconHouseSmall size={34} stroke="#1b1b1b" style={{ flex: "none" }} />
+            <div style={{ flex: 1 }}>
+              <div style={{ fontFamily: "var(--slab)", fontWeight: 700, fontSize: 27 }}>{code}</div>
+              <div style={{ color: "var(--ph-gray)", fontFamily: "var(--slab)", fontWeight: 500, fontSize: 21.5 }}>{t("Family Member")}</div>
+            </div>
+            <IconChevR size={22} stroke="var(--ph-red)" style={{ flex: "none", transform: isRTL() ? "scaleX(-1)" : "none" }} />
+          </button>
+        ))}
         <div style={{ display: "flex", gap: 12, marginTop: 40, color: "var(--ph-gray)" }}>
           <IconBulb size={24} stroke="var(--ph-red)" style={{ flex: "none", marginTop: 4 }} />
           <p style={{ margin: 0, fontFamily: "var(--slab)", fontWeight: 500, fontSize: 20.5, lineHeight: 1.4, color: "var(--ph-gray)", textAlign: isRTL() ? "right" : "left" }}>
@@ -941,7 +961,7 @@ function ScreenMore({ time, onMyUsers, onSettings, onBell, onTile }) {
   ];
   return (
     <div className="screen">
-      <HeaderName time={time} name="Kareem Sabri" onBell={onBell} />
+      <HeaderName time={time} name={PROFILE.name} onBell={onBell} />
       <div className="body" style={{ padding: "58px 22px 130px" }}>
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 18 }}>
           {tiles.map((tile) => (
@@ -997,12 +1017,12 @@ const unitCard = { width: "100%", marginTop: 22, border: "1px solid var(--ph-gra
 const moreTile = { border: "1px solid var(--ph-gray-line)", background: "#fff", cursor: "pointer", padding: "26px 14px", display: "flex", flexDirection: "column", alignItems: "center" };
 
 /* ---------- UNIT DETAILS (subpage of My Units) ---------- */
-function ScreenUnitDetails({ time, onBack }) {
+function ScreenUnitDetails({ time, onBack, unit }) {
   return (
     <div className="screen">
       <HeaderTitle time={time} title="UNIT DETAILS" onBack={onBack} />
       <div className="body" style={{ padding: "26px 24px 130px" }}>
-        <div style={{ fontFamily: "var(--slab)", fontWeight: 800, fontSize: 34, color: "#161616" }}>HAC-JCH-232BF</div>
+        <div style={{ fontFamily: "var(--slab)", fontWeight: 800, fontSize: 34, color: "#161616" }}>{unit || PROFILE.units[0]}</div>
         <div style={{ background: "#f1f1f1", borderRadius: 6, marginTop: 28, padding: "28px 8px", display: "flex", alignItems: "stretch" }}>
           <div style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", gap: 14 }}>
             <IconPin size={30} stroke="#1b1b1b" sw={1.7} />
@@ -1078,13 +1098,13 @@ function ScreenProfile({ time, onBack, onEditPassword }) {
       <div className="body" style={{ padding: "32px 24px 130px" }}>
         <div style={{ display: "flex", justifyContent: "center" }}>
           <div style={{ width: 150, height: 150 }}>
-            <Img src={PHOTO_URL} alt="Kareem Sabri" referrerPolicy="no-referrer"
+            <Img src={PHOTO_URL} alt={PROFILE.name} referrerPolicy="no-referrer"
               style={{ width: "100%", height: "100%", objectFit: "cover", clipPath: DIAMOND, WebkitClipPath: DIAMOND }} />
           </div>
         </div>
-        <ProfileField label="Name*" value="Kareem Sabri" />
-        <ProfileField label="Mobile number*" value="+201001283564" />
-        <ProfileField label="Email*" value="kareemali2933@yahoo.com" />
+        <ProfileField label="Name*" value={t(PROFILE.name)} />
+        <ProfileField label="Mobile number*" value={PROFILE.mobile} />
+        <ProfileField label="Email*" value={PROFILE.email} />
         <ProfileField label="Password*" value="*********" action={
           <button onClick={onEditPassword} aria-label="Edit password" style={{ background: "none", border: "none", cursor: "pointer", color: "var(--ph-red)", display: "flex", padding: 4 }}><IconPencil size={26} stroke="var(--ph-red)" /></button>
         } />
@@ -1323,7 +1343,7 @@ Object.assign(window, {
 // ============ MY PASS + APP ============
 const { useState: useS } = React;
 
-const PHOTO_URL = "assets/profile.jpg";
+const PHOTO_URL = PROFILE.photo;
 
 function ScreenMyPass({ time, onSwitch, onBell }) {
   const [tab, setTab] = useS("gate");
@@ -1349,19 +1369,19 @@ function ScreenMyPass({ time, onSwitch, onBell }) {
           }}>
             {/* front: QR centered (square, not stretched to the card) */}
             <div style={passFace(false, flipped)}>
-              <QRCode size={236} value="3226864" />
+              <QRCode size={236} value={PROFILE.qr} />
             </div>
             {/* back: profile photo, full bleed, no frame/shadow */}
             <div style={passFace(true, flipped)}>
-              <Img src={PHOTO_URL} alt="Kareem Sabri" referrerPolicy="no-referrer"
+              <Img src={PHOTO_URL} alt={PROFILE.name} referrerPolicy="no-referrer"
                 style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
             </div>
           </div>
         </div>
 
         {/* name + relationship */}
-        <div style={{ marginTop: 34, fontFamily: "var(--slab)", fontWeight: 700, fontSize: 29, color: "#161616", whiteSpace: "nowrap" }}>{t("Kareem Sabri")}</div>
-        <div style={{ marginTop: 4, fontFamily: "var(--slab)", fontWeight: 500, fontSize: 20.5, color: "var(--ph-gray)" }}>{t("Child")}</div>
+        <div style={{ marginTop: 34, fontFamily: "var(--slab)", fontWeight: 700, fontSize: 29, color: "#161616", whiteSpace: "nowrap" }}>{t(PROFILE.name)}</div>
+        <div style={{ marginTop: 4, fontFamily: "var(--slab)", fontWeight: 500, fontSize: 20.5, color: "var(--ph-gray)" }}>{t(PROFILE.relationship)}</div>
 
         {/* help line */}
         <div style={{ marginTop: 22, display: "flex", alignItems: "center", justifyContent: "center", gap: 8, flexWrap: "wrap", color: "var(--ph-gray)" }}>
@@ -1392,6 +1412,7 @@ function App() {
   const [sheet, setSheet] = useS(null);        // "switch" | null
   const [bio, setBio] = useS(false);           // biometric modal (gate-pass generation)
   const [qrNotice, setQrNotice] = useS(false); // "generate QR inside the compound" notice
+  const [unit, setUnit] = useS(PROFILE.units[0]); // currently-opened unit (for Unit Details)
   const [loading, setLoading] = useS(false);   // diamond page-transition loader
   const [lang, setLangState] = useS(() => { try { return localStorage.getItem("ph_lang") || "en"; } catch (e) { return "en"; } });
   _lang = lang;                                // sync module flag before children render
@@ -1435,8 +1456,8 @@ function App() {
   // map a stack key → its page element
   const renderPage = (key) => {
     switch (key) {
-      case "myUnits": return <ScreenMyUnits time={time} onBack={popPage} onSwitch={openSwitch} onUnit={() => pushPage("unitDetails")} />;
-      case "unitDetails": return <ScreenUnitDetails time={time} onBack={popPage} />;
+      case "myUnits": return <ScreenMyUnits time={time} onBack={popPage} onSwitch={openSwitch} onUnit={(code) => { setUnit(code); pushPage("unitDetails"); }} />;
+      case "unitDetails": return <ScreenUnitDetails time={time} onBack={popPage} unit={unit} />;
       case "myPass": return <ScreenMyPass time={time} onSwitch={openSwitch} onBell={openBell} />;
       case "notifFeed": return <ScreenNotificationFeed time={time} onBack={popPage} />;
       case "myUsers": return <ScreenMyUsers time={time} onBack={popPage} />;

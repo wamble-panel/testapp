@@ -2,6 +2,7 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "rewrites": [
     { "source": "/youssef", "destination": "/index.html" },
+    { "source": "/muhammed", "destination": "/index.html" },
     { "source": "/kareem", "destination": "/index.html" }
   ],
   "headers": [
@@ -18,7 +19,7 @@
       ]
     },
     {
-      "source": "/(youssef|kareem)",
+      "source": "/(youssef|muhammed|kareem)",
       "headers": [
         { "key": "Cache-Control", "value": "no-store, no-cache, must-revalidate, max-age=0" }
       ]

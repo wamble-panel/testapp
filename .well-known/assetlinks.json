@@ -3,9 +3,9 @@
     "relation": ["delegate_permission/common.handle_all_urls"],
     "target": {
       "namespace": "android_app",
-      "package_name": "com.palmhills.app",
+      "package_name": "app.vercel.testapp_one_ochre.twa",
       "sha256_cert_fingerprints": [
-        "REPLACE_WITH_YOUR_APP_SIGNING_KEY_SHA256_FINGERPRINT"
+        "45:9D:AE:7D:68:38:0D:38:EB:6A:1F:B2:7E:A4:25:29:48:0C:F5:83:27:41:97:FC:E4:74:E3:75:19:69:60:71"
       ]
     }
   }

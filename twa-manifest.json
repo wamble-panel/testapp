@@ -1,6 +1,6 @@
 {
-  "packageId": "com.palmhills.app",
-  "host": "testapp-two-rho.vercel.app",
+  "packageId": "app.vercel.testapp_one_ochre.twa",
+  "host": "testapp-one-ochre.vercel.app",
   "name": "Palm Hills",
   "launcherName": "Palm Hills",
   "display": "standalone",
@@ -14,22 +14,29 @@
   "backgroundColor": "#161616",
   "enableNotifications": false,
   "startUrl": "/",
-  "iconUrl": "https://testapp-two-rho.vercel.app/assets/icon-512.png",
-  "maskableIconUrl": "https://testapp-two-rho.vercel.app/assets/icon-maskable-512.png",
+  "iconUrl": "https://testapp-one-ochre.vercel.app/assets/icon-512.png",
+  "maskableIconUrl": "https://testapp-one-ochre.vercel.app/assets/icon-maskable-512.png",
   "splashScreenFadeOutDuration": 300,
   "appVersionName": "1.0.0",
   "appVersionCode": 1,
   "shortcuts": [],
   "generatorApp": "bubblewrap-cli",
-  "webManifestUrl": "https://testapp-two-rho.vercel.app/manifest.webmanifest",
+  "webManifestUrl": "https://testapp-one-ochre.vercel.app/manifest.webmanifest",
   "fallbackType": "customtabs",
   "features": {},
-  "alphaDependencies": { "enabled": false },
+  "alphaDependencies": {
+    "enabled": false
+  },
   "enableSiteSettingsShortcut": true,
   "isChromeOSOnly": false,
   "isMetaQuest": false,
-  "fullScopeUrl": "https://testapp-two-rho.vercel.app/",
+  "fullScopeUrl": "https://testapp-one-ochre.vercel.app/",
   "minSdkVersion": 23,
   "orientationLock": true,
-  "fingerprints": []
+  "fingerprints": [
+    {
+      "name": "upload",
+      "value": "45:9D:AE:7D:68:38:0D:38:EB:6A:1F:B2:7E:A4:25:29:48:0C:F5:83:27:41:97:FC:E4:74:E3:75:19:69:60:71"
+    }
+  ]
 }

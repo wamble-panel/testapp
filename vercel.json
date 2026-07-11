@@ -5,6 +5,7 @@
     { "source": "/muhammed", "destination": "/index.html" },
     { "source": "/adham", "destination": "/index.html" },
     { "source": "/nasser", "destination": "/index.html" },
+    { "source": "/joee", "destination": "/index.html" },
     { "source": "/kareem", "destination": "/index.html" }
   ],
   "headers": [
@@ -28,7 +29,7 @@
       ]
     },
     {
-      "source": "/(youssef|muhammed|adham|nasser|kareem)",
+      "source": "/(youssef|muhammed|adham|nasser|joee|kareem)",
       "headers": [
         { "key": "Cache-Control", "value": "no-store, no-cache, must-revalidate, max-age=0" }
       ]

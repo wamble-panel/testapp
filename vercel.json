@@ -1,49 +1,92 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "rewrites": [
-    { "source": "/youssef", "destination": "/index.html" },
-    { "source": "/muhammed", "destination": "/index.html" },
-    { "source": "/adham", "destination": "/index.html" },
-    { "source": "/nasser", "destination": "/index.html" },
-    { "source": "/sohyb", "destination": "/index.html" },
-    { "source": "/kareem", "destination": "/index.html" }
+    {
+      "source": "/youssef",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/muhammed",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/adham",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/nasser",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/sohyb",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/alaa",
+      "destination": "/index.html"
+    },
+    {
+      "source": "/kareem",
+      "destination": "/index.html"
+    }
   ],
   "headers": [
     {
       "source": "/:name.webmanifest",
       "headers": [
-        { "key": "Content-Type", "value": "application/manifest+json; charset=utf-8" }
+        {
+          "key": "Content-Type",
+          "value": "application/manifest+json; charset=utf-8"
+        }
       ]
     },
     {
       "source": "/.well-known/assetlinks.json",
       "headers": [
-        { "key": "Content-Type", "value": "application/json; charset=utf-8" },
-        { "key": "Access-Control-Allow-Origin", "value": "*" }
+        {
+          "key": "Content-Type",
+          "value": "application/json; charset=utf-8"
+        },
+        {
+          "key": "Access-Control-Allow-Origin",
+          "value": "*"
+        }
       ]
     },
     {
       "source": "/assets/(.*)",
       "headers": [
-        { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
       ]
     },
     {
-      "source": "/(youssef|muhammed|adham|nasser|sohyb|kareem)",
+      "source": "/(youssef|muhammed|adham|nasser|sohyb|alaa|kareem)",
       "headers": [
-        { "key": "Cache-Control", "value": "no-store, no-cache, must-revalidate, max-age=0" }
+        {
+          "key": "Cache-Control",
+          "value": "no-store, no-cache, must-revalidate, max-age=0"
+        }
       ]
     },
     {
       "source": "/index.html",
       "headers": [
-        { "key": "Cache-Control", "value": "no-store, no-cache, must-revalidate, max-age=0" }
+        {
+          "key": "Cache-Control",
+          "value": "no-store, no-cache, must-revalidate, max-age=0"
+        }
       ]
     },
     {
       "source": "/",
       "headers": [
-        { "key": "Cache-Control", "value": "no-store, no-cache, must-revalidate, max-age=0" }
+        {
+          "key": "Cache-Control",
+          "value": "no-store, no-cache, must-revalidate, max-age=0"
+        }
       ]
     }
   ]

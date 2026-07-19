@@ -22,10 +22,6 @@
       "destination": "/index.html"
     },
     {
-      "source": "/alaa",
-      "destination": "/index.html"
-    },
-    {
       "source": "/kareem",
       "destination": "/index.html"
     }
@@ -63,7 +59,7 @@
       ]
     },
     {
-      "source": "/(youssef|muhammed|adham|nasser|sohyb|alaa|kareem)",
+      "source": "/(youssef|muhammed|adham|nasser|sohyb|kareem)",
       "headers": [
         {
           "key": "Cache-Control",
